@@ -10,12 +10,7 @@ class MoviesList extends StatelessWidget {
   final MovieClickListener _clickListener;
   final List<Movie> _movies;
 
-  MoviesList(
-      {@required MovieClickListener clickListener,
-      @required List<Movie> movies})
-      : _clickListener = clickListener,
-        _movies = movies,
-        super();
+  MoviesList(this._clickListener, this._movies);
 
   void _onMovieClicked(Movie movie) {
     _clickListener.onMovieClicked(movie);
@@ -41,7 +36,7 @@ class MoviesList extends StatelessWidget {
             onTap: () {
               _onMovieClicked(movie);
             },
-            child: MovieCardWidget(thumb: movie.thumb, title: movie.title),
+            child: MovieCardWidget(movie.thumb, movie.title),
           );
         });
   }

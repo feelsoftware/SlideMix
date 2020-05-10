@@ -4,8 +4,7 @@ class MovieCardWidget extends StatelessWidget {
   final String thumb;
   final String title;
 
-  MovieCardWidget({Key key, @required this.thumb, @required this.title})
-      : super(key: key);
+  MovieCardWidget(this.thumb, this.title);
 
   @override
   Widget build(BuildContext context) {

@@ -20,10 +20,8 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: MoviesScreen(
-        viewModel: MoviesViewModel(
-          repository: MoviesRepositoryImpl(),
-        ),
-        title: 'CPMovieMaker',
+        MoviesViewModel(MoviesRepositoryImpl()),
+        'CPMovieMaker',
       ),
       debugShowCheckedModeBanner: false,
     );

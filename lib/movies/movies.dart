@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cpmoviemaker/movies/movies_list.dart';
 import 'package:cpmoviemaker/movies/movies_viewmodel.dart';
+import 'package:cpmoviemaker/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:cpmoviemaker/models/movie.dart';
 
@@ -9,11 +10,7 @@ class MoviesScreen extends StatefulWidget {
   final MoviesViewModel _viewModel;
   final String _title;
 
-  MoviesScreen(
-      {Key key, @required MoviesViewModel viewModel, @required String title})
-      : _viewModel = viewModel,
-        _title = title,
-        super(key: key);
+  MoviesScreen(this._viewModel, this._title);
 
   @override
   _MoviesScreenState createState() => _MoviesScreenState(_viewModel, _title);
@@ -47,11 +44,7 @@ class _MoviesScreenState extends State<MoviesScreen>
 
   @override
   void onMovieClicked(Movie movie) {
-    // TODO: navigate to PreviewScreen
-  }
-
-  void _navigateToCreation() {
-    // TODO: navigate to MovieCreationScreen
+    navigateToPreview(context, movie);
   }
 
   @override
@@ -59,13 +52,13 @@ class _MoviesScreenState extends State<MoviesScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
+        centerTitle: false,
       ),
-      body: MoviesList(
-        clickListener: this,
-        movies: movies,
-      ),
+      body: MoviesList(this, movies),
       floatingActionButton: FloatingActionButton(
-        onPressed: _navigateToCreation,
+        onPressed: () {
+          navigateToCreation(context);
+        },
         tooltip: "Create a new movie",
         child: Icon(
           Icons.add,
