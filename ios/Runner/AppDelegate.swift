@@ -1,13 +1,9 @@
 import UIKit
 import Flutter
-import SharedCode
 
 let CHANNEL = "com.vitoksmile.cpmoviemaker.CHANNEL"
 let METHOD_CREATE = "METHOD_CREATE"
 let METHOD_CANCEL = "METHOD_CANCEL"
-let METHOD_PROGRESS = "METHOD_PROGRESS"
-let METHOD_READY = "METHOD_READY"
-let METHOD_ERROR = "METHOD_ERROR"
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -19,12 +15,19 @@ let METHOD_ERROR = "METHOD_ERROR"
     let channel = FlutterMethodChannel(name: CHANNEL, binaryMessenger: controller.binaryMessenger)
     channel.setMethodCallHandler({
       (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
-        //result(String(call.method));
-        result(MovieCreatorKt.platformName());
         switch call.method {
         case METHOD_CREATE:
-            let list = call.arguments as! [String]
-            print(list)
+            guard let list = call.arguments as? [String] else {
+                result(FlutterError(code: "ERROR", message: "Invalid type of arguments, must be List<String>.", details: nil));
+                return
+            }
+            if (list.capacity != 2) {
+                result(FlutterError(code: "ERROR", message: "Invalid count of arguments, must be 2: outputDir and scenesDir.", details: nil));
+                return
+            }
+            let outputDir = list[0];
+            let scenesDir = list[1];
+            print("outputDir \(outputDir), scenesDir \(scenesDir)")
             break;
         default:
             break;

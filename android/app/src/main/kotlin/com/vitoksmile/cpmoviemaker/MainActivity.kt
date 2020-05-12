@@ -3,17 +3,17 @@
 package com.vitoksmile.cpmoviemaker
 
 import android.os.Bundle
+import com.arthenica.mobileffmpeg.FFmpeg
 import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
+import java.io.File
+import java.util.*
 import kotlin.concurrent.thread
 
 private const val CHANNEL = "com.vitoksmile.cpmoviemaker.CHANNEL"
 private const val METHOD_CREATE = "METHOD_CREATE"
 private const val METHOD_CANCEL = "METHOD_CANCEL"
-private const val METHOD_PROGRESS = "METHOD_PROGRESS"
-private const val METHOD_READY = "METHOD_READY"
-private const val METHOD_ERROR = "METHOD_ERROR"
 
 class MainActivity : FlutterActivity() {
     private lateinit var ffmpegChannel: MethodChannel
@@ -30,11 +30,15 @@ class MainActivity : FlutterActivity() {
         ffmpegChannel.setMethodCallHandler { methodCall, result ->
             when (methodCall.method) {
                 METHOD_CREATE -> {
-                    val files = methodCall.arguments as? List<String> ?: run {
-                        result.error("Invalid type of arguments", null, null)
+                    val arguments = methodCall.arguments as? List<String> ?: run {
+                        result.error("Invalid type of arguments, must be List<String>.", null, null)
                         return@setMethodCallHandler
                     }
-                    createMovie(files, result)
+                    if (arguments.size != 2) {
+                        result.error("Invalid count of arguments, must be 2: outputDir and scenesDir.", null, null)
+                        return@setMethodCallHandler
+                    }
+                    createMovie(outputDir = arguments[0], scenesDir = arguments[1], result = result)
                 }
                 METHOD_CANCEL -> {
                     cancelCreation(result)
@@ -43,26 +47,31 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun createMovie(files: List<String>, result: MethodChannel.Result) {
-        result.success(1)
+    private fun createMovie(outputDir: String, scenesDir: String, result: MethodChannel.Result) {
+        File(outputDir).listFiles()
+        val moviePath = File(outputDir, generateMovieName(File(outputDir))).path
 
-        // TODO: run FFmpeg command to create video from files
         thread {
-            Thread.sleep(500)
-            for (i in 0..100) {
-                Thread.sleep(10)
-                runOnUiThread {
-                    ffmpegChannel.invokeMethod(METHOD_PROGRESS, i)
-                }
-            }
+            FFmpeg.execute("-framerate 1 -i ${scenesDir}/image%03d.jpg -r 30 -pix_fmt yuv420p -y $moviePath")
             runOnUiThread {
-                ffmpegChannel.invokeMethod(METHOD_READY, "Path to movie")
+                result.success(moviePath)
             }
         }
     }
 
     private fun cancelCreation(result: MethodChannel.Result) {
-        // TODO: cancel FFmpeg
+        FFmpeg.cancel()
         result.success(1)
+    }
+
+    private fun generateMovieName(dir: File): String {
+        fun generateMovieName() = "${UUID.randomUUID()}.mp4"
+
+        var name = generateMovieName()
+        val files = dir.listFiles().map { it.name }
+        while (files.contains(name)) {
+            name = generateMovieName()
+        }
+        return name
     }
 }
