@@ -1,18 +1,18 @@
-package com.vitoksmile.cpmoviemaker
+package com.vitoksmile.cpmoviemaker.provider
 
-import java.io.File
-import java.util.*
+import com.vitoksmile.cpmoviemaker.model.Format
+import com.vitoksmile.cpmoviemaker.model.UUID
 
 interface MovieInfoProvider {
     fun provideInfo(outputDir: String): Info
 
     data class Info(
-        val thumbPath: String,
-        val moviePath: String
+        val moviePath: String,
+        val thumbPath: String
     )
 }
 
-class MovieInfoProviderImpl : MovieInfoProvider {
+object MovieInfoProviderImpl : MovieInfoProvider {
     override fun provideInfo(outputDir: String): MovieInfoProvider.Info {
         var uuid = generateUUID()
         val files = File(outputDir).listFiles().map { it.name }
@@ -21,18 +21,18 @@ class MovieInfoProviderImpl : MovieInfoProvider {
         }
 
         return MovieInfoProvider.Info(
-            thumbPath = createPath(outputDir, uuid, "jpg"),
-            moviePath = createPath(outputDir, uuid, "mp4")
+            moviePath = createPath(outputDir, uuid, Format.Movie.value),
+            thumbPath = createPath(outputDir, uuid, Format.Thumb.value)
         )
     }
 
-    private fun generateUUID() = UUID.randomUUID().toString()
+    private fun generateUUID() = UUID().toString()
 
     private fun createPath(outputDir: String, uuid: String, format: String) = buildString {
         append(outputDir)
-        append(File.separator)
+        append(FileProvider.pathSeparator)
         append(uuid)
-        append(".")
+        append(FileProvider.dotSeparator)
         append(format)
     }
 }

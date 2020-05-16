@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import SharedCode
 
 let CREATION_CHANNEL = "com.vitoksmile.cpmoviemaker.CREATION_CHANNEL"
 let CREATION_METHOD_CREATE = "CREATION_METHOD_CREATE"

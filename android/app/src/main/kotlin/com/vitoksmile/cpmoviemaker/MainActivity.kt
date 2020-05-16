@@ -4,6 +4,8 @@ package com.vitoksmile.cpmoviemaker
 
 import android.os.Bundle
 import android.util.Log
+import com.vitoksmile.cpmoviemaker.provider.MovieInfoProvider
+import com.vitoksmile.cpmoviemaker.provider.MovieInfoProviderImpl
 import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -24,7 +26,7 @@ class MainActivity : FlutterActivity() {
     private val ffmpegCoroutineScope = CoroutineScope(ffmpegCoroutineContext)
 
     // TODO: use DI
-    private val infoProvider: MovieInfoProvider = MovieInfoProviderImpl()
+    private val infoProvider: MovieInfoProvider = MovieInfoProviderImpl
     private val movieCreator: MovieCreator = MovieCreatorImpl(infoProvider)
 
     override fun onCreate(savedInstanceState: Bundle?) {

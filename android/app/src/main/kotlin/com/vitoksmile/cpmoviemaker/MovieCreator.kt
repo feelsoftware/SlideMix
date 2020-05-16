@@ -2,6 +2,7 @@ package com.vitoksmile.cpmoviemaker
 
 import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
 import com.arthenica.mobileffmpeg.FFmpeg
+import com.vitoksmile.cpmoviemaker.provider.MovieInfoProvider
 
 interface MovieCreator {
     suspend fun createMovie(outputDir: String, scenesDir: String): Result
