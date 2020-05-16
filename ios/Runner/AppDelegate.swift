@@ -1,8 +1,6 @@
 import UIKit
 import Flutter
 
-import mobileffmpeg
-
 let CREATION_CHANNEL = "com.vitoksmile.cpmoviemaker.CREATION_CHANNEL"
 let CREATION_METHOD_CREATE = "CREATION_METHOD_CREATE"
 let CREATION_METHOD_CANCEL = "CREATION_METHOD_CANCEL"
@@ -77,7 +75,7 @@ let CREATION_RESULT_KEY_MOVIE = "CREATION_RESULT_KEY_MOVIE"
     }
     
     private func cancelCreation(result: @escaping FlutterResult) {
-        MobileFFmpeg.cancel()
+        self.creator.dispose()
         result(1)
     }
 }

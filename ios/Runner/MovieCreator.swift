@@ -3,6 +3,8 @@ import mobileffmpeg
 
 protocol MovieCreator {
     func createMovie(outputDir: String, scenesDir: String) -> MovieCreatorResult
+    
+    func dispose()
 }
 
 class MovieCreatorImpl : MovieCreator {
@@ -40,6 +42,10 @@ class MovieCreatorImpl : MovieCreator {
         }
         
         return MovieCreatorResultSuccess(thumb: info!.thumbPath, movie: info!.moviePath)
+    }
+    
+    func dispose() {
+        MobileFFmpeg.cancel()
     }
 }
 

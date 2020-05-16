@@ -73,3 +73,5 @@
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 /local.properties
 /android/sharedcode/sharedcode.podspec
+/.flutter-plugins-dependencies
+/ios/Flutter/Flutter.podspec
