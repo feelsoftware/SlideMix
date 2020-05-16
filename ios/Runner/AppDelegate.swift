@@ -7,12 +7,22 @@ let CREATION_CHANNEL = "com.vitoksmile.cpmoviemaker.CREATION_CHANNEL"
 let CREATION_METHOD_CREATE = "CREATION_METHOD_CREATE"
 let CREATION_METHOD_CANCEL = "CREATION_METHOD_CANCEL"
 
+let CREATION_RESULT_KEY_THUMB = "CREATION_RESULT_KEY_THUMB"
+let CREATION_RESULT_KEY_MOVIE = "CREATION_RESULT_KEY_MOVIE"
+
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
+    // TODO: use DI
+    private var infoProvider: MovieInfoProvider!
+    private var creator: MovieCreator!
+    
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    self.infoProvider = MovieInfoProviderImpl()
+    self.creator = MovieCreatorImpl(infoProvider: self.infoProvider)
+    
     let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
     registerFFmpegChannel(controller: controller)
     
@@ -37,39 +47,31 @@ let CREATION_METHOD_CANCEL = "CREATION_METHOD_CANCEL"
                 
                 self.createMovie(outputDir: list[0], scenesDir: list[1], result: result)
                 break;
+            
             case CREATION_METHOD_CANCEL:
                 self.cancelCreation(result: result)
                 break;
+            
             default:
                 break;
             }
         })
     }
     
-    private func createMovie(outputDir:String, scenesDir:String, result: @escaping FlutterResult) {
+    private func createMovie(outputDir: String, scenesDir: String, result: @escaping FlutterResult) {
         DispatchQueue(label: "ffmpeg", qos: .utility).async {
-            let moviePath = self.generateMovieName(dir: outputDir)
-            if (moviePath == nil) {
-                result(FlutterError(code: "ERROR", message: "Failed to generate movie's name.", details: nil))
-                return
-            }
-            let resultCode = MobileFFmpeg.execute(withArguments: [
-                "-framerate", "1",
-                "-i", "\(scenesDir)/image%03d.jpg",
-                "-r", "30",
-                "-pix_fmt","yuv420p",
-                "-y", moviePath
-            ])
-            switch resultCode {
-            case RETURN_CODE_SUCCESS:
-                result(moviePath)
-                break;
-            case RETURN_CODE_CANCEL:
-                result(FlutterError(code: "ERROR", message: "Canceled by user.", details: nil))
-                break;
-            default:
-                result(FlutterError(code: "ERROR", message: "Command execution failed.", details: nil))
-                break;
+            let creationResult = self.creator.createMovie(outputDir: outputDir, scenesDir: scenesDir)
+            
+            if creationResult is MovieCreatorResultSuccess {
+                let success = (creationResult as! MovieCreatorResultSuccess)
+                            
+                var map = [String: String]()
+                map[CREATION_RESULT_KEY_THUMB] = success.thumb
+                map[CREATION_RESULT_KEY_MOVIE] = success.movie
+                result(map)
+            } else if creationResult is MovieCreatorResultError {
+                let error = (creationResult as! MovieCreatorResultError)
+                result(FlutterError(code: "ERROR", message: error.message, details: nil));
             }
         }
     }
@@ -77,26 +79,5 @@ let CREATION_METHOD_CANCEL = "CREATION_METHOD_CANCEL"
     private func cancelCreation(result: @escaping FlutterResult) {
         MobileFFmpeg.cancel()
         result(1)
-    }
-    
-    private func generateMovieName(dir: String) -> String? {
-        var name = self.generateMovieName()
-        let files: [String]
-        
-        do {
-            files = try FileManager.default.contentsOfDirectory(atPath: dir)
-        } catch {
-            return nil
-        }
-        
-        while files.contains(name) {
-            name = self.generateMovieName()
-        }
-        
-        return "\(dir)/\(name)"
-    }
-    
-    private func generateMovieName() -> String {
-        return "\(UUID.init().uuidString).mp4"
     }
 }

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:cpmoviemaker/base/usecase.dart';
 import 'package:cpmoviemaker/models/movie.dart';
@@ -12,6 +11,9 @@ import 'package:path_provider/path_provider.dart';
 const _CREATION_CHANNEL = "com.vitoksmile.cpmoviemaker.CREATION_CHANNEL";
 const _CREATION_METHOD_CREATE = "CREATION_METHOD_CREATE";
 const _CREATION_METHOD_CANCEL = "CREATION_METHOD_CANCEL";
+
+const _CREATION_RESULT_KEY_THUMB = "CREATION_RESULT_KEY_THUMB";
+const _CREATION_RESULT_KEY_MOVIE = "CREATION_RESULT_KEY_MOVIE";
 
 abstract class CreationUseCase extends UseCase {
   Stream<T> createMovie<T extends CreationResult>(List<File> files);
@@ -42,12 +44,13 @@ class CreationUseCaseImpl extends CreationUseCase {
 
     final _channel = MethodChannel(_CREATION_CHANNEL);
     await _channel.invokeMethod(_CREATION_METHOD_CREATE,
-        [moviesDir.path, scenesDir.path]).then((moviePath) async {
-      print("movie created, path: $moviePath");
+        [moviesDir.path, scenesDir.path]).then((data) async {
+      final map = Map<String, String>.from(data);
+      final thumbPath = map[_CREATION_RESULT_KEY_THUMB];
+      final moviePath = map[_CREATION_RESULT_KEY_MOVIE];
+      print("movie created, $map");
 
-      final thumb =
-          "https://picsum.photos/id/${Random.secure().nextInt(100)}/200/300";
-      final movie = await _moviesUseCase.create(thumb, moviePath);
+      final movie = await _moviesUseCase.create(thumbPath, moviePath);
 
       controller.add(SuccessCreationResult(movie));
     }).catchError((error) {
