@@ -14,23 +14,7 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		97D4CBA1C588DF2F0362AD89 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 736A2882A482518EC2ECFB7E /* Pods_Runner.framework */; };
-		9FC0819D2469486B00B14C6D /* SharedCode.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FC081992469464000B14C6D /* SharedCode.framework */; };
-		9FC0819E2469486B00B14C6D /* SharedCode.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9FC081992469464000B14C6D /* SharedCode.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		9FC0819F2469486C00B14C6D /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				9FC0819E2469486B00B14C6D /* SharedCode.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
@@ -49,6 +33,7 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9F50E01C24701F7D00C5FA4E /* xcode-frameworks */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "xcode-frameworks"; path = "../build/sharedcode/xcode-frameworks"; sourceTree = "<group>"; };
 		9FC081992469464000B14C6D /* SharedCode.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SharedCode.framework; path = "../build/sharedcode/xcode-frameworks/SharedCode.framework"; sourceTree = "<group>"; };
 		A9273A64F1A5038B9C5E576F /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -58,7 +43,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9FC0819D2469486B00B14C6D /* SharedCode.framework in Frameworks */,
 				97D4CBA1C588DF2F0362AD89 /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -132,6 +116,7 @@
 		B259A525C3A791508F652B97 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9F50E01C24701F7D00C5FA4E /* xcode-frameworks */,
 				9FC081992469464000B14C6D /* SharedCode.framework */,
 				736A2882A482518EC2ECFB7E /* Pods_Runner.framework */,
 			);
@@ -153,7 +138,6 @@
 				97C146EC1CF9000F007C117D /* Resources */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				098C3420EFFC59481A083021 /* [CP] Embed Pods Frameworks */,
-				9FC0819F2469486C00B14C6D /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -395,6 +379,7 @@
 					"$(SRCROOT)/../build/sharedcode/xcode-frameworks",
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -530,6 +515,7 @@
 					"$(SRCROOT)/../build/sharedcode/xcode-frameworks",
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -559,6 +545,7 @@
 					"$(SRCROOT)/../build/sharedcode/xcode-frameworks",
 				);
 				INFOPLIST_FILE = Runner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

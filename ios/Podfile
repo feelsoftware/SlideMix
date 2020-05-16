@@ -72,3 +72,5 @@ post_install do |installer|
     end
   end
 end
+
+pod 'mobile-ffmpeg-full', '4.3.1'
