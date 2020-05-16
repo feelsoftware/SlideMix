@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 
-abstract class MediaSourceClickListener {
-  void onCameraSourceClicked();
-
-  void onGallerySourceClicked();
+enum CreationMediaSource {
+  camera, gallery
 }
 
 class CreationMediaSourceDialog extends StatelessWidget {
-  final MediaSourceClickListener _clickListener;
-
-  CreationMediaSourceDialog(this._clickListener);
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,8 +12,7 @@ class CreationMediaSourceDialog extends StatelessWidget {
         children: <Widget>[
           ListTile(
             onTap: () {
-              _clickListener.onCameraSourceClicked();
-              Navigator.pop(context);
+              Navigator.pop(context, CreationMediaSource.camera);
             },
             leading: Icon(
               Icons.camera_alt,
@@ -29,8 +22,7 @@ class CreationMediaSourceDialog extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              _clickListener.onGallerySourceClicked();
-              Navigator.pop(context);
+              Navigator.pop(context, CreationMediaSource.gallery);
             },
             leading: Icon(
               Icons.image,

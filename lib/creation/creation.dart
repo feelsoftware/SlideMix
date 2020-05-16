@@ -15,10 +15,18 @@ class CreationScreen extends StatefulWidget {
 }
 
 class _CreationState extends State<CreationScreen>
-    implements CreationListClickListener, MediaSourceClickListener {
+    implements CreationListClickListener {
   final CreationViewModel _viewModel;
 
   _CreationState(this._viewModel);
+
+  @override
+  void initState() {
+    super.initState();
+    _viewModel.addListener(() {
+      setState(() {});
+    });
+  }
 
   @override
   void dispose() {
@@ -27,28 +35,25 @@ class _CreationState extends State<CreationScreen>
   }
 
   @override
-  void addNewMedia() {
-    showModalBottomSheet(
+  Future addNewMedia() async {
+    final CreationMediaSource source = await showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
-          return CreationMediaSourceDialog(this);
+          return CreationMediaSourceDialog();
         });
+    switch (source) {
+      case CreationMediaSource.camera:
+        _pickImage(ImageSource.camera);
+        break;
+      case CreationMediaSource.gallery:
+        _pickImage(ImageSource.gallery);
+        break;
+    }
   }
 
   @override
   void deleteMedia(int position) {
     _viewModel.deleteMedia(position);
-    setState(() {});
-  }
-
-  @override
-  void onCameraSourceClicked() {
-    _pickImage(ImageSource.camera);
-  }
-
-  @override
-  void onGallerySourceClicked() {
-    _pickImage(ImageSource.gallery);
   }
 
   void _pickImage(ImageSource source) {
@@ -56,7 +61,6 @@ class _CreationState extends State<CreationScreen>
       return ImagePicker.pickImage(source: source);
     }, (data) {
       _viewModel.addMedia(data);
-      setState(() {});
     });
   }
 

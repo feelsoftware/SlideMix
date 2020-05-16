@@ -1,12 +1,12 @@
 import 'package:cpmoviemaker/models/movie.dart';
-import 'package:cpmoviemaker/repository/movies_repository.dart';
+import 'package:cpmoviemaker/usecase/movies_usecase.dart';
 
 class MoviesViewModel {
-  final MoviesRepository _repository;
+  final MoviesUseCase _useCase;
 
-  MoviesViewModel(this._repository);
+  MoviesViewModel(this._useCase);
 
   Future<List<Movie>> getMovies() async {
-    return await _repository.fetchMovies();
+    return await _useCase.fetchMovies();
   }
 }

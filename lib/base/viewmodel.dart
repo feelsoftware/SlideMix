@@ -3,10 +3,13 @@ import 'dart:ffi';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 
-class ViewModel {
+class ViewModel extends ChangeNotifier {
   final Random _random = Random.secure();
   final Map<int, StreamSubscription<Object>> _subscriptions = Map();
 
+  ///
+  /// Launch this [action] asynchronously and invoke [result] after execution.
+  ///
   void launch<T extends Object>(Future<T> action(), void result(T data)) {
     final key = _generateSubscriptionKey();
     _subscriptions.putIfAbsent(key, () {
@@ -17,6 +20,9 @@ class ViewModel {
     });
   }
 
+  ///
+  /// Subscribe to Stream from [action] and invoke [result] for each change.
+  ///
   void listen<T extends Object>(Stream<T> action(), void result(T data)) {
     final key = _generateSubscriptionKey();
     _subscriptions.putIfAbsent(key, () {
@@ -30,6 +36,7 @@ class ViewModel {
 
   @mustCallSuper
   void dispose() {
+    super.dispose();
     _subscriptions.values.forEach((item) {
       item.cancel();
     });

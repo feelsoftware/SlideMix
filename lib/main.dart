@@ -1,5 +1,5 @@
 import 'package:cpmoviemaker/movies/movies.dart';
-import 'package:cpmoviemaker/repository/movies_repository.dart';
+import 'package:cpmoviemaker/usecase/movies_usecase.dart';
 import 'package:cpmoviemaker/movies/movies_viewmodel.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +20,9 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: MoviesScreen(
-        MoviesViewModel(MoviesRepositoryImpl()),
+        MoviesViewModel(
+          MoviesUseCaseImpl(),
+        ),
         'CPMovieMaker',
       ),
       debugShowCheckedModeBanner: false,

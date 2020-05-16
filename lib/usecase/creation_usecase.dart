@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
+import 'package:cpmoviemaker/base/usecase.dart';
 import 'package:cpmoviemaker/models/movie.dart';
+import 'package:cpmoviemaker/usecase/movies_usecase.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,13 +13,19 @@ const _CREATION_CHANNEL = "com.vitoksmile.cpmoviemaker.CREATION_CHANNEL";
 const _CREATION_METHOD_CREATE = "CREATION_METHOD_CREATE";
 const _CREATION_METHOD_CANCEL = "CREATION_METHOD_CANCEL";
 
-abstract class CreationRepository {
+abstract class CreationUseCase extends UseCase {
   Stream<T> createMovie<T extends CreationResult>(List<File> files);
 }
 
-class CreationRepositoryImpl implements CreationRepository {
+class CreationUseCaseImpl extends CreationUseCase {
+  final MoviesUseCase _moviesUseCase;
+
+  CreationUseCaseImpl(this._moviesUseCase);
+
   @override
   Stream<T> createMovie<T extends CreationResult>(List<File> files) async* {
+    final controller = StreamController<CreationResult>();
+
     final filesDir = await getApplicationSupportDirectory();
     final moviesDir = Directory(join(filesDir.path, "movies"));
     await moviesDir.create(recursive: true);
@@ -33,13 +42,32 @@ class CreationRepositoryImpl implements CreationRepository {
 
     final _channel = MethodChannel(_CREATION_CHANNEL);
     await _channel.invokeMethod(_CREATION_METHOD_CREATE,
-        [moviesDir.path, scenesDir.path]).then((moviePath) {
-      print("Creation success $moviePath");
+        [moviesDir.path, scenesDir.path]).then((moviePath) async {
+      print("movie created, path: $moviePath");
+
+      final thumb =
+          "https://picsum.photos/id/${Random.secure().nextInt(100)}/200/300";
+      final movie = await _moviesUseCase.create(thumb, moviePath);
+
+      controller.add(SuccessCreationResult(movie));
     }).catchError((error) {
-      print("Creation error $error");
+      print("creation error: $error");
+      controller.add(ErrorCreationResult("Failed."));
     });
 
     await scenesDir.delete(recursive: true);
+
+    yield* controller.stream;
+    controller.close();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _moviesUseCase.dispose();
+
+    final _channel = MethodChannel(_CREATION_CHANNEL);
+    _channel.invokeMethod(_CREATION_METHOD_CANCEL);
   }
 }
 

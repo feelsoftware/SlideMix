@@ -3,6 +3,7 @@
 package com.vitoksmile.cpmoviemaker
 
 import android.os.Bundle
+import android.util.Log
 import com.arthenica.mobileffmpeg.Config
 import com.arthenica.mobileffmpeg.FFmpeg
 import io.flutter.app.FlutterActivity
@@ -34,6 +35,7 @@ class MainActivity : FlutterActivity() {
 
     private fun registerFFmpegChannel() {
         MethodChannel(flutterView, CREATION_CHANNEL).setMethodCallHandler { methodCall, result ->
+            Log.d(CREATION_CHANNEL, "${methodCall.method}: ${methodCall.arguments}")
             when (methodCall.method) {
                 CREATION_METHOD_CREATE -> {
                     val arguments = methodCall.arguments as? List<String> ?: run {
