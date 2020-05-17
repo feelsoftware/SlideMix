@@ -10,6 +10,10 @@ class FFmpegProviderImpl : FFmpegProvider {
         return MobileFFmpeg.execute(withArguments: arguments)
     }
     
+    func getMovieDuration(path: String) -> Int64 {
+        return Int64(truncating: MobileFFprobe.getMediaInformation(path)?.getDuration() ?? 0)
+    }
+    
     func cancel() {
         MobileFFmpeg.cancel()
     }

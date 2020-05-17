@@ -2,6 +2,7 @@ package com.vitoksmile.cpmoviemaker
 
 import com.vitoksmile.cpmoviemaker.provider.FFmpegProvider
 import com.vitoksmile.cpmoviemaker.provider.MovieInfoProvider
+import com.vitoksmile.cpmoviemaker.utils.NumberFormatter
 
 interface MovieCreator {
     fun createMovie(outputDir: String, scenesDir: String): Result
@@ -20,10 +21,14 @@ interface MovieCreator {
     }
 }
 
+private const val THUMB_TIME_FORMAT = "HH:mm:ss.SSS"
+
 class MovieCreatorImpl(
     private val infoProvider: MovieInfoProvider,
     private val ffmpegProvider: FFmpegProvider
 ) : MovieCreator {
+    private val numberFormatter = NumberFormatter()
+
     override fun createMovie(
         outputDir: String,
         scenesDir: String
@@ -43,10 +48,14 @@ class MovieCreatorImpl(
             return@run MovieCreator.Result.Error("Failed to create a movie.")
         }
 
+        val thumbTime = numberFormatter.formatMilliseconds(
+            THUMB_TIME_FORMAT,
+            ffmpegProvider.getMovieDuration(info.moviePath) / 2
+        )
         val thumbResultCode = ffmpegProvider.execute(
             listOf(
                 "-i", info.moviePath,
-                "-ss", "00:00:00.500",
+                "-ss", thumbTime,
                 "-vframes", "1",
                 info.thumbPath
             )
