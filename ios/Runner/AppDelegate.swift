@@ -13,6 +13,7 @@ let CREATION_RESULT_KEY_MOVIE = "CREATION_RESULT_KEY_MOVIE"
 @objc class AppDelegate: FlutterAppDelegate {
     // TODO: use DI
     private var infoProvider: MovieInfoProvider!
+    private var ffmpegProvider: FFmpegProvider!
     private var creator: MovieCreator!
     
   override func application(
@@ -20,7 +21,8 @@ let CREATION_RESULT_KEY_MOVIE = "CREATION_RESULT_KEY_MOVIE"
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     self.infoProvider = MovieInfoProviderImpl()
-    self.creator = MovieCreatorImpl(infoProvider: self.infoProvider)
+    self.ffmpegProvider = FFmpegProviderImpl()
+    self.creator = MovieCreatorKt.provideMovieCreator(infoProvider: self.infoProvider, ffmpegProvider: self.ffmpegProvider)
     
     let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
     registerFFmpegChannel(controller: controller)
@@ -61,15 +63,15 @@ let CREATION_RESULT_KEY_MOVIE = "CREATION_RESULT_KEY_MOVIE"
         DispatchQueue(label: "ffmpeg", qos: .utility).async {
             let creationResult = self.creator.createMovie(outputDir: outputDir, scenesDir: scenesDir)
             
-            if creationResult is MovieCreatorResultSuccess {
-                let success = (creationResult as! MovieCreatorResultSuccess)
+            if creationResult is MovieCreatorResult.Success {
+                let success = (creationResult as! MovieCreatorResult.Success)
                             
                 var map = [String: String]()
                 map[CREATION_RESULT_KEY_THUMB] = success.thumb
                 map[CREATION_RESULT_KEY_MOVIE] = success.movie
                 result(map)
-            } else if creationResult is MovieCreatorResultError {
-                let error = (creationResult as! MovieCreatorResultError)
+            } else if creationResult is MovieCreatorResult.Error {
+                let error = (creationResult as! MovieCreatorResult.Error)
                 result(FlutterError(code: "ERROR", message: error.message, details: nil));
             }
         }

@@ -1,11 +1,10 @@
 package com.vitoksmile.cpmoviemaker
 
-import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
-import com.arthenica.mobileffmpeg.FFmpeg
+import com.vitoksmile.cpmoviemaker.provider.FFmpegProvider
 import com.vitoksmile.cpmoviemaker.provider.MovieInfoProvider
 
 interface MovieCreator {
-    suspend fun createMovie(outputDir: String, scenesDir: String): Result
+    fun createMovie(outputDir: String, scenesDir: String): Result
 
     fun dispose()
 
@@ -22,16 +21,17 @@ interface MovieCreator {
 }
 
 class MovieCreatorImpl(
-    private val infoProvider: MovieInfoProvider
+    private val infoProvider: MovieInfoProvider,
+    private val ffmpegProvider: FFmpegProvider
 ) : MovieCreator {
-    override suspend fun createMovie(
+    override fun createMovie(
         outputDir: String,
         scenesDir: String
     ): MovieCreator.Result = run {
         val info = infoProvider.provideInfo(outputDir)
 
-        val movieResultCode = FFmpeg.execute(
-            arrayOf(
+        val movieResultCode = ffmpegProvider.execute(
+            listOf(
                 "-framerate", "1",
                 "-i", "${scenesDir}/image%03d.jpg",
                 "-r", "30",
@@ -39,19 +39,19 @@ class MovieCreatorImpl(
                 "-y", info.moviePath
             )
         )
-        if (movieResultCode != RETURN_CODE_SUCCESS) {
+        if (movieResultCode != ffmpegProvider.returnCodeSuccess) {
             return@run MovieCreator.Result.Error("Failed to create a movie.")
         }
 
-        val thumbResultCode = FFmpeg.execute(
-            arrayOf(
+        val thumbResultCode = ffmpegProvider.execute(
+            listOf(
                 "-i", info.moviePath,
                 "-ss", "00:00:00.500",
                 "-vframes", "1",
                 info.thumbPath
             )
         )
-        if (thumbResultCode != RETURN_CODE_SUCCESS) {
+        if (thumbResultCode != ffmpegProvider.returnCodeSuccess) {
             return@run MovieCreator.Result.Error("Failed to create a thumb.")
         }
 
@@ -62,6 +62,6 @@ class MovieCreatorImpl(
     }
 
     override fun dispose() {
-        FFmpeg.cancel()
+        ffmpegProvider.cancel()
     }
 }

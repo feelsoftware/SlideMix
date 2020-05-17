@@ -4,6 +4,8 @@ package com.vitoksmile.cpmoviemaker
 
 import android.os.Bundle
 import android.util.Log
+import com.vitoksmile.cpmoviemaker.provider.FFmpegProvider
+import com.vitoksmile.cpmoviemaker.provider.FFmpegProviderImpl
 import com.vitoksmile.cpmoviemaker.provider.MovieInfoProvider
 import com.vitoksmile.cpmoviemaker.provider.MovieInfoProviderImpl
 import io.flutter.app.FlutterActivity
@@ -27,7 +29,8 @@ class MainActivity : FlutterActivity() {
 
     // TODO: use DI
     private val infoProvider: MovieInfoProvider = MovieInfoProviderImpl
-    private val movieCreator: MovieCreator = MovieCreatorImpl(infoProvider)
+    private val ffmpegProvider: FFmpegProvider = FFmpegProviderImpl()
+    private val movieCreator: MovieCreator = MovieCreatorImpl(infoProvider, ffmpegProvider)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
