@@ -26,7 +26,8 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion versions.android_sdk.compile
+    buildToolsVersion versions.android_sdk.buildtools
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -37,10 +38,9 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.vitoksmile.cpmoviemaker"
-        minSdkVersion 24
-        targetSdkVersion 28
+        minSdkVersion versions.android_sdk.min
+        targetSdkVersion versions.android_sdk.target
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -57,6 +57,14 @@ android {
     packagingOptions {
         exclude 'META-INF/proguard/coroutines.pro'
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
 }
 
 flutter {
@@ -64,13 +72,13 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    implementation deps.kotlin.stdlib.jdk7
+    implementation deps.kotlin.coroutines.core
+    implementation deps.kotlin.coroutines.android
 
     implementation project(":sharedcode")
 
-    implementation 'com.arthenica:mobile-ffmpeg-full:4.3.2'
+    implementation deps.tools.ffmpeg
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

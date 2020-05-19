@@ -1,0 +1,54 @@
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation deps.kotlin.stdlib.common
+        }
+
+        androidMain.dependencies {
+            implementation deps.kotlin.stdlib.stdlib
+        }
+
+        iosMain.dependencies {
+            implementation deps.kotlin.stdlib.stdlib
+        }
+    }
+
+    targets {
+        fromPreset(presets.jvm, 'android')
+
+        final def iosSimulator = false
+        final def iOSTarget = iosSimulator ? presets.iosX64 : presets.iosArm64
+        fromPreset(iOSTarget, 'ios') {
+            binaries {
+                framework('SharedCode')
+            }
+        }
+    }
+}
+
+// workaround for https://youtrack.jetbrains.com/issue/KT-27170
+configurations {
+    compileClasspath
+}
+
+task packForXCode(type: Sync) {
+    final File frameworkDir = new File(buildDir, "xcode-frameworks")
+    final String mode = project.findProperty("XCODE_CONFIGURATION")?.toUpperCase() ?: 'DEBUG'
+    final def framework = kotlin.targets.ios.binaries.getFramework("SharedCode", mode)
+
+    inputs.property "mode", mode
+    dependsOn framework.linkTask
+
+    from { framework.outputFile.parentFile }
+    into frameworkDir
+
+    doLast {
+        new File(frameworkDir, 'gradlew').with {
+            text = "#!/bin/bash\nexport 'JAVA_HOME=${System.getProperty("java.home")}'\ncd '${rootProject.rootDir}'\n./gradlew \$@\n"
+            setExecutable(true)
+        }
+    }
+}
+tasks.build.dependsOn packForXCode
