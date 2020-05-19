@@ -1,6 +1,4 @@
-import 'package:cpmoviemaker/movies/movies.dart';
-import 'package:cpmoviemaker/usecase/movies_usecase.dart';
-import 'package:cpmoviemaker/movies/movies_viewmodel.dart';
+import 'package:cpmoviemaker/navigation.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -14,17 +12,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.lightGreen,
         primaryTextTheme: TextTheme(
-          title: TextStyle(
+          headline6: TextStyle(
             color: Colors.white,
           ),
         ),
       ),
-      home: MoviesScreen(
-        MoviesViewModel(
-          MoviesUseCaseImpl(),
-        ),
-        'CPMovieMaker',
-      ),
+      home: homeRouter.buildPage(context, null, null),
       debugShowCheckedModeBanner: false,
     );
   }

@@ -5,6 +5,7 @@ import 'package:cpmoviemaker/base/usecase.dart';
 import 'package:cpmoviemaker/models/movie.dart';
 import 'package:cpmoviemaker/usecase/movies_usecase.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -16,7 +17,7 @@ const _CREATION_RESULT_KEY_THUMB = "CREATION_RESULT_KEY_THUMB";
 const _CREATION_RESULT_KEY_MOVIE = "CREATION_RESULT_KEY_MOVIE";
 
 abstract class CreationUseCase extends UseCase {
-  Stream<T> createMovie<T extends CreationResult>(List<File> files);
+  Future<T> createMovie<T extends CreationResult>(List<File> files);
 }
 
 class CreationUseCaseImpl extends CreationUseCase {
@@ -25,9 +26,7 @@ class CreationUseCaseImpl extends CreationUseCase {
   CreationUseCaseImpl(this._moviesUseCase);
 
   @override
-  Stream<T> createMovie<T extends CreationResult>(List<File> files) async* {
-    final controller = StreamController<CreationResult>();
-
+  Future<T> createMovie<T extends CreationResult>(List<File> files) async {
     final filesDir = await getApplicationSupportDirectory();
     final moviesDir = Directory(join(filesDir.path, "movies"));
     await moviesDir.create(recursive: true);
@@ -38,12 +37,14 @@ class CreationUseCaseImpl extends CreationUseCase {
     await Future.forEach(files, (file) async {
       final path = file.path;
       final newPath = join(scenesDir.path, "image00${index++}.jpg");
-      await file.copy(newPath);
+      await FlutterImageCompress.compressAndGetFile(path, newPath,
+          quality: 100, keepExif: true);
       print("file copied from $path to $newPath");
     });
 
     final _channel = MethodChannel(_CREATION_CHANNEL);
-    await _channel.invokeMethod(_CREATION_METHOD_CREATE,
+    final CreationResult result = await _channel.invokeMethod(
+        _CREATION_METHOD_CREATE,
         [moviesDir.path, scenesDir.path]).then((data) async {
       final map = Map<String, String>.from(data);
       final thumbPath = map[_CREATION_RESULT_KEY_THUMB];
@@ -52,16 +53,15 @@ class CreationUseCaseImpl extends CreationUseCase {
 
       final movie = await _moviesUseCase.create(thumbPath, moviePath);
 
-      controller.add(SuccessCreationResult(movie));
-    }).catchError((error) {
+      return Future.value(SuccessCreationResult(movie));
+    }).catchError((error) async {
       print("creation error: $error");
-      controller.add(ErrorCreationResult("Failed."));
+
+      return Future.error(ErrorCreationResult("Failed."));
     });
 
     await scenesDir.delete(recursive: true);
-
-    yield* controller.stream;
-    controller.close();
+    return result;
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:cpmoviemaker/creation/creation_list.dart';
 import 'package:cpmoviemaker/creation/creation_viewmodel.dart';
+import 'package:cpmoviemaker/models/movie.dart';
 import 'package:cpmoviemaker/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,6 +17,8 @@ class CreationScreen extends StatefulWidget {
 
 class _CreationState extends State<CreationScreen>
     implements CreationListClickListener {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   final CreationViewModel _viewModel;
 
   _CreationState(this._viewModel);
@@ -37,10 +40,9 @@ class _CreationState extends State<CreationScreen>
   @override
   Future addNewMedia() async {
     final CreationMediaSource source = await showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return CreationMediaSourceDialog();
-        });
+      context: context,
+      builder: (context) => CreationMediaSourceDialog(),
+    );
     switch (source) {
       case CreationMediaSource.camera:
         _pickImage(ImageSource.camera);
@@ -57,16 +59,23 @@ class _CreationState extends State<CreationScreen>
   }
 
   void _pickImage(ImageSource source) {
-    _viewModel.launch(() {
-      return ImagePicker.pickImage(source: source);
-    }, (data) {
-      _viewModel.addMedia(data);
+    _viewModel.launch(() => ImagePicker.pickImage(source: source), (file) {
+      _viewModel.addMedia(file);
+    });
+  }
+
+  void _createMovie() {
+    _viewModel.launch(() => _viewModel.createMovie(), (Movie movie) {
+      navigateToPreview(context, movie);
+    }, onError: (String error) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(error)));
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -77,10 +86,22 @@ class _CreationState extends State<CreationScreen>
         title: Text("Select media"),
         centerTitle: false,
       ),
-      body: CreationList(this, _viewModel.getMedia()),
+      body: Stack(
+        children: <Widget>[
+          CreationList(this, _viewModel.getMedia()),
+          _viewModel.isLoading
+              ? Container(
+                  color: Colors.black12,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              : Container(),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _viewModel.createMovie();
+          _createMovie();
         },
         tooltip: "Create a movie",
         child: Icon(

@@ -3,6 +3,7 @@ package com.vitoksmile.cpmoviemaker
 import com.vitoksmile.cpmoviemaker.provider.FFmpegProvider
 import com.vitoksmile.cpmoviemaker.provider.MovieInfoProvider
 import com.vitoksmile.cpmoviemaker.utils.NumberFormatter
+import com.vitoksmile.cpmoviemaker.utils.normalizePath
 
 interface MovieCreator {
     fun createMovie(outputDir: String, scenesDir: String): Result
@@ -65,8 +66,8 @@ class MovieCreatorImpl(
         }
 
         MovieCreator.Result.Success(
-            thumb = info.thumbPath,
-            movie = info.moviePath
+            thumb = info.thumbPath.normalizePath(),
+            movie = info.moviePath.normalizePath()
         )
     }
 

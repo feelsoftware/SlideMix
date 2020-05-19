@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'dart:io';
 import 'package:cpmoviemaker/base/viewmodel.dart';
+import 'package:cpmoviemaker/models/movie.dart';
 import 'package:cpmoviemaker/usecase/creation_usecase.dart';
 
 class CreationViewModel extends ViewModel {
@@ -30,19 +31,17 @@ class CreationViewModel extends ViewModel {
     notifyListeners();
   }
 
-  void createMovie() {
-    if (_medias.length == 0) return;
-    listen(() {
-      return _useCase.createMovie(_medias);
-    }, (data) {
-      final CreationResult result = data;
-      if (result is SuccessCreationResult) {
-        final movie = result.movie;
-        print("createMovie success $movie");
-      } else if (result is ErrorCreationResult) {
-        final error = result.error;
-        print("createMovie error $error");
-      }
-    });
+  Future<Movie> createMovie() async {
+    isLoading = true;
+    final CreationResult result = await _useCase.createMovie(_medias);
+    isLoading = false;
+
+    if (result is SuccessCreationResult) {
+      return Future.value(result.movie);
+    } else if (result is ErrorCreationResult) {
+      return Future.error(result.error);
+    }
+
+    return Future.value(null);
   }
 }
