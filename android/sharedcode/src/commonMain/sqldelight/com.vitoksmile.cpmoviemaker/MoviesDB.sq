@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS movieEntity(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    title TEXT NOT NULL,
+    thumb TEXT NOT NULL,
+    video TEXT NOT NULL
+);
+
+getAll:
+SELECT * FROM movieEntity;
+
+get:
+SELECT * FROM movieEntity WHERE id = ?;
+
+insert:
+INSERT OR REPLACE INTO
+    movieEntity(title, thumb, video)
+    VALUES (?, ?, ?);
+
+delete:
+DELETE FROM movieEntity WHERE id = ?;
+
+lastInsertId:
+SELECT last_insert_rowid();

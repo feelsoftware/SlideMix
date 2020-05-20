@@ -1,17 +1,32 @@
 apply plugin: 'org.jetbrains.kotlin.multiplatform'
+apply plugin: 'kotlinx-serialization'
+apply plugin: 'com.squareup.sqldelight'
+
+sqldelight {
+    MoviesDB {
+        packageName = "com.vitoksmile.cpmoviemaker"
+    }
+}
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation deps.kotlin.stdlib.common
+            implementation deps.kotlin.coroutines.common
+            implementation deps.kotlin.serialization.common
         }
 
         androidMain.dependencies {
             implementation deps.kotlin.stdlib.stdlib
+            implementation deps.kotlin.coroutines.android
+            implementation deps.kotlin.serialization.runtime
         }
 
         iosMain.dependencies {
             implementation deps.kotlin.stdlib.stdlib
+            implementation deps.kotlin.coroutines.native
+            implementation deps.kotlin.serialization.native
+            implementation deps.sqldelight.driver.native
         }
     }
 

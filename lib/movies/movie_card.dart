@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class MovieCardWidget extends StatelessWidget {
@@ -24,8 +26,8 @@ class MovieCardWidget extends StatelessWidget {
                   topLeft: borderRadius,
                   topRight: borderRadius,
                 ),
-                child: Image.network(
-                  thumb,
+                child: Image.file(
+                  File(thumb),
                   fit: BoxFit.fill,
                   width: constraints.maxWidth,
                   height: constraints.maxWidth,

@@ -66,7 +66,7 @@ class MovieCreatorImpl(
         }
 
         MovieCreator.Result.Success(
-            thumb = info.thumbPath.normalizePath(),
+            thumb = info.thumbPath,
             movie = info.moviePath.normalizePath()
         )
     }
