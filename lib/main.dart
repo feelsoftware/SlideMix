@@ -1,7 +1,21 @@
+import 'package:cpmoviemaker/movies/movies_viewmodel.dart';
 import 'package:cpmoviemaker/navigation.dart';
+import 'package:cpmoviemaker/usecase/movies_usecase.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => MoviesViewModel(
+              MoviesUseCaseImpl(),
+            ),
+          ),
+        ],
+        child: MyApp(),
+      ),
+    );
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.

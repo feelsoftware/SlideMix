@@ -8,15 +8,14 @@ import 'package:cpmoviemaker/usecase/creation_usecase.dart';
 import 'package:cpmoviemaker/usecase/movies_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import 'models/movie.dart';
 
 final PageRouteBuilder homeRouter =
     PageRouteBuilder(pageBuilder: (context, _, __) {
   return MoviesScreen(
-    MoviesViewModel(
-      MoviesUseCaseImpl(),
-    ),
+    Provider.of<MoviesViewModel>(context, listen: false),
     'CPMovieMaker',
   );
 });
@@ -36,6 +35,7 @@ void navigateToCreation(BuildContext context) {
         CreationUseCaseImpl(
           MoviesUseCaseImpl(),
         ),
+        Provider.of<MoviesViewModel>(context, listen: false),
       ),
     ),
   ));
