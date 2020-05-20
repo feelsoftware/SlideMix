@@ -4,10 +4,14 @@ package com.vitoksmile.cpmoviemaker
 
 import android.os.Bundle
 import android.util.Log
+import com.squareup.sqldelight.android.AndroidSqliteDriver
+import com.vitoksmile.cpmoviemaker.channel.MoviesRepositoryChannel
+import com.vitoksmile.cpmoviemaker.channel.provideMoviesRepositoryChannel
 import com.vitoksmile.cpmoviemaker.provider.FFmpegProvider
 import com.vitoksmile.cpmoviemaker.provider.FFmpegProviderImpl
 import com.vitoksmile.cpmoviemaker.provider.MovieInfoProvider
 import com.vitoksmile.cpmoviemaker.provider.MovieInfoProviderImpl
+import com.vitoksmile.cpmoviemaker.repository.provideMoviesRepository
 import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -28,20 +32,29 @@ class MainActivity : FlutterActivity() {
     private val ffmpegCoroutineScope = CoroutineScope(ffmpegCoroutineContext)
 
     // TODO: use DI
-    private val infoProvider: MovieInfoProvider = MovieInfoProviderImpl
-    private val ffmpegProvider: FFmpegProvider = FFmpegProviderImpl()
-    private val movieCreator: MovieCreator = MovieCreatorImpl(infoProvider, ffmpegProvider)
+    private val movieCreator: MovieCreator by lazy {
+        val infoProvider: MovieInfoProvider = MovieInfoProviderImpl
+        val ffmpegProvider: FFmpegProvider = FFmpegProviderImpl()
+        MovieCreatorImpl(infoProvider, ffmpegProvider)
+    }
+    private val moviesRepositoryChannel: MoviesRepositoryChannel by lazy {
+        val sqlDriver = AndroidSqliteDriver(MoviesDB.Schema, applicationContext, "movies.db")
+        val repository = provideMoviesRepository(sqlDriver)
+        provideMoviesRepositoryChannel(repository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GeneratedPluginRegistrant.registerWith(this)
 
         registerFFmpegChannel()
+        registerMoviesRepositoryChannel()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         creationMethodCancel(result = null)
+        moviesRepositoryChannel.dispose()
     }
 
     private fun registerFFmpegChannel() {
@@ -53,6 +66,20 @@ class MainActivity : FlutterActivity() {
                 CREATION_METHOD_CANCEL -> creationMethodCancel(result)
             }
         }
+    }
+
+    private fun registerMoviesRepositoryChannel() {
+        MethodChannel(flutterView, MoviesRepositoryChannel.CHANNEL)
+            .setMethodCallHandler { call, result ->
+                Log.d(MoviesRepositoryChannel.CHANNEL, "${call.method}: ${call.arguments}")
+
+                moviesRepositoryChannel.methodCall(
+                    method = call.method,
+                    arguments = call.arguments as Map<String, Any>
+                ) {
+                    result.success(it)
+                }
+            }
     }
 
     private fun creationMethodCreate(call: MethodCall, result: MethodChannel.Result) {

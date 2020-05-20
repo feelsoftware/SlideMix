@@ -9,6 +9,8 @@ buildscript {
     dependencies {
         classpath deps.gradle.android
         classpath deps.gradle.kotlin
+        classpath deps.gradle.serialization
+        classpath deps.gradle.sqldelight
     }
 }
 
@@ -16,6 +18,25 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
+    }
+
+    if (plugins.hasPlugin("org.jetbrains.kotlin.jvm")) {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    plugins.withId("com.android.library") {
+        extensions.getByName("android").compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
     }
 }
 

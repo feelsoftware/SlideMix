@@ -1,7 +1,7 @@
 package com.vitoksmile.cpmoviemaker.provider
 
 actual object FileProvider {
-    actual val pathSeparator: String get() = java.io.File.pathSeparator
+    actual val pathSeparator: String get() = java.io.File.separator
     actual val dotSeparator get() = "."
 }
 

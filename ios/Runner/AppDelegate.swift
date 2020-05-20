@@ -12,20 +12,24 @@ let CREATION_RESULT_KEY_MOVIE = "CREATION_RESULT_KEY_MOVIE"
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
     // TODO: use DI
-    private var infoProvider: MovieInfoProvider!
-    private var ffmpegProvider: FFmpegProvider!
     private var creator: MovieCreator!
+    private var moviesRepositoryChannel: MoviesRepositoryChannel!
     
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    self.infoProvider = MovieInfoProviderImpl()
-    self.ffmpegProvider = FFmpegProviderImpl()
-    self.creator = MovieCreatorKt.provideMovieCreator(infoProvider: self.infoProvider, ffmpegProvider: self.ffmpegProvider)
+    let infoProvider = MovieInfoProviderImpl()
+    let ffmpegProvider = FFmpegProviderImpl()
+    self.creator = MovieCreatorKt.provideMovieCreator(infoProvider: infoProvider, ffmpegProvider: ffmpegProvider)
+    
+    let moviesDBDataSource = MoviesDBDataSourceKt.provideMoviesDBDataSource();
+    let moviesRepository = MoviesRepositoryKt.provideMoviesRepository(dbDataSource: moviesDBDataSource);
+    self.moviesRepositoryChannel = MoviesRepositoryChannelKt.provideMoviesRepositoryChannel(repository: moviesRepository);
     
     let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
     registerFFmpegChannel(controller: controller)
+    registerMoviesRepositoryChannel(controller: controller)
     
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
@@ -57,6 +61,15 @@ let CREATION_RESULT_KEY_MOVIE = "CREATION_RESULT_KEY_MOVIE"
                 break;
             }
         })
+    }
+    
+    private func registerMoviesRepositoryChannel(controller : FlutterViewController) {
+        let channel = FlutterMethodChannel(name: MoviesRepositoryChannelCompanion.init().CHANNEL, binaryMessenger: controller.binaryMessenger)
+        channel.setMethodCallHandler { (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
+            self.moviesRepositoryChannel.methodCall(method: call.method, arguments: call.arguments as! [String : Any]) { (it: Any) in
+                result(it);
+            }
+        }
     }
     
     private func createMovie(outputDir: String, scenesDir: String, result: @escaping FlutterResult) {
