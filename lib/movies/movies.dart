@@ -1,10 +1,9 @@
-import 'dart:async';
-
 import 'package:cpmoviemaker/movies/movies_list.dart';
 import 'package:cpmoviemaker/movies/movies_viewmodel.dart';
 import 'package:cpmoviemaker/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:cpmoviemaker/models/movie.dart';
+import 'package:provider/provider.dart';
 
 class MoviesScreen extends StatefulWidget {
   final MoviesViewModel _viewModel;
@@ -21,25 +20,18 @@ class _MoviesScreenState extends State<MoviesScreen>
   final MoviesViewModel viewModel;
   final String title;
 
-  List<Movie> movies = List<Movie>();
-  StreamSubscription<List<Movie>> moviesSubscription;
-
   _MoviesScreenState(this.viewModel, this.title);
 
   @override
   void initState() {
     super.initState();
-    moviesSubscription = viewModel.getMovies().asStream().listen((list) {
-      setState(() {
-        movies.addAll(list);
-      });
-    });
+    viewModel.fetchMovies();
   }
 
   @override
   void dispose() {
     super.dispose();
-    moviesSubscription?.cancel();
+    viewModel.dispose();
   }
 
   @override
@@ -54,7 +46,9 @@ class _MoviesScreenState extends State<MoviesScreen>
         title: Text(title),
         centerTitle: false,
       ),
-      body: MoviesList(this, movies),
+      body: Consumer<MoviesViewModel>(
+        builder: (_, __, ___) => MoviesList(this, viewModel.movies),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           navigateToCreation(context);
