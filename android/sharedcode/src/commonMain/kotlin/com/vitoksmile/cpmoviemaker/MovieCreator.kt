@@ -1,25 +1,15 @@
 package com.vitoksmile.cpmoviemaker
 
+import com.vitoksmile.cpmoviemaker.model.MovieCreatorResult
 import com.vitoksmile.cpmoviemaker.provider.FFmpegProvider
 import com.vitoksmile.cpmoviemaker.provider.MovieInfoProvider
 import com.vitoksmile.cpmoviemaker.utils.NumberFormatter
 import com.vitoksmile.cpmoviemaker.utils.normalizePath
 
 interface MovieCreator {
-    fun createMovie(outputDir: String, scenesDir: String): Result
+    fun createMovie(outputDir: String, scenesDir: String): MovieCreatorResult
 
     fun dispose()
-
-    sealed class Result {
-        data class Success(
-            val thumb: String,
-            val movie: String
-        ) : Result()
-
-        data class Error(
-            val message: String
-        ) : Result()
-    }
 }
 
 private const val THUMB_TIME_FORMAT = "HH:mm:ss.SSS"
@@ -33,7 +23,7 @@ class MovieCreatorImpl(
     override fun createMovie(
         outputDir: String,
         scenesDir: String
-    ): MovieCreator.Result = run {
+    ): MovieCreatorResult = run {
         val info = infoProvider.provideInfo(outputDir)
 
         val movieResultCode = ffmpegProvider.execute(
@@ -46,7 +36,7 @@ class MovieCreatorImpl(
             )
         )
         if (movieResultCode != ffmpegProvider.returnCodeSuccess) {
-            return@run MovieCreator.Result.Error("Failed to create a movie.")
+            return@run MovieCreatorResult.Error("Failed to create a movie.")
         }
 
         val thumbTime = numberFormatter.formatMilliseconds(
@@ -62,10 +52,10 @@ class MovieCreatorImpl(
             )
         )
         if (thumbResultCode != ffmpegProvider.returnCodeSuccess) {
-            return@run MovieCreator.Result.Error("Failed to create a thumb.")
+            return@run MovieCreatorResult.Error("Failed to create a thumb.")
         }
 
-        MovieCreator.Result.Success(
+        MovieCreatorResult.Success(
             thumb = info.thumbPath,
             movie = info.moviePath.normalizePath()
         )
