@@ -37,4 +37,7 @@ abstract class ChannelInteractionImpl : ChannelInteraction, CoroutineScope {
     override fun dispose() {
         coroutineContext.cancelChildren()
     }
+
+    protected fun unsupportedMethod(method: String, arguments: Map<String, Any>): Nothing =
+        throw IllegalArgumentException("Unsupported method: $method, arguments: $arguments")
 }

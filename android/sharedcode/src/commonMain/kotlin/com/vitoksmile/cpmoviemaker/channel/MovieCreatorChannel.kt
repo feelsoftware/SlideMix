@@ -31,7 +31,7 @@ class MovieCreatorChannelImpl(
                 movieCreator.dispose()
                 emptyResult
             }
-            else -> throw IllegalArgumentException("Unsupported method: $method, arguments: $arguments")
+            else -> unsupportedMethod(method, arguments)
         }
     }
 
