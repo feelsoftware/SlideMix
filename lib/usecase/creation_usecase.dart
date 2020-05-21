@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cpmoviemaker/base/usecase.dart';
@@ -9,25 +10,33 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-const _CREATION_CHANNEL = "com.vitoksmile.cpmoviemaker.CREATION_CHANNEL";
-const _CREATION_METHOD_CREATE = "CREATION_METHOD_CREATE";
-const _CREATION_METHOD_CANCEL = "CREATION_METHOD_CANCEL";
+const _CHANNEL = "com.vitoksmile.cpmoviemaker.MovieCreatorChannel";
+const _METHOD_CREATE = "METHOD_CREATE";
+const _METHOD_CANCEL = "METHOD_CANCEL";
 
-const _CREATION_RESULT_KEY_THUMB = "CREATION_RESULT_KEY_THUMB";
-const _CREATION_RESULT_KEY_MOVIE = "CREATION_RESULT_KEY_MOVIE";
+const _KEY_OUTPUT_DIR = "KEY_OUTPUT_DIR";
+const _KEY_SCENES_DIR = "KEY_SCENES_DIR";
+
+const _KEY_TYPE = "type";
+const _TYPE_SUCCESS =
+    "com.vitoksmile.cpmoviemaker.model.MovieCreatorResult.Success";
+const _KEY_THUMB = "thumb";
+const _KEY_MOVIE = "movie";
+const _KEY_ERROR_MESSAGE = "message";
 
 abstract class CreationUseCase extends UseCase {
   Future<T> createMovie<T extends CreationResult>(List<File> files);
 }
 
 class CreationUseCaseImpl extends CreationUseCase {
+  final _channel = MethodChannel(_CHANNEL);
   final MoviesUseCase _moviesUseCase;
 
   CreationUseCaseImpl(this._moviesUseCase);
 
   @override
   Future<T> createMovie<T extends CreationResult>(List<File> files) async {
-    final filesDir = await getApplicationSupportDirectory();
+    final filesDir = await getApplicationDocumentsDirectory();
     final moviesDir = Directory(join(filesDir.path, "movies"));
     await moviesDir.create(recursive: true);
     final scenesDir = Directory(join(filesDir.path, "scenes"));
@@ -42,23 +51,26 @@ class CreationUseCaseImpl extends CreationUseCase {
       print("file copied from $path to $newPath");
     });
 
-    final _channel = MethodChannel(_CREATION_CHANNEL);
-    final CreationResult result = await _channel.invokeMethod(
-        _CREATION_METHOD_CREATE,
-        [moviesDir.path, scenesDir.path]).then((data) async {
-      final map = Map<String, String>.from(data);
-      final thumbPath = map[_CREATION_RESULT_KEY_THUMB];
-      final moviePath = map[_CREATION_RESULT_KEY_MOVIE];
-      print("movie created, $map");
+    final arguments = {
+      _KEY_OUTPUT_DIR: moviesDir.path,
+      _KEY_SCENES_DIR: scenesDir.path
+    };
+    final response = await _channel.invokeMethod(_METHOD_CREATE, arguments);
+    final Map<String, dynamic> map = jsonDecode(response);
+
+    CreationResult result;
+    final String type = map[_KEY_TYPE];
+
+    if (type == _TYPE_SUCCESS) {
+      final thumbPath = map[_KEY_THUMB];
+      final moviePath = map[_KEY_MOVIE];
 
       final movie = await _moviesUseCase.create(thumbPath, moviePath);
-
-      return Future.value(SuccessCreationResult(movie));
-    }).catchError((error) async {
-      print("creation error: $error");
-
-      return Future.error(ErrorCreationResult("Failed."));
-    });
+      result = SuccessCreationResult(movie);
+    } else {
+      final error = map[_KEY_ERROR_MESSAGE];
+      result = ErrorCreationResult(error);
+    }
 
     await scenesDir.delete(recursive: true);
     return result;
@@ -67,10 +79,8 @@ class CreationUseCaseImpl extends CreationUseCase {
   @override
   void dispose() {
     super.dispose();
+    _channel.invokeMethod(_METHOD_CANCEL);
     _moviesUseCase.dispose();
-
-    final _channel = MethodChannel(_CREATION_CHANNEL);
-    _channel.invokeMethod(_CREATION_METHOD_CANCEL);
   }
 }
 

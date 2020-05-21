@@ -2,96 +2,46 @@ import UIKit
 import Flutter
 import SharedCode
 
-let CREATION_CHANNEL = "com.vitoksmile.cpmoviemaker.CREATION_CHANNEL"
-let CREATION_METHOD_CREATE = "CREATION_METHOD_CREATE"
-let CREATION_METHOD_CANCEL = "CREATION_METHOD_CANCEL"
-
-let CREATION_RESULT_KEY_THUMB = "CREATION_RESULT_KEY_THUMB"
-let CREATION_RESULT_KEY_MOVIE = "CREATION_RESULT_KEY_MOVIE"
-
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
     // TODO: use DI
-    private var creator: MovieCreator!
+    private var movieCreatorChannel: MovieCreatorChannel!
     private var moviesRepositoryChannel: MoviesRepositoryChannel!
     
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    let infoProvider = MovieInfoProviderImpl()
     let ffmpegProvider = FFmpegProviderImpl()
-    self.creator = MovieCreatorKt.provideMovieCreator(infoProvider: infoProvider, ffmpegProvider: ffmpegProvider)
+    self.movieCreatorChannel = MovieCreatorChannelKt.provideMovieCreatorChannel(ffmpegProvider: ffmpegProvider)
     
     let moviesDBDataSource = MoviesDBDataSourceKt.provideMoviesDBDataSource();
     let moviesRepository = MoviesRepositoryKt.provideMoviesRepository(dbDataSource: moviesDBDataSource);
     self.moviesRepositoryChannel = MoviesRepositoryChannelKt.provideMoviesRepositoryChannel(repository: moviesRepository);
     
     let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
-    registerFFmpegChannel(controller: controller)
+    registerMovieCreatorChannel(controller: controller)
     registerMoviesRepositoryChannel(controller: controller)
     
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
     
-    private func registerFFmpegChannel(controller : FlutterViewController) {
-        let channel = FlutterMethodChannel(name: CREATION_CHANNEL, binaryMessenger: controller.binaryMessenger)
-        channel.setMethodCallHandler({
-          (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
-            switch call.method {
-            case CREATION_METHOD_CREATE:
-                guard let list = call.arguments as? [String] else {
-                    result(FlutterError(code: "ERROR", message: "Invalid type of arguments, must be [String].", details: nil));
-                    return
-                }
-                if (list.capacity != 2) {
-                    result(FlutterError(code: "ERROR", message: "Invalid count of arguments, must be 2: outputDir and scenesDir.", details: nil));
-                    return
-                }
-                
-                self.createMovie(outputDir: list[0], scenesDir: list[1], result: result)
-                break;
-            
-            case CREATION_METHOD_CANCEL:
-                self.cancelCreation(result: result)
-                break;
-            
-            default:
-                break;
+    private func registerMovieCreatorChannel(controller : FlutterViewController) {
+        let channel = FlutterMethodChannel(name: MovieCreatorChannelCompanion.init().CHANNEL, binaryMessenger: controller.binaryMessenger)
+        channel.setMethodCallHandler { (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
+            self.movieCreatorChannel.methodCall(method: call.method, arguments: call.argumentsMap) { (it: Any) in
+                result(it)
             }
-        })
+        }
     }
     
     private func registerMoviesRepositoryChannel(controller : FlutterViewController) {
         let channel = FlutterMethodChannel(name: MoviesRepositoryChannelCompanion.init().CHANNEL, binaryMessenger: controller.binaryMessenger)
         channel.setMethodCallHandler { (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
-            self.moviesRepositoryChannel.methodCall(method: call.method, arguments: call.arguments as! [String : Any]) { (it: Any) in
-                result(it);
+            self.moviesRepositoryChannel.methodCall(method: call.method, arguments: call.argumentsMap) { (it: Any) in
+                result(it)
             }
         }
-    }
-    
-    private func createMovie(outputDir: String, scenesDir: String, result: @escaping FlutterResult) {
-        DispatchQueue(label: "ffmpeg", qos: .utility).async {
-            let creationResult = self.creator.createMovie(outputDir: outputDir, scenesDir: scenesDir)
-            
-            if creationResult is MovieCreatorResult.Success {
-                let success = (creationResult as! MovieCreatorResult.Success)
-                            
-                var map = [String: String]()
-                map[CREATION_RESULT_KEY_THUMB] = success.thumb
-                map[CREATION_RESULT_KEY_MOVIE] = success.movie
-                result(map)
-            } else if creationResult is MovieCreatorResult.Error {
-                let error = (creationResult as! MovieCreatorResult.Error)
-                result(FlutterError(code: "ERROR", message: error.message, details: nil));
-            }
-        }
-    }
-    
-    private func cancelCreation(result: @escaping FlutterResult) {
-        self.creator.dispose()
-        result(1)
     }
 }

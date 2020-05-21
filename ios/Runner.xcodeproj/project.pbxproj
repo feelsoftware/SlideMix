@@ -16,6 +16,7 @@
 		97D4CBA1C588DF2F0362AD89 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 736A2882A482518EC2ECFB7E /* Pods_Runner.framework */; };
 		9F05D997247089DF00367F54 /* SharedCode.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FC081992469464000B14C6D /* SharedCode.framework */; };
 		9F05D998247089DF00367F54 /* SharedCode.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9FC081992469464000B14C6D /* SharedCode.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9FAE707C2476EC270041A2DA /* FlutterMethodCallX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FAE707B2476EC270041A2DA /* FlutterMethodCallX.swift */; };
 		9FD990F724712CAE0039EAA3 /* FFmpegProviderImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FD990F624712CAE0039EAA3 /* FFmpegProviderImpl.swift */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +51,7 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9FAE707B2476EC270041A2DA /* FlutterMethodCallX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlutterMethodCallX.swift; sourceTree = "<group>"; };
 		9FC081992469464000B14C6D /* SharedCode.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SharedCode.framework; path = "../build/sharedcode/xcode-frameworks/SharedCode.framework"; sourceTree = "<group>"; };
 		9FD990F624712CAE0039EAA3 /* FFmpegProviderImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegProviderImpl.swift; sourceTree = "<group>"; };
 		A9273A64F1A5038B9C5E576F /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				9FD990F624712CAE0039EAA3 /* FFmpegProviderImpl.swift */,
+				9FAE707B2476EC270041A2DA /* FlutterMethodCallX.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				9FD990F724712CAE0039EAA3 /* FFmpegProviderImpl.swift in Sources */,
+				9FAE707C2476EC270041A2DA /* FlutterMethodCallX.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -426,6 +430,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vitoksmile.cpmoviemaker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -562,6 +567,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vitoksmile.cpmoviemaker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -592,6 +598,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.vitoksmile.cpmoviemaker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";

@@ -36,3 +36,5 @@ object MovieInfoProviderImpl : MovieInfoProvider {
         append(format)
     }
 }
+
+fun provideMovieInfoProvider(): MovieInfoProvider = MovieInfoProviderImpl

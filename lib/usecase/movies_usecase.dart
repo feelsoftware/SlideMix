@@ -28,8 +28,7 @@ class MoviesUseCaseImpl extends MoviesUseCase {
 
   @override
   Future<List<Movie>> fetchMovies() async {
-    final arguments = {};
-    final response = await _channel.invokeMethod(_METHOD_GET_ALL, arguments);
+    final response = await _channel.invokeMethod(_METHOD_GET_ALL);
     final Iterable json = jsonDecode(response);
 
     final List<Movie> movies =
