@@ -41,10 +41,10 @@ object FFmpegCommandsProviderImpl : FFmpegCommandsProvider {
         thumbTime: String,
         thumbPath: String
     ) = listOf(
+        "-ss", thumbTime, "-noaccurate_seek",
         "-i", moviePath,
-        "-ss", thumbTime,
         "-vframes", "1",
-        thumbPath
+        "-y", thumbPath
     )
 
     private fun movieParams(): List<String> {

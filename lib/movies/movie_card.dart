@@ -28,7 +28,7 @@ class MovieCardWidget extends StatelessWidget {
                 ),
                 child: Image.file(
                   File(thumb),
-                  fit: BoxFit.fill,
+                  fit: BoxFit.fitWidth,
                   width: constraints.maxWidth,
                   height: constraints.maxWidth,
                 )),

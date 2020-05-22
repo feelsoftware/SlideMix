@@ -49,12 +49,7 @@ class MovieCreatorImpl(
             ffmpegProvider.getMovieDuration(info.moviePath) / 2
         )
         val thumbResultCode = ffmpegProvider.execute(
-            listOf(
-                "-i", info.moviePath,
-                "-ss", thumbTime,
-                "-vframes", "1",
-                info.thumbPath
-            )
+            ffmpegCommandsProvider.createThumbCommand(info.moviePath, thumbTime, info.thumbPath)
         )
         if (thumbResultCode != ffmpegProvider.returnCodeSuccess) {
             isCreating.set(false)
