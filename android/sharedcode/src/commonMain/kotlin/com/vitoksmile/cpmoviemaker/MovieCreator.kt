@@ -1,6 +1,11 @@
+@file:Suppress("BooleanLiteralArgument")
+
 package com.vitoksmile.cpmoviemaker
 
+import com.vitoksmile.cpmoviemaker.atomic.AtomicBoolean
 import com.vitoksmile.cpmoviemaker.model.MovieCreatorResult
+import com.vitoksmile.cpmoviemaker.provider.FFmpegCommandsProvider
+import com.vitoksmile.cpmoviemaker.provider.FFmpegCommandsProvider.Companion.THUMB_TIME_FORMAT
 import com.vitoksmile.cpmoviemaker.provider.FFmpegProvider
 import com.vitoksmile.cpmoviemaker.provider.MovieInfoProvider
 import com.vitoksmile.cpmoviemaker.utils.NumberFormatter
@@ -12,30 +17,30 @@ interface MovieCreator {
     fun dispose()
 }
 
-private const val THUMB_TIME_FORMAT = "HH:mm:ss.SSS"
-
 class MovieCreatorImpl(
     private val infoProvider: MovieInfoProvider,
-    private val ffmpegProvider: FFmpegProvider
+    private val ffmpegProvider: FFmpegProvider,
+    private val ffmpegCommandsProvider: FFmpegCommandsProvider
 ) : MovieCreator {
+    private val isCreating = AtomicBoolean(false)
     private val numberFormatter = NumberFormatter()
 
     override fun createMovie(
         outputDir: String,
         scenesDir: String
     ): MovieCreatorResult = run {
+        if (isCreating.get()) {
+            return@run MovieCreatorResult.Error("Can't create several movies simultaneously")
+        }
+        isCreating.set(true)
+
         val info = infoProvider.provideInfo(outputDir)
 
         val movieResultCode = ffmpegProvider.execute(
-            listOf(
-                "-framerate", "1",
-                "-i", "${scenesDir}/image%03d.jpg",
-                "-r", "30",
-                "-pix_fmt", "yuv420p",
-                "-y", info.moviePath
-            )
+            ffmpegCommandsProvider.createMovieCommand(scenesDir, info.moviePath)
         )
         if (movieResultCode != ffmpegProvider.returnCodeSuccess) {
+            isCreating.set(false)
             return@run MovieCreatorResult.Error("Failed to create a movie.")
         }
 
@@ -52,9 +57,11 @@ class MovieCreatorImpl(
             )
         )
         if (thumbResultCode != ffmpegProvider.returnCodeSuccess) {
+            isCreating.set(false)
             return@run MovieCreatorResult.Error("Failed to create a thumb.")
         }
 
+        isCreating.set(false)
         MovieCreatorResult.Success(
             thumb = info.thumbPath,
             movie = info.moviePath.normalizePath()
@@ -62,6 +69,8 @@ class MovieCreatorImpl(
     }
 
     override fun dispose() {
-        ffmpegProvider.cancel()
+        if (isCreating.compareAndSet(true, false)) {
+            ffmpegProvider.cancel()
+        }
     }
 }
