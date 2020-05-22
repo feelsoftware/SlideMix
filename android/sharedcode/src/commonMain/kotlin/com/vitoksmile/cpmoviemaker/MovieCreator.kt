@@ -1,5 +1,8 @@
+@file:Suppress("BooleanLiteralArgument")
+
 package com.vitoksmile.cpmoviemaker
 
+import com.vitoksmile.cpmoviemaker.atomic.AtomicBoolean
 import com.vitoksmile.cpmoviemaker.model.MovieCreatorResult
 import com.vitoksmile.cpmoviemaker.provider.FFmpegProvider
 import com.vitoksmile.cpmoviemaker.provider.MovieInfoProvider
@@ -18,12 +21,18 @@ class MovieCreatorImpl(
     private val infoProvider: MovieInfoProvider,
     private val ffmpegProvider: FFmpegProvider
 ) : MovieCreator {
+    private val isCreating = AtomicBoolean(false)
     private val numberFormatter = NumberFormatter()
 
     override fun createMovie(
         outputDir: String,
         scenesDir: String
     ): MovieCreatorResult = run {
+        if (isCreating.get()) {
+            return@run MovieCreatorResult.Error("Can't create several movies simultaneously")
+        }
+        isCreating.set(true)
+
         val info = infoProvider.provideInfo(outputDir)
 
         val movieResultCode = ffmpegProvider.execute(
@@ -36,6 +45,7 @@ class MovieCreatorImpl(
             )
         )
         if (movieResultCode != ffmpegProvider.returnCodeSuccess) {
+            isCreating.set(false)
             return@run MovieCreatorResult.Error("Failed to create a movie.")
         }
 
@@ -52,9 +62,11 @@ class MovieCreatorImpl(
             )
         )
         if (thumbResultCode != ffmpegProvider.returnCodeSuccess) {
+            isCreating.set(false)
             return@run MovieCreatorResult.Error("Failed to create a thumb.")
         }
 
+        isCreating.set(false)
         MovieCreatorResult.Success(
             thumb = info.thumbPath,
             movie = info.moviePath.normalizePath()
@@ -62,6 +74,8 @@ class MovieCreatorImpl(
     }
 
     override fun dispose() {
-        ffmpegProvider.cancel()
+        if (isCreating.compareAndSet(true, false)) {
+            ffmpegProvider.cancel()
+        }
     }
 }
