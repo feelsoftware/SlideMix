@@ -5,6 +5,7 @@ package com.vitoksmile.cpmoviemaker.channel
 import co.touchlab.stately.freeze
 import com.vitoksmile.cpmoviemaker.provideMovieCreator
 import com.vitoksmile.cpmoviemaker.provider.FFmpegProvider
+import com.vitoksmile.cpmoviemaker.provider.provideFFmpegCommandsProvider
 import com.vitoksmile.cpmoviemaker.provider.provideMovieInfoProvider
 
 fun provideMovieCreatorChannel(
@@ -12,6 +13,7 @@ fun provideMovieCreatorChannel(
 ): MovieCreatorChannel = MovieCreatorChannelImpl(
     movieCreator = provideMovieCreator(
         infoProvider = provideMovieInfoProvider(),
-        ffmpegProvider = ffmpegProvider
+        ffmpegProvider = ffmpegProvider,
+        ffmpegCommandsProvider = provideFFmpegCommandsProvider()
     )
 ).freeze()
