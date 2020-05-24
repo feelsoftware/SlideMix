@@ -8,6 +8,7 @@ private const val METHOD_GET_ALL = "getAll"
 private const val METHOD_GET = "get"
 private const val METHOD_INSERT = "insert"
 private const val METHOD_DELETE = "delete"
+private const val METHOD_COUNT = "count"
 
 private const val KEY_ID = "id"
 private const val KEY_TITLE = "title"
@@ -42,6 +43,9 @@ class MoviesRepositoryChannelImpl(
                 val id = arguments.getValue(KEY_ID) as Long
                 repository.delete(id)
                 emptyResult
+            }
+            METHOD_COUNT -> {
+                repository.count().toString()
             }
             else -> unsupportedMethod(method, arguments)
         }

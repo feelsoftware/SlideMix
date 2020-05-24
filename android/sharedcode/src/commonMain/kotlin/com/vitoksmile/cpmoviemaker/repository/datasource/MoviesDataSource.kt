@@ -10,4 +10,6 @@ interface MoviesDataSource {
     fun insert(title: String, thumb: String, video: String): Movie
 
     fun delete(id: Long)
+
+    fun count(): Long
 }

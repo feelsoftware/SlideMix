@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:cpmoviemaker/base/usecase.dart';
 import 'package:cpmoviemaker/models/movie.dart';
@@ -14,6 +13,7 @@ const _METHOD_GET_ALL = "getAll";
 const _METHOD_GET = "get";
 const _METHOD_INSERT = "insert";
 const _METHOD_DELETE = "delete";
+const _METHOD_COUNT = "count";
 
 const _KEY_ID = "id";
 const _KEY_TITLE = "title";
@@ -49,7 +49,7 @@ class MoviesUseCaseImpl extends MoviesUseCase {
     final moviesDir = (await this.moviesDir()).path;
 
     final arguments = {
-      _KEY_TITLE: "title ${Random.secure().nextInt(100)}",
+      _KEY_TITLE: await _provideTitle(),
       _KEY_THUMB: thumb.normalizePath(moviesDir),
       _KEY_VIDEO: video.normalizePath(moviesDir)
     };
@@ -64,6 +64,11 @@ class MoviesUseCaseImpl extends MoviesUseCase {
   Future<Directory> moviesDir() async {
     final filesDir = await getApplicationDocumentsDirectory();
     return Directory(join(filesDir.path, "movies"));
+  }
+
+  Future<String> _provideTitle() async {
+    final moviesCount = await _channel.invokeMethod(_METHOD_COUNT);
+    return "Movie #$moviesCount";
   }
 }
 
