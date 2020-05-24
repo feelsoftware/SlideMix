@@ -88,7 +88,7 @@ class _CreationState extends State<CreationScreen>
       ),
       body: Stack(
         children: <Widget>[
-          CreationList(this, _viewModel.getMedia()),
+          CreationList(this, _viewModel.media),
           _viewModel.isLoading
               ? Container(
                   color: Colors.black12,
@@ -108,6 +108,9 @@ class _CreationState extends State<CreationScreen>
           Icons.play_arrow,
           color: Colors.white,
         ),
+        backgroundColor: _viewModel.isCreationAllowed
+            ? Theme.of(context).accentColor
+            : Colors.grey,
       ),
     );
   }

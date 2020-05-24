@@ -5,11 +5,17 @@ import 'package:cpmoviemaker/models/movie.dart';
 import 'package:cpmoviemaker/movies/movies_viewmodel.dart';
 import 'package:cpmoviemaker/usecase/creation_usecase.dart';
 
+const _MIN_MEDIAS_COUNT = 3;
+
 class CreationViewModel extends ViewModel {
   final CreationUseCase _useCase;
   final MoviesViewModel _moviesViewModel;
 
-  final List<File> _medias = List<File>();
+  final List<File> _media = List<File>();
+
+  List<File> get media => List.unmodifiable(_media);
+
+  bool get isCreationAllowed => _media.length >= _MIN_MEDIAS_COUNT;
 
   CreationViewModel(this._useCase, this._moviesViewModel);
 
@@ -19,23 +25,24 @@ class CreationViewModel extends ViewModel {
     _useCase.dispose();
   }
 
-  List<File> getMedia() => List.unmodifiable(_medias);
-
   void addMedia(File file) {
     if (file != null) {
-      _medias.add(file);
+      _media.add(file);
       notifyListeners();
     }
   }
 
   void deleteMedia(int position) {
-    _medias.removeAt(position);
+    _media.removeAt(position);
     notifyListeners();
   }
 
   Future<Movie> createMovie() async {
+    if (!isCreationAllowed)
+      return Future.error("Choose at least $_MIN_MEDIAS_COUNT media.");
+
     isLoading = true;
-    final CreationResult result = await _useCase.createMovie(_medias);
+    final CreationResult result = await _useCase.createMovie(_media);
     isLoading = false;
 
     if (result is SuccessCreationResult) {
