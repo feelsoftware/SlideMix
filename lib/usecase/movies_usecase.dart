@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cpmoviemaker/base/usecase.dart';
 import 'package:cpmoviemaker/models/movie.dart';
 import 'package:flutter/services.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 const _CHANNEL = "com.vitoksmile.cpmoviemaker.MoviesRepositoryChannel";
 
@@ -21,6 +24,8 @@ abstract class MoviesUseCase extends UseCase {
   Future<List<Movie>> fetchMovies();
 
   Future<Movie> create(String thumb, String video);
+
+  Future<Directory> moviesDir();
 }
 
 class MoviesUseCaseImpl extends MoviesUseCase {
@@ -28,25 +33,54 @@ class MoviesUseCaseImpl extends MoviesUseCase {
 
   @override
   Future<List<Movie>> fetchMovies() async {
+    final moviesDir = (await this.moviesDir()).path;
+
     final response = await _channel.invokeMethod(_METHOD_GET_ALL);
     final Iterable json = jsonDecode(response);
 
-    final List<Movie> movies =
-        json.map((item) => Movie.fromJson(item)).toList();
+    final List<Movie> movies = json
+        .map((movie) => Movie.fromJson(movie).normalizePath(moviesDir))
+        .toList();
     return Future.value(movies);
   }
 
   @override
   Future<Movie> create(String thumb, String video) async {
+    final moviesDir = (await this.moviesDir()).path;
+
     final arguments = {
       _KEY_TITLE: "title ${Random.secure().nextInt(100)}",
-      _KEY_THUMB: thumb,
-      _KEY_VIDEO: video
+      _KEY_THUMB: thumb.normalizePath(moviesDir),
+      _KEY_VIDEO: video.normalizePath(moviesDir)
     };
     final response = await _channel.invokeMethod(_METHOD_INSERT, arguments);
     final json = jsonDecode(response);
 
-    final Movie movie = Movie.fromJson(json);
+    final Movie movie = Movie.fromJson(json).normalizePath(moviesDir);
     return Future.value(movie);
+  }
+
+  @override
+  Future<Directory> moviesDir() async {
+    final filesDir = await getApplicationDocumentsDirectory();
+    return Directory(join(filesDir.path, "movies"));
+  }
+}
+
+extension _MovieStringPathNormalizer on String {
+  ///
+  /// Store in DB path without this prefix [moviesDir].
+  ///
+  String normalizePath(String moviesDir) {
+    return replaceFirst(moviesDir, "").substring(1);
+  }
+}
+
+extension _MoviePathNormalizer on Movie {
+  ///
+  /// Append this prefix [moviesDir] to thumbnail and video.
+  ///
+  Movie normalizePath(String moviesDir) {
+    return Movie(id, title, join(moviesDir, thumb), join(moviesDir, video));
   }
 }
