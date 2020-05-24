@@ -8,7 +8,6 @@ import 'package:cpmoviemaker/usecase/movies_usecase.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 
 const _CHANNEL = "com.vitoksmile.cpmoviemaker.MovieCreatorChannel";
 const _METHOD_CREATE = "METHOD_CREATE";
@@ -36,10 +35,9 @@ class CreationUseCaseImpl extends CreationUseCase {
 
   @override
   Future<T> createMovie<T extends CreationResult>(List<File> files) async {
-    final filesDir = await getApplicationDocumentsDirectory();
-    final moviesDir = Directory(join(filesDir.path, "movies"));
+    final moviesDir = await _moviesUseCase.moviesDir();
     await moviesDir.create(recursive: true);
-    final scenesDir = Directory(join(filesDir.path, "scenes"));
+    final scenesDir = Directory(join(moviesDir.path, "scenes"));
     await scenesDir.create(recursive: true);
 
     var index = 0;

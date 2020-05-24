@@ -28,4 +28,6 @@ class MoviesDBDataSourceImpl(
     override fun delete(id: Long) {
         moviesDB.moviesDBQueries.delete(id)
     }
+
+    override fun count() = moviesDB.moviesDBQueries.count().executeAsOne()
 }

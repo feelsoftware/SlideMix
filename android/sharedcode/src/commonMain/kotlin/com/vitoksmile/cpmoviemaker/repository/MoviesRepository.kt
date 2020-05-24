@@ -14,6 +14,8 @@ interface MoviesRepository {
     fun insert(title: String, thumb: String, video: String): String
 
     fun delete(id: Long)
+
+    fun count(): Long
 }
 
 class MoviesRepositoryImpl(
@@ -39,4 +41,6 @@ class MoviesRepositoryImpl(
     }
 
     override fun delete(id: Long): Unit = dbDataSource.delete(id)
+
+    override fun count() = dbDataSource.count()
 }
