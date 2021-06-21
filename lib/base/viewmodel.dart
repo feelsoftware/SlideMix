@@ -21,8 +21,8 @@ class ViewModel extends ChangeNotifier {
   ///
   /// Launch this [action] asynchronously and invoke [result] after execution.
   ///
-  void launch<T extends Object>(Future<T> action(), void result(T data),
-      {Function onError}) {
+  void launch<T extends Object?>(Future<T> action(), void result(T data),
+      {Function? onError}) {
     final key = _generateSubscriptionKey();
     _subscriptions.putIfAbsent(key, () {
       return action()
@@ -31,13 +31,13 @@ class ViewModel extends ChangeNotifier {
               result(value);
             },
             onError: (error) {
-              onError(error);
+              onError!(error);
             },
           )
           .asStream()
           .listen((event) {
             _subscriptions.remove(key);
-          });
+          }) as StreamSubscription<Object>;
     });
   }
 
@@ -45,13 +45,13 @@ class ViewModel extends ChangeNotifier {
   /// Subscribe to Stream from [action] and invoke [result] for each change.
   ///
   void listen<T extends Object>(Stream<T> action(), void result(T data),
-      {Function onError}) {
+      {Function? onError}) {
     final key = _generateSubscriptionKey();
     _subscriptions.putIfAbsent(key, () {
       return action().listen((data) {
         result(data);
       }, onError: (error) {
-        onError(error);
+        onError!(error);
       }, onDone: () {
         _subscriptions.remove(key);
       });

@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: homeRouter.buildPage(context, null, null),
+      home: homeWidget(context),
       debugShowCheckedModeBanner: false,
     );
   }

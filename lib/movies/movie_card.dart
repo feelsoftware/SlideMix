@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class MovieCardWidget extends StatelessWidget {
-  final String thumb;
-  final String title;
+  final String? thumb;
+  final String? title;
 
   MovieCardWidget(this.thumb, this.title);
 
@@ -27,7 +27,7 @@ class MovieCardWidget extends StatelessWidget {
                   topRight: borderRadius,
                 ),
                 child: Image.file(
-                  File(thumb),
+                  File(thumb!),
                   fit: BoxFit.fitWidth,
                   width: constraints.maxWidth,
                   height: constraints.maxWidth,
@@ -43,7 +43,7 @@ class MovieCardWidget extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  title,
+                  title!,
                   style: TextStyle(fontSize: 16, fontFamily: "Roboto-Light"),
                 ),
               ),

@@ -10,12 +10,12 @@ import 'package:path_provider/path_provider.dart';
 const _CHANNEL = "com.vitoksmile.cpmoviemaker.MoviesRepositoryChannel";
 
 const _METHOD_GET_ALL = "getAll";
-const _METHOD_GET = "get";
+const _METHOD_GET = "get"; // ignore: unused_element
 const _METHOD_INSERT = "insert";
-const _METHOD_DELETE = "delete";
+const _METHOD_DELETE = "delete"; // ignore: unused_element
 const _METHOD_COUNT = "count";
 
-const _KEY_ID = "id";
+const _KEY_ID = "id"; // ignore: unused_element
 const _KEY_TITLE = "title";
 const _KEY_THUMB = "thumb";
 const _KEY_VIDEO = "video";
@@ -23,7 +23,7 @@ const _KEY_VIDEO = "video";
 abstract class MoviesUseCase extends UseCase {
   Future<List<Movie>> fetchMovies();
 
-  Future<Movie> create(String thumb, String video);
+  Future<Movie> create(String? thumb, String? video);
 
   Future<Directory> moviesDir();
 }
@@ -45,13 +45,13 @@ class MoviesUseCaseImpl extends MoviesUseCase {
   }
 
   @override
-  Future<Movie> create(String thumb, String video) async {
+  Future<Movie> create(String? thumb, String? video) async {
     final moviesDir = (await this.moviesDir()).path;
 
     final arguments = {
       _KEY_TITLE: await _provideTitle(),
-      _KEY_THUMB: thumb.normalizePath(moviesDir),
-      _KEY_VIDEO: video.normalizePath(moviesDir)
+      _KEY_THUMB: thumb!.normalizePath(moviesDir),
+      _KEY_VIDEO: video!.normalizePath(moviesDir)
     };
     final response = await _channel.invokeMethod(_METHOD_INSERT, arguments);
     final json = jsonDecode(response);

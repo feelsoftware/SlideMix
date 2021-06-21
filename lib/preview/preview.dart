@@ -43,7 +43,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
             navigateBack(context);
           },
         ),
-        title: Text(_viewModel.movie.title),
+        title: Text(_viewModel.movie.title!),
         centerTitle: false,
       ),
       body: _viewModel.isPlayerReady

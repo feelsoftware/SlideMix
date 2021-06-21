@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class PreviewPlayPauseButton extends StatelessWidget {
-  final VideoPlayerController controller;
+  final VideoPlayerController? controller;
 
   PreviewPlayPauseButton(this.controller);
 
@@ -13,7 +13,7 @@ class PreviewPlayPauseButton extends StatelessWidget {
         AnimatedSwitcher(
           duration: Duration(milliseconds: 50),
           reverseDuration: Duration(milliseconds: 200),
-          child: controller.value.isPlaying
+          child: controller!.value.isPlaying
               ? SizedBox.shrink()
               : Center(
                   child: Icon(
@@ -25,10 +25,10 @@ class PreviewPlayPauseButton extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            if (!controller.value.isPlaying) {
-              controller.seekTo(Duration());
+            if (!controller!.value.isPlaying) {
+              controller!.seekTo(Duration());
             }
-            controller.value.isPlaying ? controller.pause() : controller.play();
+            controller!.value.isPlaying ? controller!.pause() : controller!.play();
           },
         ),
       ],

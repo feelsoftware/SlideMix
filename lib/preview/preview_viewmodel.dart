@@ -5,14 +5,14 @@ import 'package:video_player/video_player.dart';
 
 class PreviewViewModel extends ViewModel {
   final Movie movie;
-  VideoPlayerController controller;
+  VideoPlayerController? controller;
 
   PreviewViewModel(this.movie);
 
-  bool get isPlayerReady => controller.value.initialized;
+  bool get isPlayerReady => controller!.value.isInitialized;
 
   void init() {
-    controller = VideoPlayerController.file(File(movie.video))
+    controller = VideoPlayerController.file(File(movie.video!))
       ..initialize().then((_) {
         notifyListeners();
       })
@@ -24,6 +24,6 @@ class PreviewViewModel extends ViewModel {
   @override
   void dispose() {
     super.dispose();
-    controller.dispose();
+    controller!.dispose();
   }
 }

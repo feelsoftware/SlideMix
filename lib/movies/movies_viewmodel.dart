@@ -4,7 +4,7 @@ import 'package:cpmoviemaker/usecase/movies_usecase.dart';
 
 class MoviesViewModel extends ViewModel {
   final MoviesUseCase _useCase;
-  List<Movie> _movies = List();
+  List<Movie> _movies = List.empty(growable: true);
 
   List<Movie> get movies => List.unmodifiable(_movies);
 

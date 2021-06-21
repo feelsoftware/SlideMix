@@ -12,13 +12,12 @@ import 'package:provider/provider.dart';
 
 import 'models/movie.dart';
 
-final PageRouteBuilder homeRouter =
-    PageRouteBuilder(pageBuilder: (context, _, __) {
+Widget homeWidget(BuildContext context) {
   return MoviesScreen(
     Provider.of<MoviesViewModel>(context, listen: false),
     'CPMovieMaker',
   );
-});
+}
 
 void navigateBack(BuildContext context) {
   if (Navigator.canPop(context)) {

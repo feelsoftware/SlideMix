@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class PreviewPlayer extends StatelessWidget {
-  final VideoPlayerController _controller;
+  final VideoPlayerController? _controller;
 
   PreviewPlayer(this._controller);
 
@@ -13,13 +13,13 @@ class PreviewPlayer extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(8),
         child: AspectRatio(
-          aspectRatio: _controller.value.aspectRatio,
+          aspectRatio: _controller!.value.aspectRatio,
           child: Stack(
             alignment: Alignment.bottomCenter,
             children: <Widget>[
-              VideoPlayer(_controller),
+              VideoPlayer(_controller!),
               PreviewPlayPauseButton(_controller),
-              VideoProgressIndicator(_controller,
+              VideoProgressIndicator(_controller!,
                   colors: VideoProgressColors(
                     playedColor: Theme.of(context).primaryColor,
                   ),

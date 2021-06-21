@@ -41,7 +41,7 @@ class CreationUseCaseImpl extends CreationUseCase {
     await scenesDir.create(recursive: true);
 
     var index = 0;
-    await Future.forEach(files, (file) async {
+    await Future.forEach(files, (dynamic file) async {
       final path = file.path;
       final newPath = join(scenesDir.path, "image00${index++}.jpg");
       await FlutterImageCompress.compressAndGetFile(path, newPath,
@@ -57,7 +57,7 @@ class CreationUseCaseImpl extends CreationUseCase {
     final Map<String, dynamic> map = jsonDecode(response);
 
     CreationResult result;
-    final String type = map[_KEY_TYPE];
+    final String? type = map[_KEY_TYPE];
 
     if (type == _TYPE_SUCCESS) {
       final thumbPath = map[_KEY_THUMB];
@@ -71,7 +71,7 @@ class CreationUseCaseImpl extends CreationUseCase {
     }
 
     await scenesDir.delete(recursive: true);
-    return result;
+    return result as FutureOr<T>;
   }
 
   @override
@@ -91,7 +91,7 @@ class SuccessCreationResult extends CreationResult {
 }
 
 class ErrorCreationResult extends CreationResult {
-  final String error;
+  final String? error;
 
   ErrorCreationResult(this.error);
 }

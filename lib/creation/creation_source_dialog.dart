@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum CreationMediaSource {
-  camera, gallery
-}
+enum CreationMediaSource { camera, gallery }
 
 class CreationMediaSourceDialog extends StatelessWidget {
   @override

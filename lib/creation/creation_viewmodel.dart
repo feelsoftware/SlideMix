@@ -11,7 +11,7 @@ class CreationViewModel extends ViewModel {
   final CreationUseCase _useCase;
   final MoviesViewModel _moviesViewModel;
 
-  final List<File> _media = List<File>();
+  final List<File> _media = List.empty(growable: true);
 
   List<File> get media => List.unmodifiable(_media);
 
@@ -25,7 +25,7 @@ class CreationViewModel extends ViewModel {
     _useCase.dispose();
   }
 
-  void addMedia(File file) {
+  void addMedia(File? file) {
     if (file != null) {
       _media.add(file);
       notifyListeners();
@@ -49,7 +49,7 @@ class CreationViewModel extends ViewModel {
       _moviesViewModel.fetchMovies();
       return Future.value(result.movie);
     } else if (result is ErrorCreationResult) {
-      return Future.error(result.error);
+      return Future.error(result.error!);
     }
 
     return Future.value(null);

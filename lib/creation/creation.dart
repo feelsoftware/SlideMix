@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cpmoviemaker/creation/creation_list.dart';
 import 'package:cpmoviemaker/creation/creation_viewmodel.dart';
 import 'package:cpmoviemaker/models/movie.dart';
@@ -39,10 +41,11 @@ class _CreationState extends State<CreationScreen>
 
   @override
   Future addNewMedia() async {
-    final CreationMediaSource source = await showModalBottomSheet(
+    final CreationMediaSource? source = await showModalBottomSheet(
       context: context,
       builder: (context) => CreationMediaSourceDialog(),
     );
+    // ignore: missing_enum_constant_in_switch
     switch (source) {
       case CreationMediaSource.camera:
         _pickImage(ImageSource.camera);
@@ -59,7 +62,10 @@ class _CreationState extends State<CreationScreen>
   }
 
   void _pickImage(ImageSource source) {
-    _viewModel.launch(() => ImagePicker.pickImage(source: source), (file) {
+    // ignore: invalid_use_of_visible_for_testing_member
+    _viewModel.launch(() => ImagePicker.platform.pickImage(source: source),
+        (dynamic _file) {
+      File file = File((_file as PickedFile).path);
       _viewModel.addMedia(file);
     });
   }
@@ -68,7 +74,8 @@ class _CreationState extends State<CreationScreen>
     _viewModel.launch(() => _viewModel.createMovie(), (Movie movie) {
       navigateToPreview(context, movie);
     }, onError: (String error) {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(error)));
+      // ignore: deprecated_member_use
+      _scaffoldKey.currentState?.showSnackBar(SnackBar(content: Text(error)));
     });
   }
 
