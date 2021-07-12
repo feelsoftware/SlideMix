@@ -1,3 +1,4 @@
+import 'package:cpmoviemaker/navigation.dart';
 import 'package:cpmoviemaker/widget/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -42,7 +43,9 @@ class _WelcomeStateScreen extends State<WelcomeScreen> {
                 children: [
                   Container(
                     width: MediaQuery.of(context).size.width * logoWidthFactor,
-                    child: PrimaryButton("tap to start", () {}),
+                    child: PrimaryButton("tap to start", () {
+                      navigateToCreation(context);
+                    }),
                   ),
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -6,18 +6,12 @@ import 'package:cpmoviemaker/preview/preview.dart';
 import 'package:cpmoviemaker/preview/preview_viewmodel.dart';
 import 'package:cpmoviemaker/usecase/creation_usecase.dart';
 import 'package:cpmoviemaker/usecase/movies_usecase.dart';
+import 'package:cpmoviemaker/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'models/movie.dart';
-
-Widget homeWidget(BuildContext context) {
-  return MoviesScreen(
-    Provider.of<MoviesViewModel>(context, listen: false),
-    'CPMovieMaker',
-  );
-}
 
 void navigateBack(BuildContext context) {
   if (Navigator.canPop(context)) {
@@ -25,6 +19,21 @@ void navigateBack(BuildContext context) {
   } else {
     SystemNavigator.pop();
   }
+}
+
+void navigateToWelcome(BuildContext context) {
+  Navigator.of(context).pushReplacement(MaterialPageRoute(
+    builder: (context) => WelcomeScreen(),
+  ));
+}
+
+void navigateToMovies(BuildContext context) {
+  Navigator.of(context).pushReplacement(MaterialPageRoute(
+    builder: (context) => MoviesScreen(
+      Provider.of<MoviesViewModel>(context, listen: false),
+      'CPMovieMaker',
+    ),
+  ));
 }
 
 void navigateToCreation(BuildContext context) {

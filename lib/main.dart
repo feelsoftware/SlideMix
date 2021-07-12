@@ -1,7 +1,6 @@
+import 'package:cpmoviemaker/entry_point.dart';
 import 'package:cpmoviemaker/movies/movies_viewmodel.dart';
-import 'package:cpmoviemaker/navigation.dart';
 import 'package:cpmoviemaker/usecase/movies_usecase.dart';
-import 'package:cpmoviemaker/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +31,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: WelcomeScreen(),
+      home: EntryPointScreen(
+        Provider.of<MoviesViewModel>(context, listen: false),
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
