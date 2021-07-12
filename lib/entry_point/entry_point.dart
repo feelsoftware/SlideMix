@@ -1,10 +1,10 @@
+import 'package:cpmoviemaker/entry_point/entry_point_viewmodel.dart';
 import 'package:cpmoviemaker/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'movies/movies_viewmodel.dart';
 
 class EntryPointScreen extends StatefulWidget {
-  final MoviesViewModel _viewModel;
+  final EntryPointViewModel _viewModel;
 
   EntryPointScreen(this._viewModel);
 
@@ -13,19 +13,19 @@ class EntryPointScreen extends StatefulWidget {
 }
 
 class _EntryPointStateScreen extends State<EntryPointScreen> {
-  final MoviesViewModel viewModel;
+  final EntryPointViewModel viewModel;
 
   _EntryPointStateScreen(this.viewModel);
 
   @override
   void initState() {
     super.initState();
-    viewModel.fetchMovies();
+    viewModel.init();
     viewModel.addListener(() {
-      if (viewModel.movies.isNotEmpty) {
-        navigateToMovies(context);
-      } else {
+      if (viewModel.showWelcomeScreen) {
         navigateToWelcome(context);
+      } else {
+        navigateToMovies(context);
       }
     });
   }

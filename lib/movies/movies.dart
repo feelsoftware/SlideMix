@@ -47,16 +47,9 @@ class _MoviesScreenState extends State<MoviesScreen>
         centerTitle: false,
       ),
       body: Consumer<MoviesViewModel>(
-        builder: (_, __, ___) => MoviesList(this, viewModel.movies),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          navigateToCreation(context);
-        },
-        tooltip: "Create a new movie",
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
+        builder: (_, __, ___) => Container(
+          padding: EdgeInsets.symmetric(horizontal: 18),
+          child: MoviesList(this, viewModel.movies),
         ),
       ),
     );

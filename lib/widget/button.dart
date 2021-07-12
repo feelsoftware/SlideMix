@@ -1,3 +1,4 @@
+import 'package:cpmoviemaker/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -12,24 +13,27 @@ class PrimaryButton extends StatelessWidget {
     return Container(
       height: 40,
       decoration: BoxDecoration(
-          border: Border.all(
-            width: 2,
-            color: Color(0xff9e9e9e),
-          ),
-          borderRadius: BorderRadius.all(
-            Radius.circular(8), //                 <--- border radius here
-          )),
+        border: Border.all(
+          width: 2,
+          color: borderColor,
+        ),
+        borderRadius: BorderRadius.all(
+          Radius.circular(8), //                 <--- border radius here
+        ),
+      ),
       child: InkWell(
-          onTap: onPressed,
-          child: Align(
-            child: Text(
-              text,
-              style: TextStyle(
-                  color: Color(0xffff5500),
-                  fontSize: 16,
-                  fontFamily: "Metropolis"),
+        onTap: onPressed,
+        child: Align(
+          child: Text(
+            text,
+            style: TextStyle(
+              color: secondaryColor,
+              fontSize: 16,
+              fontFamily: "Metropolis",
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 }

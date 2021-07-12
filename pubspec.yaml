@@ -54,6 +54,9 @@ flutter:
     - family: Metropolis
       fonts:
         - asset: assets/fonts/metropolis.black.otf
+    - family: Metropolis Bold
+      fonts:
+        - asset: assets/fonts/metropolis.bold.otf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -1,5 +1,6 @@
 import 'package:cpmoviemaker/models/movie.dart';
 import 'package:cpmoviemaker/movies/movie_card.dart';
+import 'package:cpmoviemaker/navigation.dart';
 import 'package:flutter/material.dart';
 
 abstract class MovieClickListener {
@@ -12,6 +13,10 @@ class MoviesList extends StatelessWidget {
 
   MoviesList(this._clickListener, this._movies);
 
+  void _onCreateMovieClicked(BuildContext context) {
+    navigateToCreation(context);
+  }
+
   void _onMovieClicked(Movie movie) {
     _clickListener.onMovieClicked(movie);
   }
@@ -20,7 +25,7 @@ class MoviesList extends StatelessWidget {
   Widget build(BuildContext context) {
     final padding = 16.0;
     final spanCount = 2;
-    final itemRatio = 156.0 / 188.0;
+    final itemRatio = 149.0 / 170.0;
 
     return GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -28,16 +33,22 @@ class MoviesList extends StatelessWidget {
             mainAxisSpacing: padding,
             crossAxisSpacing: padding,
             childAspectRatio: itemRatio),
-        itemCount: _movies.length,
+        itemCount: _movies.length + 1,
         padding: EdgeInsets.all(padding),
         itemBuilder: (BuildContext context, int index) {
-          Movie movie = _movies[index];
-          return GestureDetector(
-            onTap: () {
-              _onMovieClicked(movie);
-            },
-            child: MovieCardWidget(movie.thumb, movie.title),
-          );
+          if (index == 0) {
+            return AddMovieCardWidget(() {
+              _onCreateMovieClicked(context);
+            });
+          } else {
+            Movie movie = _movies[index - 1];
+            return GestureDetector(
+              onTap: () {
+                _onMovieClicked(movie);
+              },
+              child: MovieCardWidget(movie.thumb, movie.title),
+            );
+          }
         });
   }
 }
