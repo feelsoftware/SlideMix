@@ -84,48 +84,52 @@ class _CreationState extends State<CreationScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: Toolbar(
-        leftIcon: Image.asset("assets/images/ic_back.png"),
-        onLeftIconTapped: () => navigateBack(context),
-      ),
-      body: Stack(
-        children: <Widget>[
-          CreationList(this, _viewModel.media),
-          _viewModel.isLoading
-              ? Container(
-                  color: AppColors.overlay,
-                  child: Center(
-                    child: CircularProgressIndicator(),
+    return Stack(
+      children: [
+        Scaffold(
+          key: _scaffoldKey,
+          appBar: Toolbar(
+            leftIcon: Image.asset("assets/images/ic_back.png"),
+            onLeftIconTapped: () => navigateBack(context),
+          ),
+          body: Stack(
+            children: <Widget>[
+              CreationList(this, _viewModel.media),
+              Padding(
+                padding: EdgeInsets.only(bottom: 64),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: FractionallySizedBox(
+                    widthFactor: 0.45,
+                    child: PrimaryButton(
+                      "create",
+                      () => _createMovie(),
+                      isEnabled: _viewModel.isCreationAllowed,
+                      onPressedButDisabled: () {
+                        final minMediaCount = _viewModel.minMediaCount;
+                        final snackBar = SnackBar(
+                            content: Text(
+                          'Add $minMediaCount or more media to create a movie',
+                        ));
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      },
+                      backgroundColor: AppColors.background,
+                    ),
                   ),
-                )
-              : Container(),
-          Padding(
-            padding: EdgeInsets.only(bottom: 64),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: FractionallySizedBox(
-                widthFactor: 0.45,
-                child: PrimaryButton(
-                  "create",
-                  () => _createMovie(),
-                  isEnabled: _viewModel.isCreationAllowed,
-                  onPressedButDisabled: () {
-                    final minMediaCount = _viewModel.minMediaCount;
-                    final snackBar = SnackBar(
-                        content: Text(
-                      'Add $minMediaCount or more media to create a movie',
-                    ));
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  },
-                  backgroundColor: AppColors.background,
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+        _viewModel.isLoading
+            ? Container(
+                color: AppColors.overlay,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            : SizedBox.shrink(),
+      ],
     );
   }
 }
