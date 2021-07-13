@@ -4,7 +4,6 @@ import 'package:cpmoviemaker/preview/preview_player.dart';
 import 'package:cpmoviemaker/preview/preview_viewmodel.dart';
 import 'package:cpmoviemaker/widget/toolbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class PreviewScreen extends StatefulWidget {
@@ -28,14 +27,12 @@ class _PreviewScreenState extends State<PreviewScreen> {
       setState(() {});
     });
     _viewModel.init();
-    SystemChrome.setSystemUIOverlayStyle(playerSystemUiOverlayStyle);
   }
 
   @override
   void dispose() {
     super.dispose();
     _viewModel.dispose();
-    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
 
   @override

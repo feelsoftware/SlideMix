@@ -8,7 +8,7 @@ class AppColors {
   static const Color secondary = Color(0xffff5500);
 
   static const Color background = Color(0xffffffff);
-  static const Color statusBar = Color(0xffffffff);
+  static const Color statusBar = Colors.transparent;
   static const Color disabled = Color(0xff9e9e9e);
   static const Color border = Color(0xff9e9e9e);
   static const Color overlay = Color(0x809e9e9e);
@@ -18,12 +18,18 @@ class AppColors {
 final SystemUiOverlayStyle systemUiOverlayStyle =
     SystemUiOverlayStyle.dark.copyWith(
   statusBarColor: AppColors.statusBar,
+  statusBarIconBrightness: Brightness.dark,
 );
-final SystemUiOverlayStyle playerSystemUiOverlayStyle =
-    SystemUiOverlayStyle.dark.copyWith(
-  statusBarColor: AppColors.playerBackground,
-  statusBarIconBrightness: Brightness.light,
-);
+// final SystemUiOverlayStyle welcomeSystemUiOverlayStyle =
+//     SystemUiOverlayStyle.dark.copyWith(
+//   statusBarColor: Colors.transparent,
+//   statusBarIconBrightness: Brightness.light,
+// );
+// final SystemUiOverlayStyle playerSystemUiOverlayStyle =
+//     SystemUiOverlayStyle.dark.copyWith(
+//   statusBarColor: AppColors.playerBackground,
+//   statusBarIconBrightness: Brightness.light,
+// );
 
 final MaterialColor primarySwatch = MaterialColor(
   AppColors.primary.value,
