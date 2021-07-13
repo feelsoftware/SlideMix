@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cpmoviemaker/colors.dart';
 import 'package:flutter/material.dart';
 
 abstract class CreationCard extends StatelessWidget {}
@@ -12,32 +13,29 @@ abstract class DeleteMediaClickListener {
   void onMediaDeleteClicked(int position);
 }
 
-class AddMediaCard extends CreationCard {
+class AddMediaCardWidget extends CreationCard {
   final AddMediaClickListener _clickListener;
 
-  AddMediaCard(this._clickListener);
+  AddMediaCardWidget(this._clickListener);
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        _clickListener.onAddNewMediaClicked();
-      },
+    return GestureDetector(
+      onTap: () => _clickListener.onAddNewMediaClicked(),
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Color(0xffC4C4C4)),
-          borderRadius: BorderRadius.circular(8),
-        ),
+            color: primaryColor,
+            borderRadius: BorderRadius.all(
+              Radius.circular(8),
+            )),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(Icons.add, color: Colors.black, size: 32),
-            SizedBox(height: 8),
-            Text(
-              "Add\nnew media",
-              style: TextStyle(fontSize: 14, fontFamily: "Roboto-Light"),
-              textAlign: TextAlign.center,
-            )
+          children: [
+            Image.asset(
+              "assets/images/ic_create_movie.png",
+              width: 18,
+              height: 18,
+            ),
           ],
         ),
       ),
@@ -58,7 +56,6 @@ class MediaCreationCard extends CreationCard {
       children: <Widget>[
         Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.black, width: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: ClipRRect(
@@ -77,10 +74,10 @@ class MediaCreationCard extends CreationCard {
               onTap: () {
                 _clickListener.onMediaDeleteClicked(_position);
               },
-              child: Icon(
-                Icons.delete_outline,
-                color: Colors.white,
-                size: 24,
+              child: Image.asset(
+                "assets/images/ic_remove_media.png",
+                width: 16,
+                height: 16,
               ),
             ),
           ),

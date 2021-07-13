@@ -17,6 +17,8 @@ class CreationViewModel extends ViewModel {
 
   bool get isCreationAllowed => _media.length >= _MIN_MEDIAS_COUNT;
 
+  int get minMediaCount => _MIN_MEDIAS_COUNT;
+
   CreationViewModel(this._useCase, this._moviesViewModel);
 
   @override

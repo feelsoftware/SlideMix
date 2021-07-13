@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'CPMovieMaker',
       theme: ThemeData(
         primarySwatch: primarySwatch,
+        scaffoldBackgroundColor: backgroundColor,
       ),
       debugShowCheckedModeBanner: false,
       initialRoute: getInitialRoute(),

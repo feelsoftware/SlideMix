@@ -34,7 +34,10 @@ class MoviesList extends StatelessWidget {
             crossAxisSpacing: padding,
             childAspectRatio: itemRatio),
         itemCount: _movies.length + 1,
-        padding: EdgeInsets.all(padding),
+        padding: EdgeInsets.symmetric(
+          horizontal: padding * 2,
+          vertical: padding,
+        ),
         itemBuilder: (BuildContext context, int index) {
           if (index == 0) {
             return AddMovieCardWidget(() {

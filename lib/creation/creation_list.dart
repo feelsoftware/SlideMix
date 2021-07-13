@@ -28,17 +28,25 @@ class CreationList extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
+    final padding = 16.0;
+    final spanCount = 2;
+
     return GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
+          crossAxisCount: spanCount,
+          mainAxisSpacing: padding,
+          crossAxisSpacing: padding,
         ),
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.only(
+          left: padding * 2,
+          right: padding * 2,
+          top: padding,
+          bottom: padding * 8,
+        ),
         itemCount: _medias.length + 1,
         itemBuilder: (BuildContext context, int index) {
           return index == 0
-              ? AddMediaCard(this)
+              ? AddMediaCardWidget(this)
               : MediaCreationCard(this, _medias[index - 1], index - 1);
         });
   }

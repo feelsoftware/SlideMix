@@ -45,9 +45,9 @@ class Toolbar extends StatelessWidget with PreferredSizeWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Visibility(
-                maintainSize: _hasLeftIcon(),
-                maintainAnimation: _hasLeftIcon(),
-                maintainState: _hasLeftIcon(),
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
                 visible: _hasLeftIcon(),
                 child: Container(
                   child: _getLeftIcon(),
@@ -59,9 +59,9 @@ class Toolbar extends StatelessWidget with PreferredSizeWidget {
               height: 32,
             ),
             Visibility(
-                maintainSize: _hasRightIcon(),
-                maintainAnimation: _hasRightIcon(),
-                maintainState: _hasRightIcon(),
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
                 visible: _hasRightIcon(),
                 child: Container(
                   child: _getRightIcon(),

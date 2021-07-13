@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:cpmoviemaker/colors.dart';
 import 'package:cpmoviemaker/creation/creation_list.dart';
 import 'package:cpmoviemaker/creation/creation_viewmodel.dart';
 import 'package:cpmoviemaker/models/movie.dart';
 import 'package:cpmoviemaker/navigation.dart';
+import 'package:cpmoviemaker/widget/button.dart';
+import 'package:cpmoviemaker/widget/toolbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'creation_source_dialog.dart';
@@ -83,41 +86,44 @@ class _CreationState extends State<CreationScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            navigateBack(context);
-          },
-        ),
-        title: Text("Select media"),
-        centerTitle: false,
+      appBar: Toolbar(
+        leftIcon: Image.asset("assets/images/ic_back.png"),
+        onLeftIconTapped: () => navigateBack(context),
       ),
       body: Stack(
         children: <Widget>[
           CreationList(this, _viewModel.media),
           _viewModel.isLoading
               ? Container(
-                  color: Colors.black12,
+                  color: overlayColor,
                   child: Center(
                     child: CircularProgressIndicator(),
                   ),
                 )
               : Container(),
+          Padding(
+            padding: EdgeInsets.only(bottom: 64),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: FractionallySizedBox(
+                widthFactor: 0.45,
+                child: PrimaryButton(
+                  "create",
+                  () => _createMovie(),
+                  isEnabled: _viewModel.isCreationAllowed,
+                  onPressedButDisabled: () {
+                    final minMediaCount = _viewModel.minMediaCount;
+                    final snackBar = SnackBar(
+                        content: Text(
+                      'Add $minMediaCount or more media to create a movie',
+                    ));
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  },
+                ),
+              ),
+            ),
+          ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _createMovie();
-        },
-        tooltip: "Create a movie",
-        child: Icon(
-          Icons.play_arrow,
-          color: Colors.white,
-        ),
-        backgroundColor: _viewModel.isCreationAllowed
-            ? Theme.of(context).accentColor
-            : Colors.grey,
       ),
     );
   }

@@ -5,14 +5,18 @@ import 'package:flutter/widgets.dart';
 class PrimaryButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
+  final VoidCallback? onPressedButDisabled;
+  final bool isEnabled;
 
-  PrimaryButton(this.text, this.onPressed);
+  PrimaryButton(this.text, this.onPressed,
+      {this.isEnabled = true, this.onPressedButDisabled});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 40,
       decoration: BoxDecoration(
+        color: backgroundColor,
         border: Border.all(
           width: 2,
           color: borderColor,
@@ -22,12 +26,18 @@ class PrimaryButton extends StatelessWidget {
         ),
       ),
       child: InkWell(
-        onTap: onPressed,
+        onTap: () {
+          if (isEnabled) {
+            onPressed();
+          } else {
+            onPressedButDisabled?.call();
+          }
+        },
         child: Align(
           child: Text(
             text,
             style: TextStyle(
-              color: secondaryColor,
+              color: isEnabled ? secondaryColor : disabledColor,
               fontSize: 16,
               fontFamily: "Metropolis",
             ),

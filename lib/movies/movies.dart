@@ -47,7 +47,6 @@ class _MoviesScreenState extends State<MoviesScreen>
       ),
       body: Consumer<MoviesViewModel>(
         builder: (_, __, ___) => Container(
-          padding: EdgeInsets.symmetric(horizontal: 18),
           child: MoviesList(this, viewModel.movies),
         ),
       ),
