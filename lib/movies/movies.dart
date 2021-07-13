@@ -1,6 +1,7 @@
 import 'package:cpmoviemaker/movies/movies_list.dart';
 import 'package:cpmoviemaker/movies/movies_viewmodel.dart';
 import 'package:cpmoviemaker/navigation.dart';
+import 'package:cpmoviemaker/widget/toolbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cpmoviemaker/models/movie.dart';
 import 'package:provider/provider.dart';
@@ -42,9 +43,8 @@ class _MoviesScreenState extends State<MoviesScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        centerTitle: false,
+      appBar: Toolbar(
+        rightIcon: Image.asset("assets/images/ic_create_movie_small.png"),
       ),
       body: Consumer<MoviesViewModel>(
         builder: (_, __, ___) => Container(

@@ -1,0 +1,64 @@
+import 'package:flutter/widgets.dart';
+
+class Toolbar extends StatelessWidget with PreferredSizeWidget {
+  final Image? leftIcon;
+  final Image? rightIcon;
+
+  Toolbar({this.leftIcon, this.rightIcon});
+
+  @override
+  Size get preferredSize => Size.fromHeight(56);
+
+  bool _hasLeftIcon() => leftIcon != null;
+
+  bool _hasRightIcon() => rightIcon != null;
+
+  Widget _getLeftIcon() {
+    if (!_hasLeftIcon()) return Container();
+    return leftIcon!;
+  }
+
+  Widget _getRightIcon() {
+    if (!_hasRightIcon()) return Container();
+    return rightIcon!;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        height: preferredSize.height,
+        padding: EdgeInsets.symmetric(horizontal: 32),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Visibility(
+                maintainSize: _hasLeftIcon(),
+                maintainAnimation: _hasLeftIcon(),
+                maintainState: _hasLeftIcon(),
+                visible: _hasLeftIcon(),
+                child: Container(
+                  child: _getLeftIcon(),
+                  width: 24,
+                  height: 24,
+                )),
+            Image.asset(
+              "assets/images/ic_logo.png",
+              height: 32,
+            ),
+            Visibility(
+                maintainSize: _hasRightIcon(),
+                maintainAnimation: _hasRightIcon(),
+                maintainState: _hasRightIcon(),
+                visible: _hasRightIcon(),
+                child: Container(
+                  child: _getRightIcon(),
+                  width: 24,
+                  height: 24,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+}

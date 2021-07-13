@@ -28,7 +28,6 @@ final Color secondaryColor = Color(0xffff5500);
 final Color borderColor = Color(0xff9e9e9e);
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
