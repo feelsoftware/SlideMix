@@ -1,6 +1,8 @@
+import 'package:cpmoviemaker/colors.dart';
 import 'package:cpmoviemaker/entry_point/entry_point_viewmodel.dart';
 import 'package:cpmoviemaker/navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class EntryPointScreen extends StatefulWidget {
@@ -28,6 +30,7 @@ class _EntryPointStateScreen extends State<EntryPointScreen> {
         navigateToMovies(context);
       }
     });
+    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
 
   @override

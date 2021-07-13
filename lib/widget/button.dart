@@ -5,11 +5,16 @@ import 'package:flutter/widgets.dart';
 class PrimaryButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
-  final VoidCallback? onPressedButDisabled;
   final bool isEnabled;
+  final VoidCallback? onPressedButDisabled;
+  final Color backgroundColor;
+  final Color borderColor;
 
   PrimaryButton(this.text, this.onPressed,
-      {this.isEnabled = true, this.onPressedButDisabled});
+      {this.isEnabled = true,
+      this.onPressedButDisabled,
+      this.backgroundColor = Colors.transparent,
+      this.borderColor = AppColors.border});
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +43,47 @@ class PrimaryButton extends StatelessWidget {
             text,
             style: TextStyle(
               color: isEnabled ? secondaryColor : disabledColor,
+              fontSize: 16,
+              fontFamily: "Metropolis",
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SecondaryButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+  final Color backgroundColor;
+  final Color borderColor;
+
+  SecondaryButton(this.text, this.onPressed,
+      {this.backgroundColor = Colors.transparent,
+      this.borderColor = AppColors.border});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 40,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        border: Border.all(
+          width: 2,
+          color: borderColor,
+        ),
+        borderRadius: BorderRadius.all(
+          Radius.circular(8), //                 <--- border radius here
+        ),
+      ),
+      child: InkWell(
+        onTap: onPressed,
+        child: Align(
+          child: Text(
+            text,
+            style: TextStyle(
+              color: disabledColor,
               fontSize: 16,
               fontFamily: "Metropolis",
             ),

@@ -16,10 +16,10 @@ class PreviewPlayPauseButton extends StatelessWidget {
           child: controller!.value.isPlaying
               ? SizedBox.shrink()
               : Center(
-                  child: Icon(
-                    Icons.play_circle_filled,
-                    color: Theme.of(context).primaryColor,
-                    size: 92,
+                  child: Image.asset(
+                    "assets/images/ic_preview_play.png",
+                    width: 64,
+                    height: 64,
                   ),
                 ),
         ),
@@ -28,7 +28,9 @@ class PreviewPlayPauseButton extends StatelessWidget {
             if (!controller!.value.isPlaying) {
               controller!.seekTo(Duration());
             }
-            controller!.value.isPlaying ? controller!.pause() : controller!.play();
+            controller!.value.isPlaying
+                ? controller!.pause()
+                : controller!.play();
           },
         ),
       ],

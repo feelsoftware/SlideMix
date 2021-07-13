@@ -1,7 +1,10 @@
+import 'package:cpmoviemaker/colors.dart';
 import 'package:cpmoviemaker/navigation.dart';
 import 'package:cpmoviemaker/preview/preview_player.dart';
 import 'package:cpmoviemaker/preview/preview_viewmodel.dart';
+import 'package:cpmoviemaker/widget/toolbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class PreviewScreen extends StatefulWidget {
@@ -25,30 +28,30 @@ class _PreviewScreenState extends State<PreviewScreen> {
       setState(() {});
     });
     _viewModel.init();
+    SystemChrome.setSystemUIOverlayStyle(playerSystemUiOverlayStyle);
   }
 
   @override
   void dispose() {
     super.dispose();
     _viewModel.dispose();
+    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            navigateBack(context);
-          },
-        ),
-        title: Text(_viewModel.movie.title!),
-        centerTitle: false,
+      backgroundColor: playerBackgroundColor,
+      appBar: Toolbar(
+        leftIcon: Image.asset("assets/images/ic_back.png"),
+        onLeftIconTapped: () => navigateBack(context),
       ),
       body: _viewModel.isPlayerReady
-          ? PreviewPlayer(_viewModel.controller)
-          : Container(),
+          ? Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: PreviewPlayer(_viewModel.controller),
+            )
+          : SizedBox.shrink(),
     );
   }
 }

@@ -119,6 +119,7 @@ class _CreationState extends State<CreationScreen>
                     ));
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   },
+                  backgroundColor: AppColors.background,
                 ),
               ),
             ),
