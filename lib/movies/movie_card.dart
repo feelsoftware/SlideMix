@@ -20,7 +20,7 @@ class MovieCardWidget extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(
             width: 2,
-            color: borderColor,
+            color: AppColors.border,
           ),
           borderRadius: BorderRadius.all(
             Radius.circular(8), //                 <--- border radius here
@@ -58,7 +58,7 @@ class MovieCardWidget extends StatelessWidget {
                   Text(
                     title!,
                     style: TextStyle(
-                      color: secondaryColor,
+                      color: AppColors.secondary,
                       fontSize: 12,
                       fontFamily: "Metropolis",
                     ),
@@ -96,7 +96,7 @@ class AddMovieCardWidget extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         decoration: BoxDecoration(
-            color: primaryColor,
+            color: AppColors.primary,
             borderRadius: BorderRadius.all(
               Radius.circular(8),
             )),

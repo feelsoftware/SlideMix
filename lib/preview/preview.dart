@@ -41,7 +41,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: playerBackgroundColor,
+      backgroundColor: AppColors.playerBackground,
       appBar: Toolbar(
         leftIcon: Image.asset("assets/images/ic_back.png"),
         onLeftIconTapped: () => navigateBack(context),

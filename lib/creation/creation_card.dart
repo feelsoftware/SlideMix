@@ -24,7 +24,7 @@ class AddMediaCardWidget extends CreationCard {
       onTap: () => _clickListener.onAddNewMediaClicked(),
       child: Container(
         decoration: BoxDecoration(
-            color: primaryColor,
+            color: AppColors.primary,
             borderRadius: BorderRadius.all(
               Radius.circular(8),
             )),

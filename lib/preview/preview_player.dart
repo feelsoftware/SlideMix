@@ -20,7 +20,7 @@ class PreviewPlayer extends StatelessWidget {
           VideoProgressIndicator(
             _controller!,
             colors: VideoProgressColors(
-              playedColor: primaryColor,
+              playedColor: AppColors.primary,
             ),
             allowScrubbing: true,
           ),

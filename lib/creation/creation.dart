@@ -95,7 +95,7 @@ class _CreationState extends State<CreationScreen>
           CreationList(this, _viewModel.media),
           _viewModel.isLoading
               ? Container(
-                  color: overlayColor,
+                  color: AppColors.overlay,
                   child: Center(
                     child: CircularProgressIndicator(),
                   ),
