@@ -3,7 +3,8 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="cpmoviemaker">
+        android:label="cpmoviemaker"
+        android:roundIcon="@mipmap/ic_launcher_round">
 
         <meta-data
             android:name="flutterEmbedding"
