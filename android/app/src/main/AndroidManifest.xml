@@ -3,7 +3,7 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="cpmoviemaker"
+        android:label="SlideMix"
         android:roundIcon="@mipmap/ic_launcher_round">
 
         <meta-data
