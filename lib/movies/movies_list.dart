@@ -1,6 +1,6 @@
-import 'package:cpmoviemaker/models/movie.dart';
-import 'package:cpmoviemaker/movies/movie_card.dart';
-import 'package:cpmoviemaker/navigation.dart';
+import 'package:com_feelsoftware_slidemix/models/movie.dart';
+import 'package:com_feelsoftware_slidemix/movies/movie_card.dart';
+import 'package:com_feelsoftware_slidemix/navigation.dart';
 import 'package:flutter/material.dart';
 
 abstract class MovieClickListener {

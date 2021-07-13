@@ -5,8 +5,8 @@ ext.versions = [
         serialization : "0.20.0",
         android_sdk   : [
                 min       : 24,
-                compile   : 28,
-                target    : 28,
+                compile   : 29,
+                target    : 29,
                 buildtools: "29.0.2"
         ],
         ffmpeg        : "4.3.2",

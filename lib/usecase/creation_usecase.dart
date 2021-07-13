@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:cpmoviemaker/base/usecase.dart';
-import 'package:cpmoviemaker/models/movie.dart';
-import 'package:cpmoviemaker/usecase/movies_usecase.dart';
+import 'package:com_feelsoftware_slidemix/base/usecase.dart';
+import 'package:com_feelsoftware_slidemix/models/movie.dart';
+import 'package:com_feelsoftware_slidemix/usecase/movies_usecase.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path/path.dart';
 
-const _CHANNEL = "com.vitoksmile.cpmoviemaker.MovieCreatorChannel";
+const _CHANNEL = "com.feelsoftware.slidemix.MovieCreatorChannel";
 const _METHOD_CREATE = "METHOD_CREATE";
 const _METHOD_CANCEL = "METHOD_CANCEL";
 
@@ -18,7 +18,7 @@ const _KEY_SCENES_DIR = "KEY_SCENES_DIR";
 
 const _KEY_TYPE = "type";
 const _TYPE_SUCCESS =
-    "com.vitoksmile.cpmoviemaker.model.MovieCreatorResult.Success";
+    "com.feelsoftware.slidemix.model.MovieCreatorResult.Success";
 const _KEY_THUMB = "thumb";
 const _KEY_MOVIE = "movie";
 const _KEY_ERROR_MESSAGE = "message";

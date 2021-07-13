@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cpmoviemaker/creation/creation_card.dart';
+import 'package:com_feelsoftware_slidemix/creation/creation_card.dart';
 import 'package:flutter/material.dart';
 
 abstract class CreationListClickListener {

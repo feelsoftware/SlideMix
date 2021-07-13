@@ -1,5 +1,5 @@
-import 'package:cpmoviemaker/navigation.dart';
-import 'package:cpmoviemaker/widget/button.dart';
+import 'package:com_feelsoftware_slidemix/navigation.dart';
+import 'package:com_feelsoftware_slidemix/widget/button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 

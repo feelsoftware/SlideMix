@@ -1,4 +1,4 @@
-import 'package:cpmoviemaker/usecase/movies_usecase.dart';
+import 'package:com_feelsoftware_slidemix/usecase/movies_usecase.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 

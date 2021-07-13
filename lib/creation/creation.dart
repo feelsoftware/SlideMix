@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:cpmoviemaker/colors.dart';
-import 'package:cpmoviemaker/creation/creation_list.dart';
-import 'package:cpmoviemaker/creation/creation_viewmodel.dart';
-import 'package:cpmoviemaker/models/movie.dart';
-import 'package:cpmoviemaker/navigation.dart';
-import 'package:cpmoviemaker/widget/button.dart';
-import 'package:cpmoviemaker/widget/toolbar.dart';
+import 'package:com_feelsoftware_slidemix/colors.dart';
+import 'package:com_feelsoftware_slidemix/creation/creation_list.dart';
+import 'package:com_feelsoftware_slidemix/creation/creation_viewmodel.dart';
+import 'package:com_feelsoftware_slidemix/models/movie.dart';
+import 'package:com_feelsoftware_slidemix/navigation.dart';
+import 'package:com_feelsoftware_slidemix/widget/button.dart';
+import 'package:com_feelsoftware_slidemix/widget/toolbar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'creation_source_dialog.dart';

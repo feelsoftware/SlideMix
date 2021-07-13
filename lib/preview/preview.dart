@@ -1,8 +1,8 @@
-import 'package:cpmoviemaker/colors.dart';
-import 'package:cpmoviemaker/navigation.dart';
-import 'package:cpmoviemaker/preview/preview_player.dart';
-import 'package:cpmoviemaker/preview/preview_viewmodel.dart';
-import 'package:cpmoviemaker/widget/toolbar.dart';
+import 'package:com_feelsoftware_slidemix/colors.dart';
+import 'package:com_feelsoftware_slidemix/navigation.dart';
+import 'package:com_feelsoftware_slidemix/preview/preview_player.dart';
+import 'package:com_feelsoftware_slidemix/preview/preview_viewmodel.dart';
+import 'package:com_feelsoftware_slidemix/widget/toolbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 

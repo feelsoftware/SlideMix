@@ -1,5 +1,5 @@
-import 'package:cpmoviemaker/colors.dart';
-import 'package:cpmoviemaker/preview/preview_player_button.dart';
+import 'package:com_feelsoftware_slidemix/colors.dart';
+import 'package:com_feelsoftware_slidemix/preview/preview_player_button.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 

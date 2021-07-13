@@ -1,6 +1,6 @@
-import 'package:cpmoviemaker/colors.dart';
-import 'package:cpmoviemaker/entry_point/entry_point_viewmodel.dart';
-import 'package:cpmoviemaker/navigation.dart';
+import 'package:com_feelsoftware_slidemix/colors.dart';
+import 'package:com_feelsoftware_slidemix/entry_point/entry_point_viewmodel.dart';
+import 'package:com_feelsoftware_slidemix/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';

@@ -1,6 +1,6 @@
-import 'package:cpmoviemaker/base/viewmodel.dart';
-import 'package:cpmoviemaker/models/movie.dart';
-import 'package:cpmoviemaker/usecase/movies_usecase.dart';
+import 'package:com_feelsoftware_slidemix/base/viewmodel.dart';
+import 'package:com_feelsoftware_slidemix/models/movie.dart';
+import 'package:com_feelsoftware_slidemix/usecase/movies_usecase.dart';
 
 class MoviesViewModel extends ViewModel {
   final MoviesUseCase _useCase;

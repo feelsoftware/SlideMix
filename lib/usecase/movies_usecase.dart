@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:cpmoviemaker/base/usecase.dart';
-import 'package:cpmoviemaker/models/movie.dart';
+import 'package:com_feelsoftware_slidemix/base/usecase.dart';
+import 'package:com_feelsoftware_slidemix/models/movie.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-const _CHANNEL = "com.vitoksmile.cpmoviemaker.MoviesRepositoryChannel";
+const _CHANNEL = "com.feelsoftware.slidemix.MoviesRepositoryChannel";
 
 const _METHOD_GET_ALL = "getAll";
 const _METHOD_GET = "get"; // ignore: unused_element

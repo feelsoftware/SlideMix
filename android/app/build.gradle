@@ -39,7 +39,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.vitoksmile.cpmoviemaker"
+        applicationId "com.feelsoftware.slidemix"
         minSdkVersion versions.android_sdk.min
         targetSdkVersion versions.android_sdk.target
         versionCode flutterVersionCode.toInteger()

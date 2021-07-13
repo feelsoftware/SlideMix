@@ -1,6 +1,6 @@
-import 'package:cpmoviemaker/navigation.dart';
-import 'package:cpmoviemaker/providers.dart';
-import 'package:cpmoviemaker/colors.dart';
+import 'package:com_feelsoftware_slidemix/colors.dart';
+import 'package:com_feelsoftware_slidemix/navigation.dart';
+import 'package:com_feelsoftware_slidemix/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'CPMovieMaker',
+      title: 'SlideMix',
       theme: ThemeData(
         primarySwatch: primarySwatch,
         scaffoldBackgroundColor: AppColors.background,
