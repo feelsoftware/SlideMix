@@ -8,20 +8,18 @@ import 'package:provider/provider.dart';
 
 class MoviesScreen extends StatefulWidget {
   final MoviesViewModel _viewModel;
-  final String _title;
 
-  MoviesScreen(this._viewModel, this._title);
+  MoviesScreen(this._viewModel);
 
   @override
-  _MoviesScreenState createState() => _MoviesScreenState(_viewModel, _title);
+  _MoviesScreenState createState() => _MoviesScreenState(_viewModel);
 }
 
 class _MoviesScreenState extends State<MoviesScreen>
     implements MovieClickListener {
   final MoviesViewModel viewModel;
-  final String title;
 
-  _MoviesScreenState(this.viewModel, this.title);
+  _MoviesScreenState(this.viewModel);
 
   @override
   void initState() {

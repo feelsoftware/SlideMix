@@ -1,24 +1,11 @@
-import 'package:cpmoviemaker/entry_point/entry_point.dart';
-import 'package:cpmoviemaker/entry_point/entry_point_viewmodel.dart';
-import 'package:cpmoviemaker/movies/movies_viewmodel.dart';
-import 'package:cpmoviemaker/usecase/movies_usecase.dart';
+import 'package:cpmoviemaker/navigation.dart';
+import 'package:cpmoviemaker/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(
       MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (_) => MoviesViewModel(
-              MoviesUseCaseImpl(),
-            ),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => EntryPointViewModel(
-              MoviesUseCaseImpl(),
-            ),
-          ),
-        ],
+        providers: getProviders(),
         child: MyApp(),
       ),
     );
@@ -54,10 +41,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: EntryPointScreen(
-        Provider.of<EntryPointViewModel>(context, listen: false),
-      ),
       debugShowCheckedModeBanner: false,
+      initialRoute: getInitialRoute(),
+      routes: getRoutes(),
     );
   }
 }
