@@ -3,8 +3,14 @@ import 'package:flutter/widgets.dart';
 class Toolbar extends StatelessWidget with PreferredSizeWidget {
   final Image? leftIcon;
   final Image? rightIcon;
+  final VoidCallback? onLeftIconTapped;
+  final VoidCallback? onRightIconTapped;
 
-  Toolbar({this.leftIcon, this.rightIcon});
+  Toolbar(
+      {this.leftIcon,
+      this.rightIcon,
+      this.onLeftIconTapped,
+      this.onRightIconTapped});
 
   @override
   Size get preferredSize => Size.fromHeight(56);
@@ -15,12 +21,18 @@ class Toolbar extends StatelessWidget with PreferredSizeWidget {
 
   Widget _getLeftIcon() {
     if (!_hasLeftIcon()) return Container();
-    return leftIcon!;
+    return GestureDetector(
+      child: leftIcon!,
+      onTap: onLeftIconTapped!,
+    );
   }
 
   Widget _getRightIcon() {
     if (!_hasRightIcon()) return Container();
-    return rightIcon!;
+    return GestureDetector(
+      child: rightIcon!,
+      onTap: onRightIconTapped!,
+    );
   }
 
   @override

@@ -43,6 +43,7 @@ class _MoviesScreenState extends State<MoviesScreen>
     return Scaffold(
       appBar: Toolbar(
         rightIcon: Image.asset("assets/images/ic_create_movie_small.png"),
+        onRightIconTapped: () => navigateToCreation(context),
       ),
       body: Consumer<MoviesViewModel>(
         builder: (_, __, ___) => Container(
