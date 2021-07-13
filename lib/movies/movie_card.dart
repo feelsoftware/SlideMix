@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cpmoviemaker/main.dart';
+import 'package:cpmoviemaker/colors.dart';
 import 'package:flutter/material.dart';
 
 class MovieCardWidget extends StatelessWidget {
