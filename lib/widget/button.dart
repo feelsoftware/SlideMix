@@ -1,6 +1,5 @@
-import 'package:com_feelsoftware_slidemix/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:slidemix/colors.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
@@ -10,11 +9,15 @@ class PrimaryButton extends StatelessWidget {
   final Color backgroundColor;
   final Color borderColor;
 
-  PrimaryButton(this.text, this.onPressed,
-      {this.isEnabled = true,
-      this.onPressedButDisabled,
-      this.backgroundColor = Colors.transparent,
-      this.borderColor = AppColors.border});
+  const PrimaryButton(
+    this.text, {
+    super.key,
+    required this.onPressed,
+    this.isEnabled = true,
+    this.onPressedButDisabled,
+    this.backgroundColor = Colors.transparent,
+    this.borderColor = AppColors.border,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +29,8 @@ class PrimaryButton extends StatelessWidget {
           width: 2,
           color: borderColor,
         ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(8), //                 <--- border radius here
+        borderRadius: const BorderRadius.all(
+          Radius.circular(8),
         ),
       ),
       child: InkWell(
@@ -59,9 +62,13 @@ class SecondaryButton extends StatelessWidget {
   final Color backgroundColor;
   final Color borderColor;
 
-  SecondaryButton(this.text, this.onPressed,
-      {this.backgroundColor = Colors.transparent,
-      this.borderColor = AppColors.border});
+  const SecondaryButton(
+    this.text,
+    this.onPressed, {
+    super.key,
+    this.backgroundColor = Colors.transparent,
+    this.borderColor = AppColors.border,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +80,8 @@ class SecondaryButton extends StatelessWidget {
           width: 2,
           color: borderColor,
         ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(8), //                 <--- border radius here
+        borderRadius: const BorderRadius.all(
+          Radius.circular(8),
         ),
       ),
       child: InkWell(
@@ -82,7 +89,7 @@ class SecondaryButton extends StatelessWidget {
         child: Align(
           child: Text(
             text,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.disabled,
               fontSize: 16,
               fontFamily: "Metropolis",

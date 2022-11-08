@@ -1,18 +1,44 @@
-import 'package:com_feelsoftware_slidemix/navigation.dart';
-import 'package:com_feelsoftware_slidemix/widget/button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:slidemix/colors.dart';
+import 'package:slidemix/movies/movies.dart';
+import 'package:slidemix/welcome/welcome_bloc.dart';
+import 'package:slidemix/widget/button.dart';
 
 class WelcomeScreen extends StatefulWidget {
+  const WelcomeScreen({super.key});
+
   @override
   State<StatefulWidget> createState() => _WelcomeStateScreen();
 }
 
 class _WelcomeStateScreen extends State<WelcomeScreen> {
-  final double logoWidthFactor = 0.45;
-
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<WelcomeBloc, WelcomeState>(
+      builder: (context, state) {
+        switch (state.runtimeType) {
+          case ShowWelcomeState:
+            return _build(context);
+
+          case ShowMoviesState:
+            return Builder(builder: (context) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context).pushReplacement(MoviesScreen.route());
+              });
+              return Container(color: AppColors.background);
+            });
+
+          default:
+            return Container(color: AppColors.background);
+        }
+      },
+    );
+  }
+
+  Widget _build(BuildContext context) {
+    final logoSize = MediaQuery.of(context).size.width / 2;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -30,9 +56,9 @@ class _WelcomeStateScreen extends State<WelcomeScreen> {
           ),
           Align(
             alignment: Alignment.center,
-            child: FractionallySizedBox(
-              widthFactor: logoWidthFactor,
-              child: Image.asset("assets/images/ic_logo_large.png"),
+            child: Image.asset(
+              "assets/images/ic_logo_large.png",
+              width: logoSize,
             ),
           ),
           Align(
@@ -40,15 +66,19 @@ class _WelcomeStateScreen extends State<WelcomeScreen> {
             child: FractionallySizedBox(
               heightFactor: 0.25,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * logoWidthFactor,
-                    child: PrimaryButton("tap to start", () {
-                      navigateToCreation(context);
-                    }),
+                  SizedBox(
+                    width: logoSize,
+                    child: PrimaryButton(
+                      "tap to start",
+                      onPressed: () {
+                        // TODO: navigate to creation flow
+                        Navigator.of(context).push(MoviesScreen.route());
+                      },
+                    ),
                   ),
                 ],
-                mainAxisAlignment: MainAxisAlignment.center,
               ),
             ),
           )

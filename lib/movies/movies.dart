@@ -1,54 +1,46 @@
-import 'package:com_feelsoftware_slidemix/movies/movies_list.dart';
-import 'package:com_feelsoftware_slidemix/movies/movies_viewmodel.dart';
-import 'package:com_feelsoftware_slidemix/navigation.dart';
-import 'package:com_feelsoftware_slidemix/widget/toolbar.dart';
 import 'package:flutter/material.dart';
-import 'package:com_feelsoftware_slidemix/models/movie.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:slidemix/movies/movies_bloc.dart';
+import 'package:slidemix/movies/widget/movies_list.dart';
+import 'package:slidemix/navigation.dart';
+import 'package:slidemix/widget/toolbar.dart';
 
 class MoviesScreen extends StatefulWidget {
-  final MoviesViewModel _viewModel;
+  static Route<void> route() => ScreenRoute(const MoviesScreen());
 
-  MoviesScreen(this._viewModel);
+  const MoviesScreen({super.key});
 
   @override
-  _MoviesScreenState createState() => _MoviesScreenState(_viewModel);
+  MoviesScreenState createState() => MoviesScreenState();
 }
 
-class _MoviesScreenState extends State<MoviesScreen>
-    implements MovieClickListener {
-  final MoviesViewModel viewModel;
-
-  _MoviesScreenState(this.viewModel);
-
-  @override
-  void initState() {
-    super.initState();
-    viewModel.fetchMovies();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    viewModel.dispose();
-  }
-
-  @override
-  void onMovieClicked(Movie movie) {
-    navigateToPreview(context, movie);
-  }
-
+class MoviesScreenState extends State<MoviesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Toolbar(
         rightIcon: Image.asset("assets/images/ic_create_movie_small.png"),
-        onRightIconTapped: () => navigateToCreation(context),
+        onRightIconTapped: () {
+          // TODO: navigate to movie creation flow
+          BlocProvider.of<MoviesBloc>(context).createFakeMovie();
+        },
       ),
-      body: Consumer<MoviesViewModel>(
-        builder: (_, __, ___) => Container(
-          child: MoviesList(this, viewModel.movies),
-        ),
+      body: BlocBuilder<MoviesBloc, MoviesState>(
+        builder: (context, state) {
+          return MoviesList(
+            state.movies,
+            onMovieTap: (movie) {
+              // TODO: navigate to preview
+            },
+            onToggleFavouriteTap: (movie) {
+              BlocProvider.of<MoviesBloc>(context).toggleFavourite(movie);
+            },
+            onCreateMovieTap: () {
+              // TODO: navigate to creation flow
+              BlocProvider.of<MoviesBloc>(context).createFakeMovie();
+            },
+          );
+        },
       ),
     );
   }
