@@ -1,0 +1,85 @@
+import 'dart:async';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:slidemix/movies/data/movie_dao.dart';
+import 'package:slidemix/movies/data/movie_entity.dart';
+import 'package:slidemix/movies/data/movie_mapper.dart';
+import 'package:slidemix/movies/data/movie.dart';
+
+class MoviesBloc extends Bloc<_MoviesEvent, MoviesState> {
+  final MovieDao _movieDao;
+
+  StreamSubscription<List<MovieEntity>>? _allMoviesSubscription;
+
+  MoviesBloc({
+    required MovieDao movieDao,
+  })  : _movieDao = movieDao,
+        super(const MoviesState(<Movie>[])) {
+    _subscribeToDBUpdates();
+
+    on<_OnMoviesChangedEvent>(_onMoviesChanges);
+  }
+
+  void createFakeMovie() async {
+    final index = (await _movieDao.getAll().first).length + 1;
+    final isDraft = index % 3 == 0;
+    final movie = Movie(
+      id: index,
+      title: isDraft ? "draft #${index + 1}" : "project #${index + 1}",
+      thumb: "",
+      video: "",
+      createdAt: DateTime.now(),
+      isFavourite: false,
+      isDraft: isDraft,
+    );
+    await _movieDao.insertMovie(movie.toEntity());
+  }
+
+  FutureOr<void> toggleFavourite(Movie movie) async {
+    final movieEntity = await _movieDao.getMovieById(movie.id);
+    if (movieEntity == null) {
+      throw Exception("Can't find movie by id ${movie.id}");
+    }
+
+    _movieDao.updateMovie(movieEntity.copyWith(
+      isFavourite: !movieEntity.isFavourite,
+    ));
+  }
+
+  @override
+  Future<void> close() async {
+    await _allMoviesSubscription?.cancel();
+    return super.close();
+  }
+
+  void _subscribeToDBUpdates() {
+    _allMoviesSubscription = _movieDao.getAll().listen((movies) {
+      add(_OnMoviesChangedEvent(movies));
+    });
+  }
+
+  Future<void> _onMoviesChanges(
+    _OnMoviesChangedEvent event,
+    Emitter<MoviesState> emit,
+  ) async {
+    emit(MoviesState(
+      event.movies.map((e) => e.toMovie()).toList(growable: false),
+    ));
+  }
+}
+
+abstract class _MoviesEvent {
+  const _MoviesEvent();
+}
+
+class _OnMoviesChangedEvent extends _MoviesEvent {
+  final List<MovieEntity> movies;
+
+  const _OnMoviesChangedEvent(this.movies);
+}
+
+class MoviesState {
+  final List<Movie> movies;
+
+  const MoviesState(this.movies);
+}

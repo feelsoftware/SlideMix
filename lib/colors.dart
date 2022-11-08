@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -15,8 +13,7 @@ class AppColors {
   static const Color playerBackground = Color(0xff1d1d1b);
 }
 
-final SystemUiOverlayStyle systemUiOverlayStyle =
-    SystemUiOverlayStyle.dark.copyWith(
+final SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle.dark.copyWith(
   statusBarColor: AppColors.statusBar,
   statusBarIconBrightness: Brightness.dark,
 );
@@ -33,7 +30,7 @@ final SystemUiOverlayStyle systemUiOverlayStyle =
 
 final MaterialColor primarySwatch = MaterialColor(
   AppColors.primary.value,
-  <int, Color>{
+  const <int, Color>{
     50: AppColors.primary,
     100: AppColors.primary,
     200: AppColors.primary,
