@@ -22,6 +22,20 @@ class CreationScreen extends StatefulWidget {
 }
 
 class CreationScreenState extends State<CreationScreen> {
+  bool _openPickerAtStartup = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_openPickerAtStartup) {
+        setState(() => _openPickerAtStartup = false);
+        _pickMedia();
+      }
+    });
+  }
+
   Future _pickMedia() async {
     List<Media> media = [];
 
