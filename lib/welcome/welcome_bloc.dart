@@ -20,7 +20,7 @@ class WelcomeBloc extends Bloc<_WelcomeEvent, WelcomeState> {
         }
       },
       onError: (e, st) {
-        Logger.e('Failed to get all movies', error: e, stackTrace: st);
+        Logger.e('Failed to get all movies', e, st);
         emit(ShowWelcomeState());
       },
     );

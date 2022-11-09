@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/colors.dart';
+import 'package:slidemix/creation/creation.dart';
 import 'package:slidemix/movies/movies.dart';
 import 'package:slidemix/welcome/welcome_bloc.dart';
 import 'package:slidemix/widget/button.dart';
@@ -73,8 +74,7 @@ class _WelcomeStateScreen extends State<WelcomeScreen> {
                     child: PrimaryButton(
                       "tap to start",
                       onPressed: () {
-                        // TODO: navigate to creation flow
-                        Navigator.of(context).push(MoviesScreen.route());
+                        Navigator.of(context).push(CreationScreen.route());
                       },
                     ),
                   ),
