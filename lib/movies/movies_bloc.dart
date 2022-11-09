@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/movies/data/movie_dao.dart';
 import 'package:slidemix/movies/data/movie_entity.dart';
@@ -78,8 +79,14 @@ class _OnMoviesChangedEvent extends _MoviesEvent {
   const _OnMoviesChangedEvent(this.movies);
 }
 
-class MoviesState {
+class MoviesState extends Equatable {
   final List<Movie> movies;
 
   const MoviesState(this.movies);
+
+  @override
+  List<Object?> get props => [movies];
+
+  @override
+  bool? get stringify => true;
 }

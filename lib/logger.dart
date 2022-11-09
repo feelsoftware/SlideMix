@@ -9,7 +9,7 @@ class Logger {
     _loggerImpl.d(message);
   }
 
-  static void e(String message, {dynamic error, StackTrace? stackTrace}) {
+  static void e(String message, [dynamic error, StackTrace? stackTrace]) {
     _loggerImpl.e(message, error, stackTrace);
   }
 }
