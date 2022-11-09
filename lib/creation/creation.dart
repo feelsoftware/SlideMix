@@ -8,6 +8,7 @@ import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/creation/widget/creation_list.dart';
 import 'package:slidemix/logger.dart';
 import 'package:slidemix/navigation.dart';
+import 'package:slidemix/welcome/welcome.dart';
 import 'package:slidemix/widget/button.dart';
 import 'package:slidemix/widget/toolbar.dart';
 
@@ -49,6 +50,7 @@ class CreationScreenState extends State<CreationScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        // TODO: ask if user wants to leave
         BlocProvider.of<CreationBloc>(context).reset();
         return true;
       },
@@ -76,8 +78,11 @@ class CreationScreenState extends State<CreationScreen> {
                       widthFactor: 0.5,
                       child: PrimaryButton(
                         "create",
-                        onPressed: () {
-                          BlocProvider.of<CreationBloc>(context).createMovie();
+                        onPressed: () async {
+                          await BlocProvider.of<CreationBloc>(context).createMovie();
+                          if (!mounted) return;
+                          Navigator.of(context)
+                              .pushAndRemoveUntil(WelcomeScreen.route(), (_) => false);
                         },
                         isEnabled: state.isCreationAllowed,
                         onPressedButDisabled: () {

@@ -55,6 +55,7 @@ class MediaCreationCard extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
+            color: Colors.grey[200],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),

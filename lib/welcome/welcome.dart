@@ -3,10 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/colors.dart';
 import 'package:slidemix/creation/creation.dart';
 import 'package:slidemix/movies/movies.dart';
+import 'package:slidemix/navigation.dart';
 import 'package:slidemix/welcome/welcome_bloc.dart';
 import 'package:slidemix/widget/button.dart';
 
 class WelcomeScreen extends StatefulWidget {
+  static Route<void> route() => ScreenRoute(const WelcomeScreen());
+
   const WelcomeScreen({super.key});
 
   @override

@@ -20,7 +20,10 @@ class Setup extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<CreationBloc>(
-          create: (_) => CreationBloc(),
+          create: (_) => CreationBloc(
+            creationDao: appDatabase.creationDao,
+            moviesDao: appDatabase.movieDao,
+          ),
         ),
         BlocProvider<MoviesBloc>(
           create: (_) => MoviesBloc(
