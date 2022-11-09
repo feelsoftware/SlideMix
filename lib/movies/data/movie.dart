@@ -1,29 +1,31 @@
 import 'package:equatable/equatable.dart';
 
 class Movie extends Equatable {
-  final int id;
+  final int? id;
   final String title;
   final String thumb;
   final String video;
+  final Duration duration;
   final DateTime createdAt;
   final bool isFavourite;
   final bool isDraft;
 
   const Movie({
-    required this.id,
+    this.id,
     required this.title,
     required this.thumb,
     required this.video,
+    required this.duration,
     required this.createdAt,
-    required this.isFavourite,
-    required this.isDraft,
+    this.isFavourite = false,
+    this.isDraft = false,
   });
 
   @override
-  List<Object?> get props => [id, createdAt];
+  List<Object?> get props => [id, createdAt, isFavourite, isDraft];
 
   @override
   String toString() {
-    return 'Movie{id: $id, title: $title, thumb: $thumb, video: $video, createdAt: $createdAt, isFavourite: $isFavourite, isDraft: $isDraft}';
+    return 'Movie{id: $id, title: $title, thumb: $thumb, video: $video, duration: $duration, createdAt: $createdAt, isFavourite: $isFavourite, isDraft: $isDraft}';
   }
 }

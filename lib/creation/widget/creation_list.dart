@@ -31,7 +31,7 @@ class CreationList extends StatelessWidget {
         left: padding * 2,
         right: padding * 2,
         top: padding,
-        bottom: padding * 8,
+        bottom: padding * 6,
       ),
       itemCount: media.length + 1,
       itemBuilder: (BuildContext context, int index) {

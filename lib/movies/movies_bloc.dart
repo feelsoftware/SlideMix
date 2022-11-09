@@ -21,28 +21,13 @@ class MoviesBloc extends Bloc<_MoviesEvent, MoviesState> {
     on<_OnMoviesChangedEvent>(_onMoviesChanges);
   }
 
-  void createFakeMovie() async {
-    final index = (await _movieDao.getAll().first).length + 1;
-    final isDraft = index % 3 == 0;
-    final movie = Movie(
-      id: index,
-      title: isDraft ? "draft #${index + 1}" : "project #${index + 1}",
-      thumb: "",
-      video: "",
-      createdAt: DateTime.now(),
-      isFavourite: false,
-      isDraft: isDraft,
-    );
-    await _movieDao.insertMovie(movie.toEntity());
-  }
-
   FutureOr<void> toggleFavourite(Movie movie) async {
-    final movieEntity = await _movieDao.getMovieById(movie.id);
+    final movieEntity = await _movieDao.getById(movie.id!);
     if (movieEntity == null) {
       throw Exception("Can't find movie by id ${movie.id}");
     }
 
-    _movieDao.updateMovie(movieEntity.copyWith(
+    _movieDao.update(movieEntity.copyWith(
       isFavourite: !movieEntity.isFavourite,
     ));
   }

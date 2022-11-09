@@ -39,6 +39,9 @@ dependencies:
   # https://pub.dev/packages/equatable
   equatable: 2.0.5
 
+  # https://github.com/arthenica/ffmpeg-kit/tree/main/flutter/flutter
+  ffmpeg_kit_flutter: 5.1.0
+
   # https://pub.dev/packages/flutter_bloc
   flutter_bloc: 8.1.1
 
@@ -59,6 +62,9 @@ dependencies:
 
   # https://pub.dev/packages/path_provider
   path_provider: 2.0.11
+
+  # https://pub.dev/packages/sqflite
+  sqflite: 2.2.0+3
 
 dev_dependencies:
   flutter_test:

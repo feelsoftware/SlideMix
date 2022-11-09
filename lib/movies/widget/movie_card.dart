@@ -41,21 +41,31 @@ class MovieCard extends StatelessWidget {
                 const SizedBox(height: padding),
                 ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(radius)),
-                  child: ColorFiltered(
-                    colorFilter: const ColorFilter.mode(
-                      Colors.grey,
-                      BlendMode.saturation,
-                    ),
-                    child: SizedBox(
-                      width: imageSize,
-                      height: imageSize,
-                      child: Image.file(
-                        File(movie.thumb),
-                        fit: BoxFit.fitWidth,
-                        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                      ),
-                    ),
-                  ),
+                  child: movie.isDraft
+                      ? ColorFiltered(
+                          colorFilter: const ColorFilter.mode(
+                            Colors.grey,
+                            BlendMode.saturation,
+                          ),
+                          child: SizedBox(
+                            width: imageSize,
+                            height: imageSize,
+                            child: Image.file(
+                              File(movie.thumb),
+                              fit: BoxFit.fitWidth,
+                              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                            ),
+                          ),
+                        )
+                      : SizedBox(
+                          width: imageSize,
+                          height: imageSize,
+                          child: Image.file(
+                            File(movie.thumb),
+                            fit: BoxFit.fitWidth,
+                            errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                          ),
+                        ),
                 ),
                 Expanded(
                   child: Container(
