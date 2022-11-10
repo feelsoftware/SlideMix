@@ -28,6 +28,7 @@ class _WelcomeStateScreen extends State<WelcomeScreen> {
           case ShowMoviesState:
             return Builder(builder: (context) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
+                BlocProvider.of<WelcomeBloc>(context).reset();
                 Navigator.of(context).pushReplacement(MoviesScreen.route());
               });
               return Container(color: AppColors.background);

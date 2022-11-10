@@ -33,6 +33,8 @@ class _PreviewPlayerState extends State<PreviewPlayer> {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
 
+        Logger.d('Play video ${widget.movie}');
+
         // autoplay
         controller?.play();
       })

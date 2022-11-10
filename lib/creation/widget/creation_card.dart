@@ -75,7 +75,7 @@ class MediaCreationCard extends StatelessWidget {
             child: GestureDetector(
               onTap: () => onDeleteTap(media),
               child: Image.asset(
-                "assets/images/ic_remove_media.png",
+                "assets/images/ic_delete_movie.png",
                 width: 16,
                 height: 16,
               ),
