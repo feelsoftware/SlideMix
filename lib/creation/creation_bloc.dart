@@ -84,7 +84,7 @@ class CreationBloc extends Bloc<Object, CreationState> {
     emit(const CreationState(<Media>[]));
   }
 
-  FutureOr<void> createMovie() async {
+  FutureOr<Movie> createMovie() async {
     Logger.d('createMovie ${state.media}');
     emit(state.copyWith(isLoading: true));
 
@@ -134,7 +134,7 @@ class CreationBloc extends Bloc<Object, CreationState> {
     Duration movieDuration;
     if (ReturnCode.isCancel(await movieSession.getReturnCode())) {
       Logger.d('Canceled video creation $moviePath');
-      return;
+      throw Exception('Video creation cancelled');
     }
     if (ReturnCode.isSuccess(await movieSession.getReturnCode())) {
       Logger.d('Movie is created $moviePath');
@@ -160,7 +160,7 @@ class CreationBloc extends Bloc<Object, CreationState> {
           (await movieSession.getLogs()).reversed.map((log) => log.getMessage()),
         ),
       );
-      return;
+      throw Exception('Failed to create movie');
     }
 
     final thumbDir = Directory('$appDocDir/thumbnails')..createSync();
@@ -182,7 +182,7 @@ class CreationBloc extends Bloc<Object, CreationState> {
     final thumbSession = (await FFmpegKit.listSessions()).last;
     if (ReturnCode.isCancel(await movieSession.getReturnCode())) {
       Logger.d('Canceled thumbnail generation $thumbPath');
-      return;
+      throw Exception('Video creation cancelled');
     }
     if (ReturnCode.isSuccess(await thumbSession.getReturnCode())) {
       Logger.d('Thumbnail is created $thumbPath');
@@ -199,7 +199,7 @@ class CreationBloc extends Bloc<Object, CreationState> {
     emit(state.copyWith(isLoading: false));
     // TODO: do we actually need CreationDao?
     await _creationDao.insert(const CreationEntity());
-    await _moviesDao.insert(Movie(
+    final movie = Movie(
       title: 'project #$projectId',
       thumb: thumbPath,
       video: moviePath,
@@ -207,7 +207,9 @@ class CreationBloc extends Bloc<Object, CreationState> {
       createdAt: DateTime.now(),
       isFavourite: false,
       isDraft: false,
-    ).toEntity());
+    );
+    await _moviesDao.insert(movie.toEntity());
+    return movie;
   }
 
   String _formatDurationForThumbnail(Duration duration) {

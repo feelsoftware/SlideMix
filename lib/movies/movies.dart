@@ -1,21 +1,24 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/creation/creation.dart';
 import 'package:slidemix/movies/movies_bloc.dart';
 import 'package:slidemix/movies/widget/movies_list.dart';
 import 'package:slidemix/navigation.dart';
+import 'package:slidemix/preview/preview.dart';
 import 'package:slidemix/widget/toolbar.dart';
 
 class MoviesScreen extends StatefulWidget {
-  static Route<void> route() => ScreenRoute(const MoviesScreen());
+  static Route<void> route() => ScreenRoute(const MoviesScreen._());
 
-  const MoviesScreen({super.key});
+  const MoviesScreen._({Key? key}) : super(key: key);
 
   @override
-  MoviesScreenState createState() => MoviesScreenState();
+  _MoviesScreenState createState() => _MoviesScreenState();
 }
 
-class MoviesScreenState extends State<MoviesScreen> {
+class _MoviesScreenState extends State<MoviesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,12 +31,14 @@ class MoviesScreenState extends State<MoviesScreen> {
           return MoviesList(
             state.movies,
             onMovieTap: (movie) {
-              // TODO: navigate to preview
+              Navigator.of(context).push(PreviewScreen.route(movie));
             },
             onToggleFavouriteTap: (movie) {
               BlocProvider.of<MoviesBloc>(context).toggleFavourite(movie);
             },
-            onCreateMovieTap: () => Navigator.of(context).push(CreationScreen.route()),
+            onCreateMovieTap: () {
+              Navigator.of(context).push(CreationScreen.route());
+            },
           );
         },
       ),

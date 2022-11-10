@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,21 +9,22 @@ import 'package:slidemix/creation/widget/creation_source_dialog.dart';
 import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/creation/widget/creation_list.dart';
 import 'package:slidemix/logger.dart';
+import 'package:slidemix/movies/data/movie.dart';
 import 'package:slidemix/navigation.dart';
-import 'package:slidemix/welcome/welcome.dart';
+import 'package:slidemix/preview/preview.dart';
 import 'package:slidemix/widget/button.dart';
 import 'package:slidemix/widget/toolbar.dart';
 
 class CreationScreen extends StatefulWidget {
-  static Route<void> route() => ScreenRoute(const CreationScreen());
+  static Route<void> route() => ScreenRoute(const CreationScreen._());
 
-  const CreationScreen({super.key});
+  const CreationScreen._({Key? key}) : super(key: key);
 
   @override
-  CreationScreenState createState() => CreationScreenState();
+  _CreationScreenState createState() => _CreationScreenState();
 }
 
-class CreationScreenState extends State<CreationScreen> {
+class _CreationScreenState extends State<CreationScreen> {
   bool _openPickerAtStartup = true;
 
   @override
@@ -93,10 +96,22 @@ class CreationScreenState extends State<CreationScreen> {
                       child: PrimaryButton(
                         "create",
                         onPressed: () async {
-                          await BlocProvider.of<CreationBloc>(context).createMovie();
+                          Movie movie;
+                          try {
+                            movie = await BlocProvider.of<CreationBloc>(context)
+                                .createMovie();
+                          } catch (ex) {
+                            final snackBar = SnackBar(
+                              content: Text(ex.toString()),
+                              backgroundColor: AppColors.error,
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            return;
+                          }
+
                           if (!mounted) return;
-                          Navigator.of(context)
-                              .pushAndRemoveUntil(WelcomeScreen.route(), (_) => false);
+                          Navigator.of(context).pushAndRemoveUntil(
+                              PreviewScreen.route(movie), (_) => false);
                         },
                         isEnabled: state.isCreationAllowed,
                         onPressedButDisabled: () {
