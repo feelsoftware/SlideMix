@@ -233,8 +233,8 @@ class _$MovieDao extends MovieDao {
   }
 
   @override
-  Future<void> insert(MovieEntity movie) async {
-    await _movieEntityInsertionAdapter.insert(
+  Future<int> insert(MovieEntity movie) {
+    return _movieEntityInsertionAdapter.insertAndReturnId(
         movie, OnConflictStrategy.replace);
   }
 

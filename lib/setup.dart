@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/creation/creation_bloc.dart';
 import 'package:slidemix/database.dart';
 import 'package:slidemix/movies/movies_bloc.dart';
+import 'package:slidemix/preview/preview_bloc.dart';
 import 'package:slidemix/welcome/welcome_bloc.dart';
 
 class Setup extends StatelessWidget {
@@ -27,6 +28,11 @@ class Setup extends StatelessWidget {
         ),
         BlocProvider<MoviesBloc>(
           create: (_) => MoviesBloc(
+            movieDao: appDatabase.movieDao,
+          ),
+        ),
+        BlocProvider<PreviewBloc>(
+          create: (_) => PreviewBloc(
             movieDao: appDatabase.movieDao,
           ),
         ),

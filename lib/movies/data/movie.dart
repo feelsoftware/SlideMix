@@ -21,6 +21,21 @@ class Movie extends Equatable {
     this.isDraft = false,
   });
 
+  Movie copyWith({
+    int? id,
+  }) {
+    return Movie(
+      id: id,
+      title: title,
+      thumb: thumb,
+      video: video,
+      duration: duration,
+      createdAt: createdAt,
+      isFavourite: isFavourite,
+      isDraft: isDraft,
+    );
+  }
+
   @override
   List<Object?> get props => [id, createdAt, isFavourite, isDraft];
 

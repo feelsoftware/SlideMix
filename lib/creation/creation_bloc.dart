@@ -21,7 +21,7 @@ import 'package:slidemix/movies/data/movie_mapper.dart';
 
 const int _minMediaCount = 3;
 
-class CreationBloc extends Bloc<Object, CreationState> {
+class CreationBloc extends Bloc<dynamic, CreationState> {
   final CreationDao _creationDao;
   final MovieDao _moviesDao;
 
@@ -142,6 +142,7 @@ class CreationBloc extends Bloc<Object, CreationState> {
       for (final media in state.media) {
         File(media.path).delete().ignore();
       }
+      sceneDir.delete(recursive: true).ignore();
 
       try {
         final mediaInformation =
@@ -208,8 +209,10 @@ class CreationBloc extends Bloc<Object, CreationState> {
       isFavourite: false,
       isDraft: false,
     );
-    await _moviesDao.insert(movie.toEntity());
-    return movie;
+    final movieId = await _moviesDao.insert(movie.toEntity());
+    return movie.copyWith(
+      id: movieId,
+    );
   }
 
   String _formatDurationForThumbnail(Duration duration) {

@@ -11,7 +11,7 @@ abstract class MovieDao {
   Future<MovieEntity?> getById(int id);
 
   @Insert(onConflict: OnConflictStrategy.replace)
-  Future<void> insert(MovieEntity movie);
+  Future<int> insert(MovieEntity movie);
 
   @Update(onConflict: OnConflictStrategy.replace)
   Future<void> update(MovieEntity movie);

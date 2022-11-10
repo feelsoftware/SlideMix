@@ -1,10 +1,12 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member
 
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/logger.dart';
 import 'package:slidemix/movies/data/movie_dao.dart';
 
-class WelcomeBloc extends Bloc<_WelcomeEvent, WelcomeState> {
+class WelcomeBloc extends Bloc<dynamic, WelcomeState> {
   final MovieDao _movieDao;
 
   WelcomeBloc({
@@ -25,9 +27,11 @@ class WelcomeBloc extends Bloc<_WelcomeEvent, WelcomeState> {
       },
     );
   }
-}
 
-class _WelcomeEvent {}
+  FutureOr<void> reset() {
+    emit(WelcomeLoadingState());
+  }
+}
 
 abstract class WelcomeState {}
 
