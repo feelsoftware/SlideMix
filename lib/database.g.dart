@@ -61,8 +61,6 @@ class _$AppDatabase extends AppDatabase {
     changeListener = listener ?? StreamController<String>.broadcast();
   }
 
-  CreationDao? _creationDaoInstance;
-
   MovieDao? _movieDaoInstance;
 
   Future<sqflite.Database> open(
@@ -87,9 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `creation` (`id` INTEGER PRIMARY KEY AUTOINCREMENT)');
-        await database.execute(
-            'CREATE TABLE IF NOT EXISTS `movies` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `title` TEXT NOT NULL, `thumb` TEXT NOT NULL, `video` TEXT NOT NULL, `duration` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, `isFavourite` INTEGER NOT NULL, `isDraft` INTEGER NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `movies` (`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `thumb` TEXT NOT NULL, `video` TEXT NOT NULL, `duration` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, `isFavourite` INTEGER NOT NULL, `isDraft` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -98,43 +94,8 @@ class _$AppDatabase extends AppDatabase {
   }
 
   @override
-  CreationDao get creationDao {
-    return _creationDaoInstance ??= _$CreationDao(database, changeListener);
-  }
-
-  @override
   MovieDao get movieDao {
     return _movieDaoInstance ??= _$MovieDao(database, changeListener);
-  }
-}
-
-class _$CreationDao extends CreationDao {
-  _$CreationDao(
-    this.database,
-    this.changeListener,
-  )   : _queryAdapter = QueryAdapter(database),
-        _creationEntityInsertionAdapter = InsertionAdapter(database, 'creation',
-            (CreationEntity item) => <String, Object?>{'id': item.id});
-
-  final sqflite.DatabaseExecutor database;
-
-  final StreamController<String> changeListener;
-
-  final QueryAdapter _queryAdapter;
-
-  final InsertionAdapter<CreationEntity> _creationEntityInsertionAdapter;
-
-  @override
-  Future<List<CreationEntity>> getAll() async {
-    return _queryAdapter.queryList('SELECT * FROM creation',
-        mapper: (Map<String, Object?> row) =>
-            CreationEntity(id: row['id'] as int?));
-  }
-
-  @override
-  Future<void> insert(CreationEntity entity) async {
-    await _creationEntityInsertionAdapter.insert(
-        entity, OnConflictStrategy.replace);
   }
 }
 
@@ -205,7 +166,7 @@ class _$MovieDao extends MovieDao {
     return _queryAdapter.queryListStream(
         'SELECT * FROM movies ORDER BY createdAt DESC',
         mapper: (Map<String, Object?> row) => MovieEntity(
-            id: row['id'] as int?,
+            id: row['id'] as int,
             title: row['title'] as String,
             thumb: row['thumb'] as String,
             video: row['video'] as String,
@@ -221,7 +182,7 @@ class _$MovieDao extends MovieDao {
   Future<MovieEntity?> getById(int id) async {
     return _queryAdapter.query('SELECT * FROM movies WHERE id = ?1',
         mapper: (Map<String, Object?> row) => MovieEntity(
-            id: row['id'] as int?,
+            id: row['id'] as int,
             title: row['title'] as String,
             thumb: row['thumb'] as String,
             video: row['video'] as String,
