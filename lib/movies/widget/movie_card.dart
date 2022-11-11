@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:intl/intl.dart';
 import 'package:slidemix/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:slidemix/movies/data/movie.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class MovieCard extends StatelessWidget {
   final Movie movie;
@@ -90,7 +90,7 @@ class MovieCard extends StatelessWidget {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                DateFormat.yMEd().format(movie.createdAt),
+                                _formatDate(context),
                                 style: const TextStyle(
                                   color: AppColors.border,
                                   fontSize: 8,
@@ -118,6 +118,13 @@ class MovieCard extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  String _formatDate(BuildContext context) {
+    return timeago.format(
+      movie.createdAt,
+      locale: Localizations.localeOf(context).languageCode,
     );
   }
 }

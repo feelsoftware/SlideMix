@@ -66,6 +66,9 @@ dependencies:
   # https://pub.dev/packages/sqflite
   sqflite: 2.2.0+3
 
+  # https://pub.dev/packages/timeago
+  timeago: 3.3.0
+
   # https://pub.dev/packages/video_player
   video_player: 2.4.7
 
