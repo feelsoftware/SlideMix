@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class Movie extends Equatable {
-  final int? id;
+  final int id;
   final String title;
   final String thumb;
   final String video;
@@ -11,7 +11,7 @@ class Movie extends Equatable {
   final bool isDraft;
 
   const Movie({
-    this.id,
+    required this.id,
     required this.title,
     required this.thumb,
     required this.video,
@@ -20,21 +20,6 @@ class Movie extends Equatable {
     this.isFavourite = false,
     this.isDraft = false,
   });
-
-  Movie copyWith({
-    int? id,
-  }) {
-    return Movie(
-      id: id,
-      title: title,
-      thumb: thumb,
-      video: video,
-      duration: duration,
-      createdAt: createdAt,
-      isFavourite: isFavourite,
-      isDraft: isDraft,
-    );
-  }
 
   @override
   List<Object?> get props => [id, createdAt, isFavourite, isDraft];

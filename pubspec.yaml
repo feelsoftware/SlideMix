@@ -63,6 +63,9 @@ dependencies:
   # https://pub.dev/packages/path_provider
   path_provider: 2.0.11
 
+  # https://pub.dev/packages/shared_preferences
+  shared_preferences: 2.0.15
+
   # https://pub.dev/packages/sqflite
   sqflite: 2.2.0+3
 

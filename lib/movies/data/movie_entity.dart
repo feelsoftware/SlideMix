@@ -7,8 +7,8 @@ import 'package:flutter/foundation.dart';
 class MovieEntity extends Equatable {
   static const tableName = 'movies';
 
-  @PrimaryKey(autoGenerate: true)
-  final int? id;
+  @primaryKey
+  final int id;
   final String title;
   final String thumb;
   final String video;
@@ -18,7 +18,7 @@ class MovieEntity extends Equatable {
   final bool isDraft;
 
   const MovieEntity({
-    this.id,
+    required this.id,
     required this.title,
     required this.thumb,
     required this.video,
