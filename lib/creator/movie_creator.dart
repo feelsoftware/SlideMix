@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:slidemix/creator/movie_project.dart';
 import 'package:slidemix/creator/project_id_provider.dart';
 import 'package:slidemix/creator/slideshow_creator.dart';
+import 'package:slidemix/draft/draft_movie_manager.dart';
 import 'package:slidemix/logger.dart';
 import 'package:slidemix/movies/data/movie.dart';
 import 'package:slidemix/movies/data/movie_dao.dart';
@@ -10,15 +11,19 @@ import 'package:slidemix/movies/data/movie_dao.dart';
 abstract class MovieCreator {
   Future<MovieProject> newProject();
 
+  Future<MovieProject?> openDraft(Movie draftMovie);
+
   Future<void> deleteProject(Movie movie);
 }
 
 class MovieCreatorImpl extends MovieCreator {
+  final DraftMovieManager draftMovieManager;
   final MovieDao movieDao;
   final ProjectIdProvider projectIdProvider;
   final SlideShowCreator slideShowCreator;
 
   MovieCreatorImpl({
+    required this.draftMovieManager,
     required this.movieDao,
     required this.projectIdProvider,
     required this.slideShowCreator,
@@ -27,11 +32,26 @@ class MovieCreatorImpl extends MovieCreator {
   @override
   Future<MovieProject> newProject() async {
     final projectId = await projectIdProvider.provideProjectId();
-    return MovieProjectImpl(
+    final project = MovieProjectImpl(
       projectId: projectId,
+      draftMovieManager: draftMovieManager,
       movieDao: movieDao,
       slideShowCreator: slideShowCreator,
     );
+    await project.init();
+    return project;
+  }
+
+  @override
+  Future<MovieProject> openDraft(Movie draftMovie) async {
+    final project = MovieProjectImpl(
+      projectId: draftMovie.id,
+      draftMovieManager: draftMovieManager,
+      movieDao: movieDao,
+      slideShowCreator: slideShowCreator,
+    );
+    await project.init(draftMovie: draftMovie);
+    return project;
   }
 
   @override
@@ -39,6 +59,7 @@ class MovieCreatorImpl extends MovieCreator {
     Logger.d('deleteProject ${movie.id}');
     await MovieProjectImpl(
       projectId: movie.id,
+      draftMovieManager: draftMovieManager,
       movieDao: movieDao,
       slideShowCreator: slideShowCreator,
     ).deleteProject();

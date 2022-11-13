@@ -6,12 +6,15 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/creator/slideshow_creator.dart';
+import 'package:slidemix/draft/draft_movie_manager.dart';
 import 'package:slidemix/logger.dart';
 import 'package:slidemix/movies/data/movie.dart';
 import 'package:slidemix/movies/data/movie_dao.dart';
 import 'package:slidemix/movies/data/movie_mapper.dart';
 
 abstract class MovieProject {
+  List<Media> get media;
+
   Future<List<Media>> attachMedia(List<Media> media);
 
   Future<List<Media>> deleteMedia(Media media);
@@ -20,21 +23,39 @@ abstract class MovieProject {
 
   Future<void> deleteProject();
 
-  Future<void> dispose();
+  Future<void> dispose({required bool deleteDraft});
 }
 
 class MovieProjectImpl extends MovieProject {
   final int projectId;
+  final DraftMovieManager draftMovieManager;
   final MovieDao movieDao;
   final SlideShowCreator slideShowCreator;
 
   MovieProjectImpl({
     required this.projectId,
+    required this.draftMovieManager,
     required this.movieDao,
     required this.slideShowCreator,
   });
 
+  Future<void> init({Movie? draftMovie}) async {
+    if (draftMovie == null) {
+      await draftMovieManager.createDraft(projectId);
+    } else {
+      final draft = await draftMovieManager.getByProjectId(projectId);
+      if (draft == null) {
+        await draftMovieManager.createDraft(projectId);
+      } else {
+        _media.addAll(draft.media);
+      }
+    }
+  }
+
   final List<Media> _media = <Media>[];
+
+  @override
+  List<Media> get media => List.unmodifiable(_media);
 
   Future<Directory> get _tempDir async {
     final appDir = (await getApplicationDocumentsDirectory()).path;
@@ -56,7 +77,7 @@ class MovieProjectImpl extends MovieProject {
 
     // imagePicker stores files in cacheDir, it has a specific TTL
     // Move files to filesDir to keep those files as long as we want to
-    List<Media> mediaWithUpdatedPath = [];
+    final mediaWithUpdatedPath = <Media>[];
     final destinationDir = await _tempDir;
     for (final item in media) {
       String fileName = basename(item.path);
@@ -71,7 +92,8 @@ class MovieProjectImpl extends MovieProject {
     }
 
     _media.addAll(mediaWithUpdatedPath);
-    return List.unmodifiable(_media);
+    draftMovieManager.replaceMedia(projectId, _media);
+    return this.media;
   }
 
   @override
@@ -79,7 +101,8 @@ class MovieProjectImpl extends MovieProject {
     Logger.d('deleteMedia $projectId $media');
     _media.remove(media);
     File(media.path).delete().ignore();
-    return List.unmodifiable(_media);
+    draftMovieManager.replaceMedia(projectId, _media).ignore();
+    return this.media;
   }
 
   @override
@@ -88,16 +111,20 @@ class MovieProjectImpl extends MovieProject {
 
     final format = NumberFormat('000');
     final destinationDir = await _tempDir;
+    final mediaWithUpdatedPath = <Media>[];
     for (var index = 0; index < _media.length; index++) {
       final item = _media[index];
       try {
         final newPath = '${destinationDir.path}/image${format.format(index)}.jpg';
         await File(item.path).rename(newPath);
-        _media[index] = Media(newPath);
+        mediaWithUpdatedPath.add(Media(newPath));
       } catch (ex, st) {
         Logger.e('Failed to rename image, ${item.path}', ex, st);
       }
     }
+    _media.clear();
+    _media.addAll(mediaWithUpdatedPath);
+    draftMovieManager.replaceMedia(projectId, _media);
 
     final slideShow = await slideShowCreator.create(
       images: await _tempDir,
@@ -114,7 +141,7 @@ class MovieProjectImpl extends MovieProject {
       createdAt: DateTime.now(),
     );
     await movieDao.insert(movie.toEntity());
-    dispose();
+    dispose(deleteDraft: true);
     return movie;
   }
 
@@ -128,16 +155,18 @@ class MovieProjectImpl extends MovieProject {
       await movieDao.delete(movieEntity);
     }
 
-    dispose();
+    dispose(deleteDraft: true);
     (await _projectDir).delete(recursive: true).ignore();
   }
 
   @override
-  Future<void> dispose() async {
+  Future<void> dispose({required bool deleteDraft}) async {
+    if (!deleteDraft) return;
     for (final media in _media) {
       File(media.path).delete().ignore();
     }
     _media.clear();
     (await _tempDir).delete(recursive: true).ignore();
+    await draftMovieManager.deleteDraft(projectId);
   }
 }

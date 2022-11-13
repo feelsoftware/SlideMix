@@ -31,7 +31,11 @@ class _MoviesScreenState extends State<MoviesScreen> {
           return MoviesList(
             state.movies,
             onMovieTap: (movie) {
-              Navigator.of(context).push(PreviewScreen.route(movie));
+              if (movie.isDraft) {
+                Navigator.of(context).push(CreationScreen.route(draftMovie: movie));
+              } else {
+                Navigator.of(context).push(PreviewScreen.route(movie));
+              }
             },
             onToggleFavouriteTap: (movie) {
               BlocProvider.of<MoviesBloc>(context).toggleFavourite(movie);
