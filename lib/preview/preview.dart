@@ -5,6 +5,7 @@ import 'package:slidemix/movies/data/movie.dart';
 import 'package:slidemix/movies/movies.dart';
 import 'package:slidemix/navigation.dart';
 import 'package:slidemix/preview/preview_bloc.dart';
+import 'package:slidemix/preview/widget/preview_delete_dialog.dart';
 import 'package:slidemix/preview/widget/preview_player.dart';
 import 'package:slidemix/widget/toolbar.dart';
 
@@ -40,7 +41,13 @@ class _PreviewScreenState extends State<PreviewScreen> {
             color: AppColors.error,
           ),
           onRightIconTapped: () async {
-            // TODO: add confirmation dialog
+            final result = await DeletePreviewDialog.show(context);
+            if (result == null || result == DeletePreviewResult.cancel) {
+              // Dismissed
+              return;
+            }
+            if (!mounted) return;
+
             final route =
                 await BlocProvider.of<PreviewBloc>(context).delete(widget.movie);
             if (!mounted) return;
