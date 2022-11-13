@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slidemix/colors.dart';
 import 'package:slidemix/database.dart';
+import 'package:slidemix/navigation.dart';
 import 'package:slidemix/setup.dart';
 import 'package:slidemix/welcome/welcome.dart';
 
@@ -40,6 +41,9 @@ class SlideMixApp extends StatelessWidget {
           scaffoldBackgroundColor: AppColors.background,
         ),
         debugShowCheckedModeBanner: false,
+        navigatorObservers: [
+          NavigationStackObserver(),
+        ],
         home: const WelcomeScreen(),
       ),
     );
