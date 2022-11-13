@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:slidemix/colors.dart';
 import 'package:slidemix/creation/creation_bloc.dart';
+import 'package:slidemix/creation/widget/creation_cancel_dialog.dart';
 import 'package:slidemix/creation/widget/creation_leave_dialog.dart';
 import 'package:slidemix/creation/widget/creation_source_dialog.dart';
 import 'package:slidemix/creation/data/media.dart';
@@ -80,9 +81,19 @@ class _CreationScreenState extends State<CreationScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        LeaveCreationResult leaveCreationResult;
+        LeaveCreationResult? leaveCreationResult;
 
-        if (BlocProvider.of<CreationBloc>(context).state.media.isNotEmpty) {
+        if (BlocProvider.of<CreationBloc>(context).state.isLoading) {
+          if (await CancelCreationDialog.show(context) != CancelCreationResult.cancel) {
+            return false;
+          } else {
+            leaveCreationResult = LeaveCreationResult.leave;
+          }
+        }
+        if (!mounted) return false;
+
+        if (leaveCreationResult == null &&
+            BlocProvider.of<CreationBloc>(context).state.media.isNotEmpty) {
           // Ask if user wants to leave
           final result = await LeaveCreationDialog.show(context);
           if (result == null) {
@@ -93,8 +104,8 @@ class _CreationScreenState extends State<CreationScreen> {
         } else {
           leaveCreationResult = LeaveCreationResult.leave;
         }
-
         if (!mounted) return false;
+
         final route = await BlocProvider.of<CreationBloc>(context).reset(
           deleteDraft: leaveCreationResult == LeaveCreationResult.leave,
         );
@@ -132,12 +143,15 @@ class _CreationScreenState extends State<CreationScreen> {
                             movie = await BlocProvider.of<CreationBloc>(context)
                                 .createMovie();
                           } catch (ex) {
+                            if (!mounted) return;
                             final snackBar = SnackBar(
                               content: Text(ex.toString()),
                               backgroundColor: AppColors.error,
                             );
                             ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             return;
+                          } finally {
+                            if (mounted) CancelCreationDialog.dismiss(context);
                           }
 
                           if (!mounted) return;
