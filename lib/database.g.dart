@@ -61,6 +61,10 @@ class _$AppDatabase extends AppDatabase {
     changeListener = listener ?? StreamController<String>.broadcast();
   }
 
+  DraftMovieDao? _draftMovieDaoInstance;
+
+  DraftMovieMediaDao? _draftMovieMediaDaoInstance;
+
   MovieDao? _movieDaoInstance;
 
   Future<sqflite.Database> open(
@@ -85,6 +89,10 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
+            'CREATE TABLE IF NOT EXISTS `draft_movies` (`projectId` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, PRIMARY KEY (`projectId`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `draft_movies_media` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `projectId` INTEGER NOT NULL, `path` TEXT NOT NULL)');
+        await database.execute(
             'CREATE TABLE IF NOT EXISTS `movies` (`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `thumb` TEXT NOT NULL, `video` TEXT NOT NULL, `duration` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, `isFavourite` INTEGER NOT NULL, `isDraft` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
@@ -94,8 +102,158 @@ class _$AppDatabase extends AppDatabase {
   }
 
   @override
+  DraftMovieDao get draftMovieDao {
+    return _draftMovieDaoInstance ??= _$DraftMovieDao(database, changeListener);
+  }
+
+  @override
+  DraftMovieMediaDao get draftMovieMediaDao {
+    return _draftMovieMediaDaoInstance ??=
+        _$DraftMovieMediaDao(database, changeListener);
+  }
+
+  @override
   MovieDao get movieDao {
     return _movieDaoInstance ??= _$MovieDao(database, changeListener);
+  }
+}
+
+class _$DraftMovieDao extends DraftMovieDao {
+  _$DraftMovieDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database, changeListener),
+        _draftMovieEntityInsertionAdapter = InsertionAdapter(
+            database,
+            'draft_movies',
+            (DraftMovieEntity item) => <String, Object?>{
+                  'projectId': item.projectId,
+                  'createdAt': item.createdAt
+                },
+            changeListener),
+        _draftMovieEntityDeletionAdapter = DeletionAdapter(
+            database,
+            'draft_movies',
+            ['projectId'],
+            (DraftMovieEntity item) => <String, Object?>{
+                  'projectId': item.projectId,
+                  'createdAt': item.createdAt
+                },
+            changeListener);
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<DraftMovieEntity> _draftMovieEntityInsertionAdapter;
+
+  final DeletionAdapter<DraftMovieEntity> _draftMovieEntityDeletionAdapter;
+
+  @override
+  Stream<List<DraftMovieEntity>> getAll() {
+    return _queryAdapter.queryListStream(
+        'SELECT * FROM draft_movies ORDER BY createdAt DESC',
+        mapper: (Map<String, Object?> row) => DraftMovieEntity(
+            projectId: row['projectId'] as int,
+            createdAt: row['createdAt'] as int),
+        queryableName: 'draft_movies',
+        isView: false);
+  }
+
+  @override
+  Future<DraftMovieEntity?> getById(int projectId) async {
+    return _queryAdapter.query(
+        'SELECT * FROM draft_movies WHERE projectId = ?1',
+        mapper: (Map<String, Object?> row) => DraftMovieEntity(
+            projectId: row['projectId'] as int,
+            createdAt: row['createdAt'] as int),
+        arguments: [projectId]);
+  }
+
+  @override
+  Future<void> insert(DraftMovieEntity draft) async {
+    await _draftMovieEntityInsertionAdapter.insert(
+        draft, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> delete(DraftMovieEntity draft) async {
+    await _draftMovieEntityDeletionAdapter.delete(draft);
+  }
+}
+
+class _$DraftMovieMediaDao extends DraftMovieMediaDao {
+  _$DraftMovieMediaDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database, changeListener),
+        _draftMovieMediaEntityInsertionAdapter = InsertionAdapter(
+            database,
+            'draft_movies_media',
+            (DraftMovieMediaEntity item) => <String, Object?>{
+                  'id': item.id,
+                  'projectId': item.projectId,
+                  'path': item.path
+                },
+            changeListener),
+        _draftMovieMediaEntityDeletionAdapter = DeletionAdapter(
+            database,
+            'draft_movies_media',
+            ['id'],
+            (DraftMovieMediaEntity item) => <String, Object?>{
+                  'id': item.id,
+                  'projectId': item.projectId,
+                  'path': item.path
+                },
+            changeListener);
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<DraftMovieMediaEntity>
+      _draftMovieMediaEntityInsertionAdapter;
+
+  final DeletionAdapter<DraftMovieMediaEntity>
+      _draftMovieMediaEntityDeletionAdapter;
+
+  @override
+  Stream<List<DraftMovieMediaEntity>> getAll() {
+    return _queryAdapter.queryListStream('SELECT * FROM draft_movies_media',
+        mapper: (Map<String, Object?> row) => DraftMovieMediaEntity(
+            id: row['id'] as int?,
+            projectId: row['projectId'] as int,
+            path: row['path'] as String),
+        queryableName: 'draft_movies_media',
+        isView: false);
+  }
+
+  @override
+  Stream<List<DraftMovieMediaEntity>> getAllByProject(int projectId) {
+    return _queryAdapter.queryListStream(
+        'SELECT * FROM draft_movies_media WHERE projectId = ?1',
+        mapper: (Map<String, Object?> row) => DraftMovieMediaEntity(
+            id: row['id'] as int?,
+            projectId: row['projectId'] as int,
+            path: row['path'] as String),
+        arguments: [projectId],
+        queryableName: 'draft_movies_media',
+        isView: false);
+  }
+
+  @override
+  Future<void> insertAll(List<DraftMovieMediaEntity> media) async {
+    await _draftMovieMediaEntityInsertionAdapter.insertList(
+        media, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> deleteAll(List<DraftMovieMediaEntity> media) async {
+    await _draftMovieMediaEntityDeletionAdapter.deleteList(media);
   }
 }
 

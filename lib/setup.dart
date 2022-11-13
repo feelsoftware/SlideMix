@@ -6,6 +6,7 @@ import 'package:slidemix/creator/movie_creator.dart';
 import 'package:slidemix/creator/project_id_provider.dart';
 import 'package:slidemix/creator/slideshow_creator.dart';
 import 'package:slidemix/database.dart';
+import 'package:slidemix/draft/draft_movie_manager.dart';
 import 'package:slidemix/movies/movies_bloc.dart';
 import 'package:slidemix/preview/preview_bloc.dart';
 import 'package:slidemix/welcome/welcome_bloc.dart';
@@ -26,8 +27,18 @@ class Setup extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider<DraftMovieManager>(
+          create: (_) => DraftMovieManagerImpl(
+            draftMovieDao: appDatabase.draftMovieDao,
+            draftMovieMediaDao: appDatabase.draftMovieMediaDao,
+          ),
+        ),
         RepositoryProvider<MovieCreator>(
           create: (_) => MovieCreatorImpl(
+            draftMovieManager: DraftMovieManagerImpl(
+              draftMovieDao: appDatabase.draftMovieDao,
+              draftMovieMediaDao: appDatabase.draftMovieMediaDao,
+            ),
             movieDao: appDatabase.movieDao,
             projectIdProvider: ProjectIdProviderImpl(
               sharedPreferences: sharedPreferences,
@@ -60,22 +71,27 @@ class _BlocSetup extends StatelessWidget {
       providers: [
         BlocProvider<CreationBloc>(
           create: (_) => CreationBloc(
+            draftMovieManager: RepositoryProvider.of<DraftMovieManager>(context),
             movieCreator: RepositoryProvider.of<MovieCreator>(context),
+            movieDao: appDatabase.movieDao,
           ),
         ),
         BlocProvider<MoviesBloc>(
           create: (_) => MoviesBloc(
+            draftMovieManager: RepositoryProvider.of<DraftMovieManager>(context),
             movieDao: appDatabase.movieDao,
           ),
         ),
         BlocProvider<PreviewBloc>(
           create: (_) => PreviewBloc(
+            draftMovieManager: RepositoryProvider.of<DraftMovieManager>(context),
             movieCreator: RepositoryProvider.of<MovieCreator>(context),
             movieDao: appDatabase.movieDao,
           ),
         ),
         BlocProvider<WelcomeBloc>(
           create: (_) => WelcomeBloc(
+            draftMovieManager: RepositoryProvider.of<DraftMovieManager>(context),
             movieDao: appDatabase.movieDao,
           ),
         )

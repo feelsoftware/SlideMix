@@ -3,21 +3,32 @@
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/creator/movie_creator.dart';
 import 'package:slidemix/creator/movie_project.dart';
+import 'package:slidemix/draft/draft_movie_manager.dart';
 import 'package:slidemix/logger.dart';
 import 'package:slidemix/movies/data/movie.dart';
+import 'package:slidemix/movies/data/movie_dao.dart';
+import 'package:slidemix/movies/movies.dart';
+import 'package:slidemix/welcome/welcome.dart';
 
 const int _minMediaCount = 3;
 
 class CreationBloc extends Bloc<dynamic, CreationState> {
+  final DraftMovieManager _draftMovieManager;
   final MovieCreator _movieCreator;
+  final MovieDao _movieDao;
 
   CreationBloc({
+    required DraftMovieManager draftMovieManager,
     required MovieCreator movieCreator,
-  })  : _movieCreator = movieCreator,
+    required MovieDao movieDao,
+  })  : _draftMovieManager = draftMovieManager,
+        _movieCreator = movieCreator,
+        _movieDao = movieDao,
         super(const CreationState(<Media>[]));
 
   MovieProject? __project;
@@ -32,8 +43,15 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
 
   @override
   Future<void> close() async {
-    await reset();
+    await reset(deleteDraft: false);
     return super.close();
+  }
+
+  FutureOr<void> openDraft(Movie draftMovie) async {
+    __project = await _movieCreator.openDraft(draftMovie);
+    emit(state.copyWith(
+      media: __project?.media,
+    ));
   }
 
   FutureOr<void> pickMedia(List<Media> media) async {
@@ -50,11 +68,20 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     ));
   }
 
-  FutureOr<void> reset() async {
-    (await _project).dispose();
+  FutureOr<Route<void>> reset({required bool deleteDraft}) async {
+    (await _project).dispose(deleteDraft: deleteDraft);
     __project = null;
 
     emit(const CreationState(<Media>[]));
+
+    final movies = await _movieDao.getAll().first;
+    final drafts = await _draftMovieManager.getAll().first;
+
+    if (drafts.isNotEmpty || movies.isNotEmpty) {
+      return MoviesScreen.route();
+    } else {
+      return WelcomeScreen.route();
+    }
   }
 
   FutureOr<Movie> createMovie() async {
@@ -69,7 +96,7 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
       throw Exception('Failed to create movie');
     }
 
-    await reset();
+    await reset(deleteDraft: true);
     return movie;
   }
 }

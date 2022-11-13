@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:slidemix/colors.dart';
 import 'package:slidemix/creation/creation_bloc.dart';
+import 'package:slidemix/creation/widget/creation_leave_dialog.dart';
 import 'package:slidemix/creation/widget/creation_source_dialog.dart';
 import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/creation/widget/creation_list.dart';
@@ -16,9 +17,17 @@ import 'package:slidemix/widget/button.dart';
 import 'package:slidemix/widget/toolbar.dart';
 
 class CreationScreen extends StatefulWidget {
-  static Route<void> route() => ScreenRoute(const CreationScreen._());
+  static Route<void> route({
+    Movie? draftMovie,
+  }) =>
+      ScreenRoute(CreationScreen._(draftMovie: draftMovie));
 
-  const CreationScreen._({Key? key}) : super(key: key);
+  final Movie? draftMovie;
+
+  const CreationScreen._({
+    Key? key,
+    this.draftMovie,
+  }) : super(key: key);
 
   @override
   _CreationScreenState createState() => _CreationScreenState();
@@ -31,10 +40,14 @@ class _CreationScreenState extends State<CreationScreen> {
   void initState() {
     super.initState();
 
+    _openPickerAtStartup = widget.draftMovie == null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_openPickerAtStartup) {
         setState(() => _openPickerAtStartup = false);
         _pickMedia();
+      }
+      if (widget.draftMovie != null) {
+        BlocProvider.of<CreationBloc>(context).openDraft(widget.draftMovie!);
       }
     });
   }
@@ -67,9 +80,27 @@ class _CreationScreenState extends State<CreationScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // TODO: ask if user wants to leave
-        BlocProvider.of<CreationBloc>(context).reset();
-        return true;
+        LeaveCreationResult leaveCreationResult;
+
+        if (BlocProvider.of<CreationBloc>(context).state.media.isNotEmpty) {
+          // Ask if user wants to leave
+          final result = await LeaveCreationDialog.show(context);
+          if (result == null) {
+            // Dismissed
+            return false;
+          }
+          leaveCreationResult = result;
+        } else {
+          leaveCreationResult = LeaveCreationResult.leave;
+        }
+
+        if (!mounted) return false;
+        final route = await BlocProvider.of<CreationBloc>(context).reset(
+          deleteDraft: leaveCreationResult == LeaveCreationResult.leave,
+        );
+        if (!mounted) return false;
+        Navigator.of(context).pushAndRemoveUntil(route, (route) => false);
+        return false;
       },
       child: BlocBuilder<CreationBloc, CreationState>(
         builder: (context, state) {

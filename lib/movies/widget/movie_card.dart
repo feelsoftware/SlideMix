@@ -52,7 +52,7 @@ class MovieCard extends StatelessWidget {
                             height: imageSize,
                             child: Image.file(
                               File(movie.thumb),
-                              fit: BoxFit.fitWidth,
+                              fit: BoxFit.cover,
                               errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                             ),
                           ),
@@ -101,14 +101,18 @@ class MovieCard extends StatelessWidget {
                             ],
                           ),
                         ),
-                        InkWell(
-                          onTap: () => onToggleFavouriteTap(movie),
-                          child: Icon(
-                            movie.isFavourite ? Icons.favorite : Icons.favorite_border,
-                            color: movie.isFavourite ? AppColors.primary : Colors.grey,
-                            size: 24,
+                        if (!movie.isDraft)
+                          InkWell(
+                            onTap: () => onToggleFavouriteTap(movie),
+                            child: Icon(
+                              movie.isFavourite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color:
+                                  movie.isFavourite ? AppColors.primary : Colors.grey,
+                              size: 24,
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),

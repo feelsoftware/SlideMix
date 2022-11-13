@@ -6,6 +6,7 @@ class PrimaryButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isEnabled;
   final VoidCallback? onPressedButDisabled;
+  final EdgeInsetsGeometry padding;
   final Color backgroundColor;
   final Color borderColor;
 
@@ -15,32 +16,37 @@ class PrimaryButton extends StatelessWidget {
     required this.onPressed,
     this.isEnabled = true,
     this.onPressedButDisabled,
+    this.padding = EdgeInsets.zero,
     this.backgroundColor = Colors.transparent,
     this.borderColor = AppColors.border,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        border: Border.all(
-          width: 2,
-          color: borderColor,
+    const borderRadius = BorderRadius.all(
+      Radius.circular(8),
+    );
+
+    return InkWell(
+      onTap: () {
+        if (isEnabled) {
+          onPressed();
+        } else {
+          onPressedButDisabled?.call();
+        }
+      },
+      borderRadius: borderRadius,
+      child: Container(
+        height: 40,
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          border: Border.all(
+            width: 2,
+            color: borderColor,
+          ),
+          borderRadius: borderRadius,
         ),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(8),
-        ),
-      ),
-      child: InkWell(
-        onTap: () {
-          if (isEnabled) {
-            onPressed();
-          } else {
-            onPressedButDisabled?.call();
-          }
-        },
+        padding: padding,
         child: Align(
           child: Text(
             text,
@@ -59,33 +65,39 @@ class PrimaryButton extends StatelessWidget {
 class SecondaryButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
+  final EdgeInsetsGeometry padding;
   final Color backgroundColor;
   final Color borderColor;
 
   const SecondaryButton(
-    this.text,
-    this.onPressed, {
+    this.text, {
     super.key,
+    required this.onPressed,
+    this.padding = EdgeInsets.zero,
     this.backgroundColor = Colors.transparent,
     this.borderColor = AppColors.border,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        border: Border.all(
-          width: 2,
-          color: borderColor,
+    const borderRadius = BorderRadius.all(
+      Radius.circular(8),
+    );
+
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: borderRadius,
+      child: Container(
+        height: 40,
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          border: Border.all(
+            width: 2,
+            color: borderColor,
+          ),
+          borderRadius: borderRadius,
         ),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(8),
-        ),
-      ),
-      child: InkWell(
-        onTap: onPressed,
+        padding: padding,
         child: Align(
           child: Text(
             text,
