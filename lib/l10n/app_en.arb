@@ -1,0 +1,48 @@
+{
+    "appName": "SlideMix",
+    "tapToStart": "tap to start",
+    "createMovie": "create",
+    "newMovie": "new",
+    "notEnoughMediaToCreateMovie": "Add {minMediaCountToProceed} or more media to create your movie",
+    "@notEnoughMediaToCreateMovie": {
+        "placeholders": {
+            "minMediaCountToProceed": {
+                "type": "int",
+                "format": "decimalPattern",
+                "example": "123"
+            }
+        }
+    },
+    "leaveCreationAlertTitle": "Leave the project?",
+    "leaveCreationAlertPrimary": "save as draft",
+    "leaveCreationAlertSecondary": "leave",
+    "leaveCancelAlertTitle": "Movie is in progress, do you want to cancel?",
+    "leaveCancelAlertPrimary": "cancel",
+    "leaveCancelAlertSecondary": "wait",
+    "mediaSourceCamera": "Camera",
+    "mediaSourceGallery": "Gallery",
+    "deleteMovieAlertTitle": "Delete the video?",
+    "deleteMovieAlertPrimary": "delete",
+    "deleteMovieAlertSecondary": "cancel",
+    "projectTitle": "project #{projectId}",
+    "@projectTitle": {
+        "placeholders": {
+            "projectId": {
+                "type": "int",
+                "format": "decimalPattern",
+                "example": "123"
+            }
+        }
+    },
+    "draftTitle": "draft #{projectId}",
+    "@draftTitle": {
+        "placeholders": {
+            "projectId": {
+                "type": "int",
+                "format": "decimalPattern",
+                "example": "123"
+            }
+        }
+    },
+    "failedPlayVideo": "Failed to play your video"
+}

@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/draft/draft_movie_manager.dart';
+import 'package:slidemix/localizations.dart';
 import 'package:slidemix/movies/data/movie_dao.dart';
 import 'package:slidemix/movies/data/movie_mapper.dart';
 import 'package:slidemix/movies/data/movie.dart';
@@ -48,8 +49,8 @@ class MoviesBloc extends Bloc<dynamic, MoviesState> {
           ...drafts.map(
             (draft) => Movie(
               id: draft.projectId,
-              // TODO: use localized string for "draft"
-              title: "draft #${draft.projectId}",
+              title: AppLocalizations.app()?.projectTitle(draft.projectId) ??
+                  'project #${draft.projectId}',
               thumb: draft.media.first.path,
               video: '',
               duration: Duration.zero,

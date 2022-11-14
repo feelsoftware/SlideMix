@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:slidemix/colors.dart';
+import 'package:slidemix/localizations.dart';
 import 'package:slidemix/logger.dart';
 import 'package:slidemix/movies/data/movie.dart';
 import 'package:slidemix/preview/widget/preview_player_button.dart';
@@ -44,8 +45,8 @@ class _PreviewPlayerState extends State<PreviewPlayer> {
             'Failed to play video',
             Exception(controller?.value.errorDescription),
           );
-          const snackBar = SnackBar(
-            content: Text('Failed to play video'),
+          final snackBar = SnackBar(
+            content: Text(AppLocalizations.of(context).failedPlayVideo),
             backgroundColor: AppColors.error,
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);

@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/creator/slideshow_creator.dart';
 import 'package:slidemix/draft/draft_movie_manager.dart';
+import 'package:slidemix/localizations.dart';
 import 'package:slidemix/logger.dart';
 import 'package:slidemix/movies/data/movie.dart';
 import 'package:slidemix/movies/data/movie_dao.dart';
@@ -131,10 +132,9 @@ class MovieProjectImpl extends MovieProject {
       destination: await _projectDir,
     );
 
-    // TODO: use localized string for "project"
     final movie = Movie(
       id: projectId,
-      title: 'project #$projectId',
+      title: AppLocalizations.app()?.projectTitle(projectId) ?? 'project #$projectId',
       thumb: slideShow.thumbPath,
       video: slideShow.videoPath,
       duration: slideShow.videoDuration,

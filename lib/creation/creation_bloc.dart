@@ -110,7 +110,7 @@ class CreationState extends Equatable {
     this.isLoading = false,
   });
 
-  int get minMediaCountToProceed => media.length - _minMediaCount;
+  int get minMediaCountToProceed => _minMediaCount - media.length;
 
   bool get isCreationAllowed => media.length >= _minMediaCount;
 

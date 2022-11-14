@@ -10,6 +10,7 @@ import 'package:slidemix/creation/widget/creation_leave_dialog.dart';
 import 'package:slidemix/creation/widget/creation_source_dialog.dart';
 import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/creation/widget/creation_list.dart';
+import 'package:slidemix/localizations.dart';
 import 'package:slidemix/logger.dart';
 import 'package:slidemix/movies/data/movie.dart';
 import 'package:slidemix/navigation.dart';
@@ -136,7 +137,7 @@ class _CreationScreenState extends State<CreationScreen> {
                     child: FractionallySizedBox(
                       widthFactor: 0.5,
                       child: PrimaryButton(
-                        "create",
+                        AppLocalizations.of(context).createMovie,
                         onPressed: () async {
                           Movie movie;
                           try {
@@ -163,7 +164,8 @@ class _CreationScreenState extends State<CreationScreen> {
                           Logger.d('"create" pressed, but not enough media');
                           final snackBar = SnackBar(
                               content: Text(
-                            'Add ${state.minMediaCountToProceed} or more media to create your movie',
+                            AppLocalizations.of(context).notEnoughMediaToCreateMovie(
+                                state.minMediaCountToProceed),
                           ));
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         },

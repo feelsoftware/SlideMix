@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:slidemix/localizations.dart';
 import 'package:slidemix/widget/button.dart';
 
 enum LeaveCreationResult {
@@ -24,21 +25,21 @@ class LeaveCreationDialog extends StatelessWidget {
         children: [
           Column(
             children: [
-              const SizedBox(height: 24),
-              // TODO: use localized string
-              const Text(
-                'Leave the project?',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: "Metropolis",
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  AppLocalizations.of(context).leaveCreationAlertTitle,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SecondaryButton(
-                    'leave',
+                    AppLocalizations.of(context).leaveCreationAlertSecondary,
                     onPressed: () {
                       Navigator.of(context).pop(LeaveCreationResult.leave);
                     },
@@ -48,7 +49,7 @@ class LeaveCreationDialog extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   PrimaryButton(
-                    'save as draft',
+                    AppLocalizations.of(context).leaveCreationAlertPrimary,
                     onPressed: () {
                       Navigator.of(context).pop(LeaveCreationResult.keepAsDraft);
                     },

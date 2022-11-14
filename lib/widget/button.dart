@@ -53,7 +53,7 @@ class PrimaryButton extends StatelessWidget {
             style: TextStyle(
               color: isEnabled ? AppColors.secondary : AppColors.disabled,
               fontSize: 16,
-              fontFamily: "Metropolis",
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
@@ -104,7 +104,6 @@ class SecondaryButton extends StatelessWidget {
             style: const TextStyle(
               color: AppColors.disabled,
               fontSize: 16,
-              fontFamily: "Metropolis",
             ),
           ),
         ),

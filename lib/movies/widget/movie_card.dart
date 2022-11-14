@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:slidemix/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:slidemix/localizations.dart';
 import 'package:slidemix/movies/data/movie.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -84,7 +85,6 @@ class MovieCard extends StatelessWidget {
                                 style: const TextStyle(
                                   color: AppColors.secondary,
                                   fontSize: 12,
-                                  fontFamily: "Metropolis",
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -94,7 +94,7 @@ class MovieCard extends StatelessWidget {
                                 style: const TextStyle(
                                   color: AppColors.border,
                                   fontSize: 8,
-                                  fontFamily: "Metropolis Bold",
+                                  fontWeight: FontWeight.w300,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -159,9 +159,11 @@ class AddMovieCard extends StatelessWidget {
               height: 18,
             ),
             const SizedBox(height: 16),
-            const Text(
-              "new",
-              style: TextStyle(fontFamily: "Metropolis"),
+            Text(
+              AppLocalizations.of(context).newMovie,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
               textAlign: TextAlign.center,
             ),
           ],

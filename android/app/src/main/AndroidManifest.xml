@@ -4,6 +4,7 @@
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="SlideMix"
+        android:localeConfig="@xml/locales_config"
         android:roundIcon="@mipmap/ic_launcher_round">
         <activity
             android:name=".MainActivity"
