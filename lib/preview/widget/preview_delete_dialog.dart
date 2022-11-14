@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:slidemix/localizations.dart';
 import 'package:slidemix/widget/button.dart';
 
 enum DeletePreviewResult {
@@ -25,12 +26,11 @@ class DeletePreviewDialog extends StatelessWidget {
           Column(
             children: [
               const SizedBox(height: 24),
-              // TODO: use localized string
-              const Text(
-                'Delete the video?',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context).deleteMovieAlertTitle,
+                style: const TextStyle(
                   fontSize: 16,
-                  fontFamily: "Metropolis",
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 24),
@@ -38,7 +38,7 @@ class DeletePreviewDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SecondaryButton(
-                    'cancel',
+                    AppLocalizations.of(context).deleteMovieAlertSecondary,
                     onPressed: () {
                       Navigator.of(context).pop(DeletePreviewResult.cancel);
                     },
@@ -48,7 +48,7 @@ class DeletePreviewDialog extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   PrimaryButton(
-                    'delete',
+                    AppLocalizations.of(context).deleteMovieAlertPrimary,
                     onPressed: () {
                       Navigator.of(context).pop(DeletePreviewResult.delete);
                     },

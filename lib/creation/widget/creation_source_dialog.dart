@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:slidemix/localizations.dart';
 
 enum CreationMediaSource { camera, gallery }
 
@@ -6,10 +7,10 @@ class PickMediaSourceDialog extends StatelessWidget {
   static Future<CreationMediaSource?> show(BuildContext context) =>
       showModalBottomSheet<CreationMediaSource>(
         context: context,
-        builder: (context) => const PickMediaSourceDialog(),
+        builder: (context) => const PickMediaSourceDialog._(),
       );
 
-  const PickMediaSourceDialog({super.key});
+  const PickMediaSourceDialog._({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class PickMediaSourceDialog extends StatelessWidget {
             Icons.camera_alt,
             color: Theme.of(context).primaryColor,
           ),
-          title: const Text("Camera"),
+          title: Text(AppLocalizations.of(context).mediaSourceCamera),
         ),
         ListTile(
           onTap: () {
@@ -33,7 +34,7 @@ class PickMediaSourceDialog extends StatelessWidget {
             Icons.image,
             color: Theme.of(context).primaryColor,
           ),
-          title: const Text("Gallery"),
+          title: Text(AppLocalizations.of(context).mediaSourceGallery),
         ),
       ],
     );

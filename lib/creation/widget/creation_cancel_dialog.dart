@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:slidemix/localizations.dart';
 import 'package:slidemix/navigation.dart';
 import 'package:slidemix/widget/button.dart';
 
@@ -39,14 +40,13 @@ class CancelCreationDialog extends StatelessWidget {
         children: [
           Column(
             children: [
-              // TODO: use localized string
-              const Padding(
-                padding: EdgeInsets.all(24),
+              Padding(
+                padding: const EdgeInsets.all(24),
                 child: Text(
-                  'Movie is in progress, do you want to cancel?',
-                  style: TextStyle(
+                  AppLocalizations.of(context).leaveCancelAlertTitle,
+                  style: const TextStyle(
                     fontSize: 16,
-                    fontFamily: "Metropolis",
+                    fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -55,7 +55,7 @@ class CancelCreationDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SecondaryButton(
-                    'wait',
+                    AppLocalizations.of(context).leaveCancelAlertSecondary,
                     onPressed: () {
                       Navigator.of(context).pop(CancelCreationResult.dismiss);
                     },
@@ -65,7 +65,7 @@ class CancelCreationDialog extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   PrimaryButton(
-                    'cancel',
+                    AppLocalizations.of(context).leaveCancelAlertPrimary,
                     onPressed: () {
                       Navigator.of(context).pop(CancelCreationResult.cancel);
                     },

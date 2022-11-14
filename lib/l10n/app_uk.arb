@@ -1,0 +1,21 @@
+{
+    "appName": "SlideMix",
+    "tapToStart": "почати",
+    "createMovie": "створити",
+    "newMovie": "створити",
+    "notEnoughMediaToCreateMovie": "Додайте {minMediaCountToProceed} чи більше файлів, щоб створити відео",
+    "leaveCreationAlertTitle": "Вийти і відмінити створення відео?",
+    "leaveCreationAlertPrimary": "зберегти як чернетку",
+    "leaveCreationAlertSecondary": "вийти",
+    "leaveCancelAlertTitle": "Відео монтується, відмінити?",
+    "leaveCancelAlertPrimary": "відмінити",
+    "leaveCancelAlertSecondary": "зачекати",
+    "mediaSourceCamera": "Камера",
+    "mediaSourceGallery": "Галерея",
+    "deleteMovieAlertTitle": "Видалити відео?",
+    "deleteMovieAlertPrimary": "видалити",
+    "deleteMovieAlertSecondary": "відмінити",
+    "projectTitle": "проєкт #{projectId}",
+    "draftTitle": "чернетка #{projectId}",
+    "failedPlayVideo": "Не можемо відтворити ваше відео"
+}

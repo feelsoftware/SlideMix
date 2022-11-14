@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/colors.dart';
 import 'package:slidemix/creation/creation.dart';
+import 'package:slidemix/localizations.dart';
 import 'package:slidemix/movies/movies.dart';
 import 'package:slidemix/navigation.dart';
 import 'package:slidemix/welcome/welcome_bloc.dart';
@@ -76,7 +77,7 @@ class _WelcomeStateScreen extends State<WelcomeScreen> {
                   SizedBox(
                     width: logoSize,
                     child: PrimaryButton(
-                      "tap to start",
+                      AppLocalizations.of(context).tapToStart,
                       onPressed: () {
                         Navigator.of(context).push(CreationScreen.route());
                       },
