@@ -44,6 +44,12 @@ dependencies:
   # https://github.com/arthenica/ffmpeg-kit/tree/main/flutter/flutter
   ffmpeg_kit_flutter: 5.1.0
 
+  # https://pub.dev/packages/firebase_core
+  firebase_core: 2.3.0
+
+  # https://pub.dev/packages/firebase_crashlytics
+  firebase_crashlytics: 3.0.6
+
   # https://pub.dev/packages/flutter_bloc
   flutter_bloc: 8.1.1
 

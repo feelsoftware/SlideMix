@@ -10,7 +10,12 @@ import 'package:slidemix/preview/widget/preview_player.dart';
 import 'package:slidemix/widget/toolbar.dart';
 
 class PreviewScreen extends StatefulWidget {
-  static Route<void> route(Movie movie) => ScreenRoute(PreviewScreen._(movie));
+  static Route<void> route(Movie movie) => ScreenRoute(
+      settings: RouteSettings(
+        name: 'preview',
+        arguments: movie.id,
+      ),
+      child: PreviewScreen._(movie));
 
   final Movie movie;
 
@@ -28,8 +33,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.of(context)
-            .pushAndRemoveUntil(MoviesScreen.route(), (_) => false);
+        Navigator.of(context).pushAndRemoveUntil(MoviesScreen.route(), (_) => false);
         return false;
       },
       child: Scaffold(
@@ -42,15 +46,15 @@ class _PreviewScreenState extends State<PreviewScreen> {
             color: AppColors.error,
           ),
           onRightIconTapped: () async {
-            final result = await DeletePreviewDialog.show(context);
+            final result = await DeletePreviewDialog.show(context, widget.movie);
             if (result == null || result == DeletePreviewResult.cancel) {
               // Dismissed
               return;
             }
             if (!mounted) return;
 
-            final route = await BlocProvider.of<PreviewBloc>(context)
-                .delete(widget.movie);
+            final route =
+                await BlocProvider.of<PreviewBloc>(context).delete(widget.movie);
             if (!mounted) return;
             Navigator.of(context).pushAndRemoveUntil(route, (route) => false);
           },

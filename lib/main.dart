@@ -1,9 +1,14 @@
+import 'dart:ui';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slidemix/colors.dart';
 import 'package:slidemix/database.dart';
+import 'package:slidemix/firebase_options.dart';
 import 'package:slidemix/localizations.dart';
+import 'package:slidemix/logger.dart';
 import 'package:slidemix/navigation.dart';
 import 'package:slidemix/setup.dart';
 import 'package:slidemix/welcome/welcome.dart';
@@ -21,6 +26,18 @@ void main() async {
 
   // Fonts
   GoogleFonts.config.allowRuntimeFetching = false;
+
+  // Crashlytics
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FlutterError.onError = (details) {
+    Logger.e(details.toStringShort(), details.exception, details.stack);
+  };
+  PlatformDispatcher.instance.onError = (error, stack) {
+    Logger.e('Uncaught asynchronous error', error, stack);
+    return true;
+  };
 
   runApp(SlideMixApp(
     appDatabase: database,
@@ -51,6 +68,7 @@ class SlideMixApp extends StatelessWidget {
         navigatorKey: navigatorKey,
         navigatorObservers: [
           NavigationStackObserver(),
+          NavigationLogger(),
         ],
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

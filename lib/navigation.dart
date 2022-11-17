@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:slidemix/logger.dart';
 
 class ScreenRoute<T> extends MaterialPageRoute<T> {
-  ScreenRoute(Widget child) : super(builder: (_) => child);
+  ScreenRoute({
+    required RouteSettings settings,
+    required Widget child,
+  }) : super(settings: settings, builder: (_) => child);
 
   @override
   Duration get transitionDuration => Duration.zero;
@@ -67,5 +71,35 @@ class NavigationStackObserver extends RouteObserver<Route<dynamic>> {
 
   void _remove(Route<dynamic> route) {
     _stack.removeWhere((e) => e.settings.name == route.settings.name);
+  }
+}
+
+class NavigationLogger extends RouteObserver<Route<dynamic>> {
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    Logger.d('didPush ${_routeToLog(route)} ||| ${_routeToLog(previousRoute)}');
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    Logger.d('didReplace ${_routeToLog(newRoute)} ||| ${_routeToLog(oldRoute)}');
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    Logger.d('didPop ${_routeToLog(route)} ||| ${_routeToLog(previousRoute)}');
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    Logger.d('didRemove ${_routeToLog(route)} ||| ${_routeToLog(previousRoute)}');
+  }
+
+  String _routeToLog(Route<dynamic>? route) {
+    if (route == null) return '';
+    return <String>[
+      "'${route.settings.name}'" ?? '/',
+      if (route.settings.arguments != null) "arguments:{${route.settings.arguments.toString()}}",
+    ].join(' ');
   }
 }
