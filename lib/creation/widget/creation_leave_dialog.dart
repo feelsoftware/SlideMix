@@ -11,6 +11,9 @@ class LeaveCreationDialog extends StatelessWidget {
   static Future<LeaveCreationResult?> show(BuildContext context) async {
     return await showModalBottomSheet(
       context: context,
+      routeSettings: const RouteSettings(
+        name: 'creation/leave',
+      ),
       isScrollControlled: true,
       builder: (_) => const LeaveCreationDialog._(),
     );

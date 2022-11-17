@@ -7,6 +7,9 @@ class PickMediaSourceDialog extends StatelessWidget {
   static Future<CreationMediaSource?> show(BuildContext context) =>
       showModalBottomSheet<CreationMediaSource>(
         context: context,
+        routeSettings: const RouteSettings(
+          name: 'creation/pick',
+        ),
         builder: (context) => const PickMediaSourceDialog._(),
       );
 
@@ -19,6 +22,7 @@ class PickMediaSourceDialog extends StatelessWidget {
         children: <Widget>[
           ListTile(
             onTap: () {
+              throw Exception('Test Firebase Crashlytics');
               Navigator.pop(context, CreationMediaSource.camera);
             },
             leading: Icon(

@@ -9,7 +9,10 @@ import 'package:slidemix/welcome/welcome_bloc.dart';
 import 'package:slidemix/widget/button.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  static Route<void> route() => ScreenRoute(const WelcomeScreen());
+  static Route<void> route() => ScreenRoute(
+        settings: const RouteSettings(name: 'welcome'),
+        child: const WelcomeScreen(),
+      );
 
   const WelcomeScreen({super.key});
 
