@@ -28,7 +28,8 @@ class _PreviewScreenState extends State<PreviewScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.of(context).pushAndRemoveUntil(MoviesScreen.route(), (_) => false);
+        Navigator.of(context)
+            .pushAndRemoveUntil(MoviesScreen.route(), (_) => false);
         return false;
       },
       child: Scaffold(
@@ -48,15 +49,17 @@ class _PreviewScreenState extends State<PreviewScreen> {
             }
             if (!mounted) return;
 
-            final route =
-                await BlocProvider.of<PreviewBloc>(context).delete(widget.movie);
+            final route = await BlocProvider.of<PreviewBloc>(context)
+                .delete(widget.movie);
             if (!mounted) return;
             Navigator.of(context).pushAndRemoveUntil(route, (route) => false);
           },
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 16),
-          child: PreviewPlayer(widget.movie),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: PreviewPlayer(widget.movie),
+          ),
         ),
       ),
     );

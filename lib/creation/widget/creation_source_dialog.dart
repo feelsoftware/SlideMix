@@ -14,29 +14,31 @@ class PickMediaSourceDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      children: <Widget>[
-        ListTile(
-          onTap: () {
-            Navigator.pop(context, CreationMediaSource.camera);
-          },
-          leading: Icon(
-            Icons.camera_alt,
-            color: Theme.of(context).primaryColor,
+    return SafeArea(
+      child: Wrap(
+        children: <Widget>[
+          ListTile(
+            onTap: () {
+              Navigator.pop(context, CreationMediaSource.camera);
+            },
+            leading: Icon(
+              Icons.camera_alt,
+              color: Theme.of(context).primaryColor,
+            ),
+            title: Text(AppLocalizations.of(context).mediaSourceCamera),
           ),
-          title: Text(AppLocalizations.of(context).mediaSourceCamera),
-        ),
-        ListTile(
-          onTap: () {
-            Navigator.pop(context, CreationMediaSource.gallery);
-          },
-          leading: Icon(
-            Icons.image,
-            color: Theme.of(context).primaryColor,
+          ListTile(
+            onTap: () {
+              Navigator.pop(context, CreationMediaSource.gallery);
+            },
+            leading: Icon(
+              Icons.image,
+              color: Theme.of(context).primaryColor,
+            ),
+            title: Text(AppLocalizations.of(context).mediaSourceGallery),
           ),
-          title: Text(AppLocalizations.of(context).mediaSourceGallery),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

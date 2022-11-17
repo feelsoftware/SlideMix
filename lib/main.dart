@@ -7,14 +7,19 @@ import 'package:slidemix/localizations.dart';
 import 'package:slidemix/navigation.dart';
 import 'package:slidemix/setup.dart';
 import 'package:slidemix/welcome/welcome.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Init DB
+  // DB
   final database = await $FloorAppDatabase.databaseBuilder('slidemix.db').build();
   final sharedPreferences = await SharedPreferences.getInstance();
 
+  // Locale
+  timeago.setLocaleMessages('uk', timeago.UkMessages());
+
+  // Fonts
   GoogleFonts.config.allowRuntimeFetching = false;
 
   runApp(SlideMixApp(
