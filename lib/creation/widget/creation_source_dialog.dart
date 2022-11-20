@@ -22,7 +22,6 @@ class PickMediaSourceDialog extends StatelessWidget {
         children: <Widget>[
           ListTile(
             onTap: () {
-              throw Exception('Test Firebase Crashlytics');
               Navigator.pop(context, CreationMediaSource.camera);
             },
             leading: Icon(
