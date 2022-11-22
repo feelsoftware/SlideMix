@@ -91,7 +91,8 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     Movie movie;
     try {
       movie = await (await _project).createMovie();
-    } catch (_) {
+    } catch (ex, st) {
+      Logger.e('Failed to create movie', ex, st);
       emit(state.copyWith(isLoading: false));
       throw Exception('Failed to create movie');
     }

@@ -5,6 +5,7 @@ import 'package:slidemix/creation/creation_bloc.dart';
 import 'package:slidemix/creator/movie_creator.dart';
 import 'package:slidemix/creator/project_id_provider.dart';
 import 'package:slidemix/creator/slideshow_creator.dart';
+import 'package:slidemix/creator/video_capability.dart';
 import 'package:slidemix/database.dart';
 import 'package:slidemix/draft/draft_movie_manager.dart';
 import 'package:slidemix/movies/movies_bloc.dart';
@@ -43,7 +44,9 @@ class Setup extends StatelessWidget {
             projectIdProvider: ProjectIdProviderImpl(
               sharedPreferences: sharedPreferences,
             ),
-            slideShowCreator: FFmpegSlideShowCreator(),
+            slideShowCreator: FFmpegSlideShowCreator(
+              videoCapabilityProvider: VideoCapabilityProvider(),
+            ),
           ),
         ),
       ],

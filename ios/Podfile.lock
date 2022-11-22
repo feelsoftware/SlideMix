@@ -1,10 +1,10 @@
 PODS:
-  - ffmpeg-kit-ios-https (5.1)
-  - ffmpeg_kit_flutter (5.1.0):
-    - ffmpeg_kit_flutter/https (= 5.1.0)
+  - ffmpeg-kit-ios-full-gpl (5.1)
+  - ffmpeg_kit_flutter_full_gpl (5.1.0):
+    - ffmpeg_kit_flutter_full_gpl/full-gpl (= 5.1.0)
     - Flutter
-  - ffmpeg_kit_flutter/https (5.1.0):
-    - ffmpeg-kit-ios-https (= 5.1)
+  - ffmpeg_kit_flutter_full_gpl/full-gpl (5.1.0):
+    - ffmpeg-kit-ios-full-gpl (= 5.1)
     - Flutter
   - Firebase/CoreOnly (10.2.0):
     - FirebaseCore (= 10.2.0)
@@ -70,7 +70,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - ffmpeg_kit_flutter (from `.symlinks/plugins/ffmpeg_kit_flutter/ios`)
+  - ffmpeg_kit_flutter_full_gpl (from `.symlinks/plugins/ffmpeg_kit_flutter_full_gpl/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
   - Flutter (from `Flutter`)
@@ -82,7 +82,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - ffmpeg-kit-ios-https
+    - ffmpeg-kit-ios-full-gpl
     - Firebase
     - FirebaseCore
     - FirebaseCoreInternal
@@ -95,8 +95,8 @@ SPEC REPOS:
     - PromisesObjC
 
 EXTERNAL SOURCES:
-  ffmpeg_kit_flutter:
-    :path: ".symlinks/plugins/ffmpeg_kit_flutter/ios"
+  ffmpeg_kit_flutter_full_gpl:
+    :path: ".symlinks/plugins/ffmpeg_kit_flutter_full_gpl/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
   firebase_crashlytics:
@@ -115,8 +115,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/video_player_avfoundation/ios"
 
 SPEC CHECKSUMS:
-  ffmpeg-kit-ios-https: 8dffbe1623a2f227be98fc314294847a97f818e4
-  ffmpeg_kit_flutter: 17e9f35a4ec996ac55051c20be05240f2a0b53e8
+  ffmpeg-kit-ios-full-gpl: 2682965e5b3e7f13a05836d46d302eafe6c5039e
+  ffmpeg_kit_flutter_full_gpl: 7dcfcdc419f4667252cde1871859976bca328169
   Firebase: a3ea7eba4382afd83808376edb99acdaff078dcf
   firebase_core: db1432de826785171029b7c1a26e5b22ce1dd477
   firebase_crashlytics: 70150805355d1e11e2fbbfa379fc9e776d05e5ad

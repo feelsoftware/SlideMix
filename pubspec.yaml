@@ -42,7 +42,7 @@ dependencies:
   equatable: 2.0.5
 
   # https://github.com/arthenica/ffmpeg-kit/tree/main/flutter/flutter
-  ffmpeg_kit_flutter: 5.1.0
+  ffmpeg_kit_flutter_full_gpl: 5.1.0
 
   # https://pub.dev/packages/firebase_core
   firebase_core: 2.3.0

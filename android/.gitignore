@@ -27,6 +27,7 @@ render.experimental.xml
 *.jks
 *.keystore
 /app/private_key.pepk
+/app/**/output-metadata.json
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json

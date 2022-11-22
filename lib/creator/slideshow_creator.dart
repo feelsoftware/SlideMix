@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter/ffprobe_kit.dart';
-import 'package:ffmpeg_kit_flutter/return_code.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/ffprobe_kit.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
+import 'package:slidemix/creator/video_capability.dart';
 import 'package:slidemix/logger.dart';
 
 abstract class SlideShowCreator {
@@ -28,28 +29,33 @@ class SlideShow {
 }
 
 class FFmpegSlideShowCreator extends SlideShowCreator {
+  final VideoCapabilityProvider videoCapabilityProvider;
+
+  FFmpegSlideShowCreator({
+    required this.videoCapabilityProvider,
+  });
+
   @override
   Future<SlideShow> create({
     required Directory images,
     required Directory destination,
   }) async {
     await destination.create();
-    final videoPath = '${destination.path}/video.mp4';
-    Duration videoDuration = await _createVideo(
+
+    final video = await _createVideo(
       images: images,
-      video: File(videoPath),
+      destination: destination,
     );
 
-    final thumbPath = '${destination.path}/thumbnail.jpg';
-    await _createThumb(
-      video: File(videoPath),
-      thumb: File(thumbPath),
+    final thumbnail = await _createThumb(
+      video: video,
+      destination: destination,
     );
 
     return SlideShow(
-      videoPath: videoPath,
-      thumbPath: thumbPath,
-      videoDuration: videoDuration,
+      videoPath: video.file.path,
+      thumbPath: thumbnail.file.path,
+      videoDuration: video.duration,
     );
   }
 
@@ -58,11 +64,15 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
     FFmpegKit.cancel();
   }
 
-  Future<Duration> _createVideo({
+  Future<_Video> _createVideo({
     required Directory images,
-    required File video,
+    required Directory destination,
   }) async {
-    const pixels = 720;
+    final videoCapability = await videoCapabilityProvider.getVideoCapability();
+    Logger.d('videoCapability $videoCapability');
+    final videoPath =
+        '${destination.path}/video.${videoCapability.mediaFormat.fileExtension}';
+
     final videoCommand = <String>[
       "-framerate",
       "1",
@@ -70,31 +80,30 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
       "${images.path}/image%03d.jpg",
       "-r",
       "30",
+      ...videoCapability.mediaFormat.encodingParams,
       "-vf",
-      "scale='if(gt(iw,ih),-2,min($pixels,iw))':'if(gt(iw,ih),min($pixels,iw),-2)'",
-      "-pix_fmt",
-      "yuv420p",
+      "scale='if(gt(iw,ih),-2,min(${videoCapability.width},iw))':'if(gt(iw,ih),min(${videoCapability.height},iw),-2)'",
       "-y",
-      video.path,
+      videoPath,
     ];
     Logger.d('Create video ${videoCommand.join(' ')}');
     await FFmpegKit.executeWithArguments(videoCommand);
     final videoSession = (await FFmpegKit.listSessions()).last;
     Duration videoDuration;
     if (ReturnCode.isCancel(await videoSession.getReturnCode())) {
-      Logger.d('Canceled video creation ${video.path}');
+      Logger.d('Canceled video creation $videoPath');
       throw Exception('Video creation cancelled');
     }
     if (ReturnCode.isSuccess(await videoSession.getReturnCode())) {
-      Logger.d('Video is created ${video.path}');
+      Logger.d('Video is created $videoPath');
 
       try {
         final mediaInformation =
-            (await FFprobeKit.getMediaInformation(video.path)).getMediaInformation();
+            (await FFprobeKit.getMediaInformation(videoPath)).getMediaInformation();
         final duration = double.parse(mediaInformation?.getDuration() ?? '0.0').toInt();
         videoDuration = Duration(seconds: duration);
       } catch (ex, st) {
-        Logger.e('Failed to get media information ${video.path}', ex, st);
+        Logger.e('Failed to get media information $videoPath', ex, st);
         videoDuration = Duration.zero;
       }
     } else {
@@ -107,34 +116,39 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
       throw Exception('Failed to create video');
     }
 
-    return videoDuration;
+    return _Video(
+      file: File(videoPath),
+      duration: videoDuration,
+    );
   }
 
-  Future<void> _createThumb({
-    required File video,
-    required File thumb,
+  Future<_Thumbnail> _createThumb({
+    required _Video video,
+    required Directory destination,
   }) async {
+    final thumbPath = '${destination.path}/thumbnail.jpg';
     final thumbCommand = <String>[
       "-ss",
       // Use the first frame/image as thumb
       _formatDurationForThumbnail(Duration.zero),
       "-noaccurate_seek",
       "-i",
-      video.path,
+      video.file.path,
       "-vframes",
       "1",
       "-y",
-      thumb.path,
+      thumbPath,
     ];
     Logger.d('Generate thumbnail ${thumbCommand.join(' ')}');
     await FFmpegKit.executeWithArguments(thumbCommand);
     final thumbSession = (await FFmpegKit.listSessions()).last;
     if (ReturnCode.isCancel(await thumbSession.getReturnCode())) {
-      Logger.d('Canceled thumbnail generation ${thumb.path}');
+      Logger.d('Canceled thumbnail generation $thumbPath');
       throw Exception('Video creation cancelled');
     }
     if (ReturnCode.isSuccess(await thumbSession.getReturnCode())) {
-      Logger.d('Thumbnail is created ${thumb.path}');
+      Logger.d('Thumbnail is created $thumbPath');
+      return _Thumbnail(file: File(thumbPath));
     } else {
       Logger.e(
         'Failed to create thumbnail',
@@ -142,6 +156,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
           (await thumbSession.getLogs()).reversed.map((log) => log.getMessage()),
         ),
       );
+      throw Exception('Failed to create thumbnail');
     }
   }
 
@@ -151,4 +166,22 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
     return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds.000";
   }
+}
+
+class _Video {
+  final File file;
+  final Duration duration;
+
+  _Video({
+    required this.file,
+    required this.duration,
+  });
+}
+
+class _Thumbnail {
+  final File file;
+
+  _Thumbnail({
+    required this.file,
+  });
 }
