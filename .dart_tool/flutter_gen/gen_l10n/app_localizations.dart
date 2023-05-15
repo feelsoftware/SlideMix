@@ -206,6 +206,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to play your video'**
   String get failedPlayVideo;
+
+  /// No description provided for @previewActionShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get previewActionShare;
+
+  /// No description provided for @previewActionDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get previewActionDelete;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

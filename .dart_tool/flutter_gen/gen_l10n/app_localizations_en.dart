@@ -77,4 +77,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get failedPlayVideo => 'Failed to play your video';
+
+  @override
+  String get previewActionShare => 'Share';
+
+  @override
+  String get previewActionDelete => 'Delete';
 }

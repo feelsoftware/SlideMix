@@ -17,5 +17,7 @@
     "deleteMovieAlertSecondary": "відмінити",
     "projectTitle": "проєкт #{projectId}",
     "draftTitle": "чернетка #{projectId}",
-    "failedPlayVideo": "Не можемо відтворити ваше відео"
+    "failedPlayVideo": "Не можемо відтворити ваше відео",
+    "previewActionShare": "Поділитися",
+    "previewActionDelete": "Видалити"
 }

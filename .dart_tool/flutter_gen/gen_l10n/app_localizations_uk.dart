@@ -77,4 +77,10 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get failedPlayVideo => 'Не можемо відтворити ваше відео';
+
+  @override
+  String get previewActionShare => 'Поділитися';
+
+  @override
+  String get previewActionDelete => 'Видалити';
 }

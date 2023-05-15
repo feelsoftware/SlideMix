@@ -53,6 +53,7 @@ class MoviesBloc extends Bloc<dynamic, MoviesState> {
                   'project #${draft.projectId}',
               thumb: draft.media.first.path,
               video: '',
+              mime: '',
               duration: Duration.zero,
               createdAt: draft.createdAt,
               isDraft: true,

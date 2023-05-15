@@ -19,11 +19,13 @@ abstract class SlideShowCreator {
 class SlideShow {
   final String videoPath;
   final String thumbPath;
+  final String mime;
   final Duration videoDuration;
 
   SlideShow({
     required this.videoPath,
     required this.thumbPath,
+    required this.mime,
     required this.videoDuration,
   });
 }
@@ -55,6 +57,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
     return SlideShow(
       videoPath: video.file.path,
       thumbPath: thumbnail.file.path,
+      mime: video.mime,
       videoDuration: video.duration,
     );
   }
@@ -118,6 +121,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
 
     return _Video(
       file: File(videoPath),
+      mime: videoCapability.mediaFormat.mime,
       duration: videoDuration,
     );
   }
@@ -170,10 +174,12 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
 
 class _Video {
   final File file;
+  final String mime;
   final Duration duration;
 
   _Video({
     required this.file,
+    required this.mime,
     required this.duration,
   });
 }

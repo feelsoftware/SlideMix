@@ -137,6 +137,7 @@ class MovieProjectImpl extends MovieProject {
       title: AppLocalizations.app()?.projectTitle(projectId) ?? 'project #$projectId',
       thumb: slideShow.thumbPath,
       video: slideShow.videoPath,
+      mime: slideShow.mime,
       duration: slideShow.videoDuration,
       createdAt: DateTime.now(),
     );

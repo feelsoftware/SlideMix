@@ -18,7 +18,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // DB
-  final database = await $FloorAppDatabase.databaseBuilder('slidemix.db').build();
+  final database = await AppDatabase.build();
   final sharedPreferences = await SharedPreferences.getInstance();
 
   // Locale

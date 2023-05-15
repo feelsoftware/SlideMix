@@ -73,7 +73,7 @@ class _$AppDatabase extends AppDatabase {
     Callback? callback,
   ]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 1,
+      version: 2,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
         await callback?.onConfigure?.call(database);
@@ -93,7 +93,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `draft_movies_media` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `projectId` INTEGER NOT NULL, `path` TEXT NOT NULL)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `movies` (`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `thumb` TEXT NOT NULL, `video` TEXT NOT NULL, `duration` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, `isFavourite` INTEGER NOT NULL, `isDraft` INTEGER NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `movies` (`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `thumb` TEXT NOT NULL, `video` TEXT NOT NULL, `mime` TEXT NOT NULL, `duration` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, `isFavourite` INTEGER NOT NULL, `isDraft` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -270,6 +270,7 @@ class _$MovieDao extends MovieDao {
                   'title': item.title,
                   'thumb': item.thumb,
                   'video': item.video,
+                  'mime': item.mime,
                   'duration': item.duration,
                   'createdAt': item.createdAt,
                   'isFavourite': item.isFavourite ? 1 : 0,
@@ -285,6 +286,7 @@ class _$MovieDao extends MovieDao {
                   'title': item.title,
                   'thumb': item.thumb,
                   'video': item.video,
+                  'mime': item.mime,
                   'duration': item.duration,
                   'createdAt': item.createdAt,
                   'isFavourite': item.isFavourite ? 1 : 0,
@@ -300,6 +302,7 @@ class _$MovieDao extends MovieDao {
                   'title': item.title,
                   'thumb': item.thumb,
                   'video': item.video,
+                  'mime': item.mime,
                   'duration': item.duration,
                   'createdAt': item.createdAt,
                   'isFavourite': item.isFavourite ? 1 : 0,
@@ -328,6 +331,7 @@ class _$MovieDao extends MovieDao {
             title: row['title'] as String,
             thumb: row['thumb'] as String,
             video: row['video'] as String,
+            mime: row['mime'] as String,
             duration: row['duration'] as int,
             createdAt: row['createdAt'] as int,
             isFavourite: (row['isFavourite'] as int) != 0,
@@ -344,6 +348,7 @@ class _$MovieDao extends MovieDao {
             title: row['title'] as String,
             thumb: row['thumb'] as String,
             video: row['video'] as String,
+            mime: row['mime'] as String,
             duration: row['duration'] as int,
             createdAt: row['createdAt'] as int,
             isFavourite: (row['isFavourite'] as int) != 0,

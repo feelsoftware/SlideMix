@@ -123,7 +123,7 @@ class _CreationScreenState extends State<CreationScreen> {
         builder: (context, state) {
           return Scaffold(
             appBar: Toolbar(
-              leftIcon: Image.asset("assets/images/ic_back.png"),
+              leftIcon: Image.asset("assets/images/ic_close.png"),
               onLeftIconTapped: () => Navigator.of(context).maybePop(),
             ),
             body: Stack(

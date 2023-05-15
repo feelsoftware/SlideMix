@@ -12,6 +12,7 @@ class MovieEntity extends Equatable {
   final String title;
   final String thumb;
   final String video;
+  final String mime;
   final int duration;
   final int createdAt;
   final bool isFavourite;
@@ -22,6 +23,7 @@ class MovieEntity extends Equatable {
     required this.title,
     required this.thumb,
     required this.video,
+    required this.mime,
     required this.duration,
     required this.createdAt,
     required this.isFavourite,
@@ -36,6 +38,7 @@ class MovieEntity extends Equatable {
       title: title,
       thumb: thumb,
       video: video,
+      mime: mime,
       duration: duration,
       createdAt: createdAt,
       isFavourite: isFavourite ?? this.isFavourite,
@@ -48,6 +51,6 @@ class MovieEntity extends Equatable {
 
   @override
   String toString() {
-    return 'MovieEntity{id: $id, title: $title, thumb: $thumb, video: $video, duration: $duration, createdAt: $createdAt, isFavourite: $isFavourite, isDraft: $isDraft}';
+    return 'MovieEntity{id: $id, title: $title, thumb: $thumb, video: $video, mime: $mime, duration: $duration, createdAt: $createdAt, isFavourite: $isFavourite, isDraft: $isDraft}';
   }
 }

@@ -44,5 +44,7 @@
             }
         }
     },
-    "failedPlayVideo": "Failed to play your video"
+    "failedPlayVideo": "Failed to play your video",
+    "previewActionShare": "Share",
+    "previewActionDelete": "Delete"
 }
