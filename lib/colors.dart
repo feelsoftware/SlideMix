@@ -12,6 +12,8 @@ class AppColors {
   static const Color overlay = Color(0x809e9e9e);
   static const Color playerBackground = Color(0xff1d1d1b);
   static const Color error = Color(0xffff0000);
+
+  AppColors._();
 }
 
 final SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle.dark.copyWith(
