@@ -58,7 +58,7 @@ class PreviewActionsDialog extends StatelessWidget {
               final route = await BlocProvider.of<PreviewBloc>(context).delete(movie);
               // ignore: use_build_context_synchronously
               if (!context.mounted) return;
-              Navigator.of(context).pushAndRemoveUntil(route, (route) => false);
+              Navigator.of(context).pushAndRemoveUntil(route, (_) => false);
             },
             leading: Image.asset(
               "assets/images/ic_delete.png",

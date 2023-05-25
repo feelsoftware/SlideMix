@@ -69,7 +69,7 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
   }
 
   FutureOr<Route<void>> reset({required bool deleteDraft}) async {
-    (await _project).dispose(deleteDraft: deleteDraft);
+    await (await _project).dispose(deleteDraft: deleteDraft);
     __project = null;
 
     emit(const CreationState(<Media>[]));

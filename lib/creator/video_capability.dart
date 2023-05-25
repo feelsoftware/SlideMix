@@ -51,7 +51,8 @@ class VideoCapabilityProvider {
             _VideoSize(width: 640, height: 480),
             _VideoSize(width: 1280, height: 720),
             _VideoSize(width: 1920, height: 1080),
-            _VideoSize(width: 2560, height: 1440),
+            // Disabled due to high memory usage
+            // _VideoSize(width: 2560, height: 1440),
           ],
         ),
       ];

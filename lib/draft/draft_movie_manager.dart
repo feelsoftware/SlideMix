@@ -78,11 +78,11 @@ class DraftMovieManagerImpl extends DraftMovieManager {
 
   @override
   Future<void> createDraft(int projectId) async {
-    draftMovieDao.insert(DraftMovieEntity(
+    Logger.d('createDraft $projectId');
+    await draftMovieDao.insert(DraftMovieEntity(
       projectId: projectId,
       createdAt: DateTime.now().millisecondsSinceEpoch,
     ));
-    Logger.d('createDraft $projectId');
   }
 
   @override
@@ -106,10 +106,7 @@ class DraftMovieManagerImpl extends DraftMovieManager {
   Future<void> deleteDraft(int projectId) async {
     Logger.d('deleteDraft $projectId');
 
-    await draftMovieDao.delete(DraftMovieEntity(
-      projectId: projectId,
-      createdAt: -1,
-    ));
+    await draftMovieDao.deleteById(projectId);
     await draftMovieMediaDao.deleteAll(
       await draftMovieMediaDao.getAllByProject(projectId).first,
     );

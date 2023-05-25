@@ -116,7 +116,7 @@ class _CreationScreenState extends State<CreationScreen> {
           deleteDraft: leaveCreationResult == LeaveCreationResult.leave,
         );
         if (!mounted) return false;
-        Navigator.of(context).pushAndRemoveUntil(route, (route) => false);
+        Navigator.of(context).pushAndRemoveUntil(route, (_) => false);
         return false;
       },
       child: BlocBuilder<CreationBloc, CreationState>(

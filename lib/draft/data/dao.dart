@@ -13,8 +13,8 @@ abstract class DraftMovieDao {
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insert(DraftMovieEntity draft);
 
-  @floor.delete
-  Future<void> delete(DraftMovieEntity draft);
+  @Query("DELETE FROM ${DraftMovieEntity.tableName} WHERE projectId = :projectId")
+  Future<void> deleteById(int projectId);
 }
 
 @dao

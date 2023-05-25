@@ -81,14 +81,24 @@ class MovieProjectImpl extends MovieProject {
     final mediaWithUpdatedPath = <Media>[];
     final destinationDir = await _tempDir;
     for (final item in media) {
-      String fileName = basename(item.path);
+      final source = File(item.path);
+      final newPath = '${destinationDir.path}/${basename(item.path)}';
+
       try {
-        final newPath = '${destinationDir.path}/$fileName';
-        await File(item.path).rename(newPath);
+        await source.rename(newPath);
         mediaWithUpdatedPath.add(Media(newPath));
         Logger.d('Moved file to tempDir, $newPath');
       } catch (ex, st) {
         Logger.e('Failed to move file to tempDir, ${item.path}', ex, st);
+        try {
+          // If rename fails, copy the source file and then delete it
+          await source.copy(newPath);
+          source.delete().ignore();
+          mediaWithUpdatedPath.add(Media(newPath));
+          Logger.d('Moved file to tempDir with fallback, $newPath');
+        } catch (ex, st) {
+          Logger.e('Failed to moved file to tempDir with fallback, $newPath', ex, st);
+        }
       }
     }
 

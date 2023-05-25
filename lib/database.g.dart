@@ -130,15 +130,6 @@ class _$DraftMovieDao extends DraftMovieDao {
                   'projectId': item.projectId,
                   'createdAt': item.createdAt
                 },
-            changeListener),
-        _draftMovieEntityDeletionAdapter = DeletionAdapter(
-            database,
-            'draft_movies',
-            ['projectId'],
-            (DraftMovieEntity item) => <String, Object?>{
-                  'projectId': item.projectId,
-                  'createdAt': item.createdAt
-                },
             changeListener);
 
   final sqflite.DatabaseExecutor database;
@@ -148,8 +139,6 @@ class _$DraftMovieDao extends DraftMovieDao {
   final QueryAdapter _queryAdapter;
 
   final InsertionAdapter<DraftMovieEntity> _draftMovieEntityInsertionAdapter;
-
-  final DeletionAdapter<DraftMovieEntity> _draftMovieEntityDeletionAdapter;
 
   @override
   Stream<List<DraftMovieEntity>> getAll() {
@@ -173,14 +162,16 @@ class _$DraftMovieDao extends DraftMovieDao {
   }
 
   @override
-  Future<void> insert(DraftMovieEntity draft) async {
-    await _draftMovieEntityInsertionAdapter.insert(
-        draft, OnConflictStrategy.replace);
+  Future<void> deleteById(int projectId) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM draft_movies WHERE projectId = ?1',
+        arguments: [projectId]);
   }
 
   @override
-  Future<void> delete(DraftMovieEntity draft) async {
-    await _draftMovieEntityDeletionAdapter.delete(draft);
+  Future<void> insert(DraftMovieEntity draft) async {
+    await _draftMovieEntityInsertionAdapter.insert(
+        draft, OnConflictStrategy.replace);
   }
 }
 

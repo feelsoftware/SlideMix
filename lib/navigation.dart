@@ -17,21 +17,6 @@ class NavigationStackObserver extends RouteObserver<Route<dynamic>> {
 
   static Iterable<Route<dynamic>> get stack => List.unmodifiable(_stack);
 
-  static Route<dynamic>? get activeRoute =>
-      _stack.isNotEmpty ? _stack[_stack.length - 1] : null;
-
-  // region DialogRoute
-  static bool get _hasActiveDialogs =>
-      _stack.any((route) => route is DialogRoute<dynamic>);
-
-  // The [Future] is completed when there is no active dialogs, otherwise it's pending.
-  static Future<T> executeWhenNoDialogs<T>(T Function() block) async {
-    while (_hasActiveDialogs) {
-      await Future<void>.delayed(const Duration(milliseconds: 100));
-    }
-    return block();
-  }
-
   @override
   void didPush(Route route, Route? previousRoute) {
     if (_stack.any((e) => e.settings.name == route.settings.name)) {
@@ -98,7 +83,7 @@ class NavigationLogger extends RouteObserver<Route<dynamic>> {
   String _routeToLog(Route<dynamic>? route) {
     if (route == null) return '';
     return <String>[
-      "'${route.settings.name}'" ?? '/',
+      "'${route.settings.name}'",
       if (route.settings.arguments != null) "arguments:{${route.settings.arguments.toString()}}",
     ].join(' ');
   }
