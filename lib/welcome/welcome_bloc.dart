@@ -1,5 +1,3 @@
-// ignore_for_file: invalid_use_of_visible_for_testing_member
-
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,14 +15,26 @@ class WelcomeBloc extends Bloc<dynamic, WelcomeState> {
   })  : _draftMovieManager = draftMovieManager,
         _movieDao = movieDao,
         super(WelcomeLoadingState()) {
-    _calculateNextState().catchError((ex, st) {
-      Logger.e('Failed to get all movies', ex, st);
+    on<_OnShowLoadingEvent>((event, emit) {
+      emit(WelcomeLoadingState());
+    });
+    on<_OnShowWelcomeEvent>((event, emit) {
       emit(ShowWelcomeState());
+    });
+    on<_OnShowMoviesEvent>((event, emit) {
+      emit(ShowMoviesState());
     });
   }
 
-  FutureOr<void> reset() {
-    emit(WelcomeLoadingState());
+  Future<void> refresh() async {
+    _calculateNextState().catchError((ex, st) {
+      Logger.e('Failed to get all movies', ex, st);
+      add(_OnShowLoadingEvent());
+    });
+  }
+
+  Future<void> reset() async {
+    add(_OnShowLoadingEvent());
   }
 
   Future<void> _calculateNextState() async {
@@ -32,14 +42,20 @@ class WelcomeBloc extends Bloc<dynamic, WelcomeState> {
     final movies = await _movieDao.getAll().first;
 
     if (drafts.isNotEmpty || movies.isNotEmpty) {
-      emit(ShowMoviesState());
+      add(_OnShowMoviesEvent());
     } else {
-      emit(ShowWelcomeState());
+      add(_OnShowWelcomeEvent());
     }
   }
 }
 
-abstract class WelcomeState {}
+class _OnShowLoadingEvent {}
+
+class _OnShowWelcomeEvent {}
+
+class _OnShowMoviesEvent {}
+
+sealed class WelcomeState {}
 
 class WelcomeLoadingState extends WelcomeState {}
 

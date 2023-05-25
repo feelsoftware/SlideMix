@@ -22,25 +22,28 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeStateScreen extends State<WelcomeScreen> {
   @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<WelcomeBloc>(context).refresh();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WelcomeBloc, WelcomeState>(
-      builder: (context, state) {
-        switch (state.runtimeType) {
-          case ShowWelcomeState:
-            return _build(context);
-
-          case ShowMoviesState:
-            return Builder(builder: (context) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                BlocProvider.of<WelcomeBloc>(context).reset();
-                Navigator.of(context).pushReplacement(MoviesScreen.route());
-              });
-              return Container(color: AppColors.background);
-            });
-
-          default:
-            return Container(color: AppColors.background);
+    return BlocConsumer<WelcomeBloc, WelcomeState>(
+      listener: (context, state) {
+        if (state is ShowMoviesState) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            BlocProvider.of<WelcomeBloc>(context).reset();
+            Navigator.of(context).pushReplacement(MoviesScreen.route());
+          });
         }
+      },
+      builder: (context, state) {
+        if (state is ShowWelcomeState) {
+          return _build(context);
+        }
+
+        return Container(color: AppColors.background);
       },
     );
   }
