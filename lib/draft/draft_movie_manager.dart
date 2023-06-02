@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:path/path.dart';
 import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/draft/data/dao.dart';
 import 'package:slidemix/draft/data/draft_movie.dart';
@@ -36,7 +37,7 @@ class DraftMovieManagerImpl extends DraftMovieManager {
       final drafts = await draftMovieDao.getAll().first;
       for (final draft in drafts) {
         final media = (await draftMovieMediaDao.getAllByProject(draft.projectId).first)
-            .map((e) => Media(e.path))
+            .map((e) => Media(projectId: draft.projectId, path: e.path))
             .toList(growable: false);
         if (media.isEmpty) continue;
         result.add(
@@ -67,7 +68,7 @@ class DraftMovieManagerImpl extends DraftMovieManager {
     if (entity == null) return null;
 
     final media = (await draftMovieMediaDao.getAllByProject(projectId).first)
-        .map((e) => Media(e.path))
+        .map((e) => Media(projectId: projectId, path: e.path))
         .toList(growable: false);
     return DraftMovie(
       projectId: projectId,
@@ -97,7 +98,10 @@ class DraftMovieManagerImpl extends DraftMovieManager {
     // Add all media
     await draftMovieMediaDao.insertAll(
       media
-          .map((e) => DraftMovieMediaEntity(projectId: projectId, path: e.path))
+          .map((e) => DraftMovieMediaEntity(
+                projectId: projectId,
+                path: basename(e.path),
+              ))
           .toList(growable: false),
     );
   }

@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:slidemix/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:slidemix/file_manager.dart';
 import 'package:slidemix/localizations.dart';
 import 'package:slidemix/movies/data/movie.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -20,6 +19,8 @@ class MovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fileManager = FileManager.of(context);
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         const padding = 8.0;
@@ -52,7 +53,7 @@ class MovieCard extends StatelessWidget {
                             width: imageSize,
                             height: imageSize,
                             child: Image.file(
-                              File(movie.thumb),
+                              fileManager.getThumb(movie),
                               fit: BoxFit.cover,
                               errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                             ),
@@ -62,7 +63,7 @@ class MovieCard extends StatelessWidget {
                           width: imageSize,
                           height: imageSize,
                           child: Image.file(
-                            File(movie.thumb),
+                            fileManager.getThumb(movie),
                             fit: BoxFit.fitWidth,
                             errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                           ),

@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/draft/draft_movie_manager.dart';
+import 'package:slidemix/file_manager.dart';
 import 'package:slidemix/localizations.dart';
 import 'package:slidemix/movies/data/movie_dao.dart';
 import 'package:slidemix/movies/data/movie_mapper.dart';
@@ -12,6 +13,7 @@ import 'package:slidemix/movies/data/movie.dart';
 
 class MoviesBloc extends Bloc<dynamic, MoviesState> {
   final DraftMovieManager _draftMovieManager;
+  final FileManager _fileManager;
   final MovieDao _movieDao;
 
   StreamSubscription<dynamic>? _draftSubscription;
@@ -19,8 +21,10 @@ class MoviesBloc extends Bloc<dynamic, MoviesState> {
 
   MoviesBloc({
     required DraftMovieManager draftMovieManager,
+    required FileManager fileManager,
     required MovieDao movieDao,
   })  : _draftMovieManager = draftMovieManager,
+        _fileManager = fileManager,
         _movieDao = movieDao,
         super(const MoviesState(<Movie>[])) {
     _subscribeToDBUpdates();
@@ -51,7 +55,7 @@ class MoviesBloc extends Bloc<dynamic, MoviesState> {
               id: draft.projectId,
               title: AppLocalizations.app()?.projectTitle(draft.projectId) ??
                   'project #${draft.projectId}',
-              thumb: draft.media.first.path,
+              thumb: _fileManager.getThumbFromDraft(draft).path,
               video: '',
               mime: '',
               duration: Duration.zero,
