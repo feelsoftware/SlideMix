@@ -8,18 +8,21 @@ import 'package:slidemix/creator/slideshow_creator.dart';
 import 'package:slidemix/creator/video_capability.dart';
 import 'package:slidemix/database.dart';
 import 'package:slidemix/draft/draft_movie_manager.dart';
+import 'package:slidemix/file_manager.dart';
 import 'package:slidemix/movies/movies_bloc.dart';
 import 'package:slidemix/preview/preview_bloc.dart';
 import 'package:slidemix/welcome/welcome_bloc.dart';
 
 class Setup extends StatelessWidget {
   final AppDatabase appDatabase;
+  final FileManager fileManager;
   final SharedPreferences sharedPreferences;
   final Widget child;
 
   const Setup({
     Key? key,
     required this.appDatabase,
+    required this.fileManager,
     required this.sharedPreferences,
     required this.child,
   }) : super(key: key);
@@ -34,12 +37,16 @@ class Setup extends StatelessWidget {
             draftMovieMediaDao: appDatabase.draftMovieMediaDao,
           ),
         ),
+        RepositoryProvider<FileManager>(
+          create: (_) => fileManager,
+        ),
         RepositoryProvider<MovieCreator>(
           create: (_) => MovieCreatorImpl(
             draftMovieManager: DraftMovieManagerImpl(
               draftMovieDao: appDatabase.draftMovieDao,
               draftMovieMediaDao: appDatabase.draftMovieMediaDao,
             ),
+            fileManager: fileManager,
             movieDao: appDatabase.movieDao,
             projectIdProvider: ProjectIdProviderImpl(
               sharedPreferences: sharedPreferences,
@@ -52,6 +59,7 @@ class Setup extends StatelessWidget {
       ],
       child: _BlocSetup(
         appDatabase: appDatabase,
+        fileManager: fileManager,
         child: child,
       ),
     );
@@ -60,11 +68,13 @@ class Setup extends StatelessWidget {
 
 class _BlocSetup extends StatelessWidget {
   final AppDatabase appDatabase;
+  final FileManager fileManager;
   final Widget child;
 
   const _BlocSetup({
     Key? key,
     required this.appDatabase,
+    required this.fileManager,
     required this.child,
   }) : super(key: key);
 
@@ -82,6 +92,7 @@ class _BlocSetup extends StatelessWidget {
         BlocProvider<MoviesBloc>(
           create: (_) => MoviesBloc(
             draftMovieManager: RepositoryProvider.of<DraftMovieManager>(context),
+            fileManager: fileManager,
             movieDao: appDatabase.movieDao,
           ),
         ),

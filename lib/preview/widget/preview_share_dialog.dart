@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:slidemix/file_manager.dart';
 import 'package:slidemix/movies/data/movie.dart';
 
 class PreviewShareDialog {
@@ -11,7 +12,7 @@ class PreviewShareDialog {
     Share.shareXFiles(
       [
         XFile(
-          movie.video,
+          (FileManager.of(context).getVideo(movie)).path,
           name: movie.title,
           mimeType: movie.mime,
         ),

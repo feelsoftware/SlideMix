@@ -6,6 +6,13 @@ extension IterableExtention<E> on Iterable<E> {
     return null;
   }
 
+  Iterable<R> mapIndexed<R>(R Function(E element, int index) convert) sync* {
+    var index = 0;
+    for (var element in this) {
+      yield convert(element, index++);
+    }
+  }
+
   E max(num Function(E element) predicate) {
     return reduce((curr, next) => predicate(curr) > predicate(next) ? curr : next);
   }

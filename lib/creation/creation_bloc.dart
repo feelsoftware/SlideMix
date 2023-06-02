@@ -1,6 +1,7 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -47,28 +48,29 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     return super.close();
   }
 
-  FutureOr<void> openDraft(Movie draftMovie) async {
+  Future<void> openDraft(Movie draftMovie) async {
     __project = await _movieCreator.openDraft(draftMovie);
     emit(state.copyWith(
       media: __project?.media,
     ));
   }
 
-  FutureOr<void> pickMedia(List<Media> media) async {
+  Future<void> pickFiles(List<File> files) async {
     final project = await _project;
+    final media = files.map((file) => Media(projectId: project.id, path: file.path));
     emit(state.copyWith(
       media: await project.attachMedia(media),
     ));
   }
 
-  FutureOr<void> deleteMedia(Media media) async {
+  Future<void> deleteMedia(Media media) async {
     final project = await _project;
     emit(state.copyWith(
       media: await project.deleteMedia(media),
     ));
   }
 
-  FutureOr<Route<void>> reset({required bool deleteDraft}) async {
+  Future<Route<void>> reset({required bool deleteDraft}) async {
     await (await _project).dispose(deleteDraft: deleteDraft);
     __project = null;
 
@@ -84,7 +86,7 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     }
   }
 
-  FutureOr<Movie> createMovie() async {
+  Future<Movie> createMovie() async {
     Logger.d('createMovie ${state.media}');
     emit(state.copyWith(isLoading: true));
 

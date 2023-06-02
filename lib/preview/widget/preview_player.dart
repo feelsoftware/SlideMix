@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:slidemix/colors.dart';
+import 'package:slidemix/file_manager.dart';
 import 'package:slidemix/localizations.dart';
 import 'package:slidemix/logger.dart';
 import 'package:slidemix/movies/data/movie.dart';
@@ -28,7 +27,7 @@ class _PreviewPlayerState extends State<PreviewPlayer> {
     super.initState();
 
     controller = VideoPlayerController.file(
-      File(widget.movie.video),
+      FileManager.of(context).getVideo(widget.movie),
     )
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
@@ -42,7 +41,7 @@ class _PreviewPlayerState extends State<PreviewPlayer> {
       ..addListener(() {
         if (controller?.value.hasError ?? false) {
           Logger.e(
-            'Failed to play video',
+            'Failed to play video ${widget.movie}',
             Exception(controller?.value.errorDescription),
           );
           final snackBar = SnackBar(

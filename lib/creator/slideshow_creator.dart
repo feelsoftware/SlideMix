@@ -22,7 +22,7 @@ class SlideShow {
   final String mime;
   final Duration videoDuration;
 
-  SlideShow({
+  const SlideShow({
     required this.videoPath,
     required this.thumbPath,
     required this.mime,
@@ -55,8 +55,8 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
     );
 
     return SlideShow(
-      videoPath: video.file.path,
-      thumbPath: thumbnail.file.path,
+      videoPath: video.path,
+      thumbPath: thumbnail.path,
       mime: video.mime,
       videoDuration: video.duration,
     );
@@ -120,7 +120,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
     }
 
     return _Video(
-      file: File(videoPath),
+      path: videoPath,
       mime: videoCapability.mediaFormat.mime,
       duration: videoDuration,
     );
@@ -137,7 +137,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
       _formatDurationForThumbnail(Duration.zero),
       "-noaccurate_seek",
       "-i",
-      video.file.path,
+      video.path,
       "-vframes",
       "1",
       "-y",
@@ -152,7 +152,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
     }
     if (ReturnCode.isSuccess(await thumbSession.getReturnCode())) {
       Logger.d('Thumbnail is created $thumbPath');
-      return _Thumbnail(file: File(thumbPath));
+      return _Thumbnail(path: thumbPath);
     } else {
       Logger.e(
         'Failed to create thumbnail',
@@ -173,21 +173,21 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
 }
 
 class _Video {
-  final File file;
+  final String path;
   final String mime;
   final Duration duration;
 
-  _Video({
-    required this.file,
+  const _Video({
+    required this.path,
     required this.mime,
     required this.duration,
   });
 }
 
 class _Thumbnail {
-  final File file;
+  final String path;
 
-  _Thumbnail({
-    required this.file,
+  const _Thumbnail({
+    required this.path,
   });
 }

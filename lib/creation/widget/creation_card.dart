@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:slidemix/colors.dart';
 import 'package:slidemix/creation/data/media.dart';
+import 'package:slidemix/file_manager.dart';
 
 class AddMediaCardWidget extends StatelessWidget {
   final VoidCallback onTap;
@@ -62,8 +61,9 @@ class MediaCreationCard extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: 1,
               child: Image.file(
-                File(media.path),
+                FileManager.of(context).getThumbFromDraftMedia(media),
                 fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
               ),
             ),
           ),
