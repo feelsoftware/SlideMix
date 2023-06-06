@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:slidemix/localizations.dart';
+import 'package:slidemix/navigation.dart';
 import 'package:slidemix/widget/button.dart';
 
 enum LeaveCreationResult {
@@ -11,8 +12,9 @@ class LeaveCreationDialog extends StatelessWidget {
   static Future<LeaveCreationResult?> show(BuildContext context) async {
     return await showModalBottomSheet(
       context: context,
-      routeSettings: const RouteSettings(
-        name: 'creation/leave',
+      routeSettings: AppRouteSettings(
+        routeName: 'creation/leave',
+        screenClass: LeaveCreationDialog,
       ),
       isScrollControlled: true,
       builder: (_) => const LeaveCreationDialog._(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:slidemix/localizations.dart';
+import 'package:slidemix/navigation.dart';
 
 enum CreationMediaSource { camera, gallery }
 
@@ -7,8 +8,9 @@ class PickMediaSourceDialog extends StatelessWidget {
   static Future<CreationMediaSource?> show(BuildContext context) =>
       showModalBottomSheet<CreationMediaSource>(
         context: context,
-        routeSettings: const RouteSettings(
-          name: 'creation/pick',
+        routeSettings: AppRouteSettings(
+          routeName: 'creation/pick',
+          screenClass: PickMediaSourceDialog,
         ),
         builder: (context) => const PickMediaSourceDialog._(),
       );

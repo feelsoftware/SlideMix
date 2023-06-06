@@ -23,11 +23,12 @@ class CreationScreen extends StatefulWidget {
   static Route<void> route({
     Movie? draftMovie,
   }) =>
-      ScreenRoute(
-        settings: const RouteSettings(
-          name: 'creation',
+      MaterialPageRoute(
+        settings: AppRouteSettings(
+          routeName: 'creation',
+          screenClass: CreationScreen,
         ),
-        child: CreationScreen._(draftMovie: draftMovie),
+        builder: (_) => CreationScreen._(draftMovie: draftMovie),
       );
 
   final Movie? draftMovie;

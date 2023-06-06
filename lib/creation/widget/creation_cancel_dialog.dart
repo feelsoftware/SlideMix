@@ -9,8 +9,9 @@ enum CancelCreationResult {
 }
 
 class CancelCreationDialog extends StatelessWidget {
-  static const RouteSettings _routeSettings = RouteSettings(
-    name: 'creation/cancel',
+  static final RouteSettings _routeSettings = AppRouteSettings(
+    routeName: 'creation/cancel',
+    screenClass: CancelCreationDialog,
   );
 
   static Future<CancelCreationResult?> show(BuildContext context) async {

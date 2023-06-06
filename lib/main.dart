@@ -63,7 +63,7 @@ class SlideMixApp extends StatelessWidget {
         navigatorKey: navigatorKey,
         navigatorObservers: [
           NavigationStackObserver(),
-          NavigationLogger(),
+          Logger.navigatorObserver,
         ],
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

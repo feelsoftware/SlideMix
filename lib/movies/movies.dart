@@ -10,9 +10,12 @@ import 'package:slidemix/preview/preview.dart';
 import 'package:slidemix/widget/toolbar.dart';
 
 class MoviesScreen extends StatefulWidget {
-  static Route<void> route() => ScreenRoute(
-        settings: const RouteSettings(name: 'movies'),
-        child: const MoviesScreen._(),
+  static Route<void> route() => MaterialPageRoute(
+        settings: AppRouteSettings(
+          routeName: 'movies',
+          screenClass: MoviesScreen,
+        ),
+        builder: (_) => const MoviesScreen._(),
       );
 
   const MoviesScreen._({Key? key}) : super(key: key);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:slidemix/localizations.dart';
 import 'package:slidemix/movies/data/movie.dart';
+import 'package:slidemix/navigation.dart';
 import 'package:slidemix/widget/button.dart';
 
 enum DeletePreviewResult {
@@ -12,9 +13,10 @@ class DeletePreviewDialog extends StatelessWidget {
   static Future<DeletePreviewResult?> show(BuildContext context, Movie movie) async {
     return await showModalBottomSheet(
       context: context,
-      routeSettings: RouteSettings(
-        name: "preview/delete",
-        arguments: movie.id,
+      routeSettings: AppRouteSettings(
+        routeName: "preview/delete",
+        screenClass: DeletePreviewDialog,
+        arguments: {'id': movie.id},
       ),
       isScrollControlled: true,
       builder: (_) => const DeletePreviewDialog._(),

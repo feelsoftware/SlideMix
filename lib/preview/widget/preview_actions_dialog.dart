@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/colors.dart';
 import 'package:slidemix/localizations.dart';
 import 'package:slidemix/movies/data/movie.dart';
+import 'package:slidemix/navigation.dart';
 import 'package:slidemix/preview/preview_bloc.dart';
 import 'package:slidemix/preview/widget/preview_delete_dialog.dart';
 import 'package:slidemix/preview/widget/preview_share_dialog.dart';
@@ -14,8 +15,9 @@ class PreviewActionsDialog extends StatelessWidget {
   }) =>
       showModalBottomSheet(
         context: context,
-        routeSettings: const RouteSettings(
-          name: 'preview/actions',
+        routeSettings: AppRouteSettings(
+          routeName: 'preview/actions',
+          screenClass: PreviewActionsDialog,
         ),
         builder: (context) => PreviewActionsDialog._(
           movie: movie,

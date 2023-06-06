@@ -8,12 +8,13 @@ import 'package:slidemix/preview/widget/preview_player.dart';
 import 'package:slidemix/widget/toolbar.dart';
 
 class PreviewScreen extends StatefulWidget {
-  static Route<void> route(Movie movie) => ScreenRoute(
-        settings: RouteSettings(
-          name: 'preview',
-          arguments: movie.id,
+  static Route<void> route(Movie movie) => MaterialPageRoute(
+        settings: AppRouteSettings(
+          routeName: 'preview',
+          screenClass: PreviewScreen,
+          arguments: {'id': movie.id},
         ),
-        child: PreviewScreen._(movie),
+        builder: (_) => PreviewScreen._(movie),
       );
 
   final Movie movie;
