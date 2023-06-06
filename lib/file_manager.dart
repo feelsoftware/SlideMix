@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -83,21 +84,35 @@ class FileManagerImpl implements FileManager {
 
   @override
   Future<Iterable<Media>> copyToDraftDir(int projectId, Iterable<Media> media) async {
-    final result = <Media>[];
+    return (await compute(_copyToDraftDir, [
+      projectId,
+      media.map((e) => e.path).toList(growable: false),
+    ]))
+        .map((path) => Media(
+              projectId: projectId,
+              path: path,
+            ));
+  }
+
+  /// Isolate
+  /// @see [copyToDraftDir]
+  Future<List<String>> _copyToDraftDir(List<dynamic> args) async {
+    int projectId = args[0];
+    List<String> media = args[1];
+
+    final result = <String>[];
 
     final dir = draftDir(projectId);
     await dir.create();
     for (final source in media) {
-      final newPath = await _moveFile(
-        source: source.path,
-        newPath: _buildPath(dir, source.path),
+      final newPath = await moveFile(
+        source: source,
+        newPath: _buildPath(dir, source),
       );
       if (newPath == null) continue;
-      result.add(Media(
-        projectId: projectId,
-        // We care here only about relative path
-        path: basename(newPath),
-      ));
+
+      // We care here only about relative path
+      result.add(basename(newPath));
     }
 
     return result;
@@ -114,7 +129,7 @@ class FileManagerImpl implements FileManager {
     var index = 0;
     final dir = draftDir(projectId);
     for (final source in media) {
-      final newPath = await _moveFile(
+      final newPath = await moveFile(
         source: _buildPath(dir, source.path),
         newPath: _buildPath(dir, 'image${format.format(index++)}.jpg'),
       );
@@ -140,10 +155,21 @@ class FileManagerImpl implements FileManager {
   }
 
   /// @return `null` when [source] can't be moved to the new path [newPath]
-  Future<String?> _moveFile({
+  Future<String?> moveFile({
     required String source,
     required String newPath,
   }) async {
+    return await compute(_moveFile, [source, newPath]);
+  }
+
+  /// Isolate
+  /// @see [moveFile]
+  ///
+  /// @return `null` when [source] can't be moved to the new path [newPath]
+  Future<String?> _moveFile(List<dynamic> args) async {
+    String source = args[0];
+    String newPath = args[1];
+
     if (source == newPath) return newPath;
 
     Logger.d('Move file from "$source" to "$newPath"');

@@ -56,10 +56,12 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
   }
 
   Future<void> pickFiles(List<File> files) async {
+    emit(state.copyWith(isLoading: true));
     final project = await _project;
     final media = files.map((file) => Media(projectId: project.id, path: file.path));
     emit(state.copyWith(
       media: await project.attachMedia(media),
+      isLoading: false,
     ));
   }
 

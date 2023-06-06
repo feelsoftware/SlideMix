@@ -132,9 +132,6 @@ class MovieProjectImpl extends MovieProject {
   @override
   Future<void> dispose({required bool deleteDraft}) async {
     if (!deleteDraft) return;
-    for (final media in _media) {
-      File(media.path).delete().ignore();
-    }
     _media.clear();
     fileManager.deleteDraft(projectId).ignore();
     await draftMovieManager.deleteDraft(projectId);
