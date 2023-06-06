@@ -159,7 +159,15 @@ class FileManagerImpl implements FileManager {
     required String source,
     required String newPath,
   }) async {
-    return await compute(_moveFile, [source, newPath]);
+    try {
+      Logger.d('Move file from "$source" to "$newPath"');
+      final result = await compute(_moveFile, [source, newPath]);
+      Logger.d('Moved file from "$source" to "$newPath"');
+      return result;
+    } catch (ex, st) {
+      Logger.e('Failed to move file from "$source" to "$newPath"', ex, st);
+      rethrow;
+    }
   }
 
   /// Isolate
@@ -172,22 +180,17 @@ class FileManagerImpl implements FileManager {
 
     if (source == newPath) return newPath;
 
-    Logger.d('Move file from "$source" to "$newPath"');
     final file = File(source);
     try {
       await file.rename(newPath);
-      Logger.d('Moved file to tempDir, $newPath');
       return newPath;
-    } catch (ex, st) {
-      Logger.e('Failed to move file to tempDir, ${file.path}', ex, st);
+    } catch (_) {
       try {
         // If rename fails, copy the source file and then delete it
         await file.copy(newPath);
         file.delete().ignore();
-        Logger.d('Moved file to tempDir with fallback, $newPath');
         return newPath;
-      } catch (ex, st) {
-        Logger.e('Failed to moved file to tempDir with fallback, $source', ex, st);
+      } catch (_) {
         return source;
       }
     }
