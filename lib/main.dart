@@ -15,6 +15,9 @@ import 'package:timeago/timeago.dart' as timeago;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Crashlytics
+  await Logger.init();
+
   // DB
   final database = await AppDatabase.build();
   final fileManager = FileManagerImpl();
@@ -26,9 +29,6 @@ void main() async {
 
   // Fonts
   GoogleFonts.config.allowRuntimeFetching = false;
-
-  // Crashlytics
-  await Logger.init();
 
   runApp(SlideMixApp(
     appDatabase: database,
