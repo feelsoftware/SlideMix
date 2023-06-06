@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart' as intl;
 import 'package:slidemix/main.dart';
 
+// flutter gen-l10n
 class AppLocalizations {
   static intl.AppLocalizations of(BuildContext context) =>
       intl.AppLocalizations.of(context)!;

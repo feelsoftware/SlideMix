@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/creation/creation_bloc.dart';
 import 'package:slidemix/creation/widget/creation_card.dart';
 import 'package:slidemix/creation/data/media.dart';
+import 'package:slidemix/extensions/device.dart';
 
 class CreationList extends StatelessWidget {
   final List<Media> media;
@@ -19,10 +20,10 @@ class CreationList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const padding = 16.0;
-    const spanCount = 2;
+    final spanCount = context.deviceType.isMobile ? 2 : 3;
 
     return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: spanCount,
         mainAxisSpacing: padding,
         crossAxisSpacing: padding,

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slidemix/colors.dart';
 import 'package:slidemix/database.dart';
+import 'package:slidemix/extensions/device.dart';
 import 'package:slidemix/file_manager.dart';
 import 'package:slidemix/localizations.dart';
 import 'package:slidemix/logger.dart';
@@ -67,7 +68,7 @@ class SlideMixApp extends StatelessWidget {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         onGenerateTitle: (context) => AppLocalizations.of(context).appName,
-        home: const WelcomeScreen(),
+        home: const DeviceTypeContainer(child: WelcomeScreen()),
       ),
     );
   }
