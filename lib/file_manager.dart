@@ -1,6 +1,6 @@
 import 'dart:io';
+import 'dart:isolate';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -8,7 +8,6 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/draft/data/draft_movie.dart';
-import 'package:slidemix/logger.dart';
 import 'package:slidemix/movies/data/movie.dart';
 
 abstract interface class FileManager {
@@ -84,38 +83,28 @@ class FileManagerImpl implements FileManager {
 
   @override
   Future<Iterable<Media>> copyToDraftDir(int projectId, Iterable<Media> media) async {
-    return (await compute(_copyToDraftDir, [
-      projectId,
-      media.map((e) => e.path).toList(growable: false),
-    ]))
-        .map((path) => Media(
-              projectId: projectId,
-              path: path,
-            ));
-  }
+    // Isolate recommends using primitives
+    final paths = media.map((e) => e.path).toList(growable: false);
+    final result = await Isolate.run(() async {
+      final result = <String>[];
 
-  /// Isolate
-  /// @see [copyToDraftDir]
-  Future<List<String>> _copyToDraftDir(List<dynamic> args) async {
-    int projectId = args[0];
-    List<String> media = args[1];
+      final dir = draftDir(projectId);
+      await dir.create();
+      for (final source in paths) {
+        final newPath = await _moveFile(
+          source: source,
+          newPath: _buildPath(dir, source),
+        );
+        if (newPath == null) continue;
 
-    final result = <String>[];
+        // We care here only about relative path
+        result.add(basename(newPath));
+      }
 
-    final dir = draftDir(projectId);
-    await dir.create();
-    for (final source in media) {
-      final newPath = await moveFile(
-        source: source,
-        newPath: _buildPath(dir, source),
-      );
-      if (newPath == null) continue;
+      return result;
+    });
 
-      // We care here only about relative path
-      result.add(basename(newPath));
-    }
-
-    return result;
+    return result.map((path) => Media(projectId: projectId, path: path));
   }
 
   @override
@@ -129,7 +118,7 @@ class FileManagerImpl implements FileManager {
     var index = 0;
     final dir = draftDir(projectId);
     for (final source in media) {
-      final newPath = await moveFile(
+      final newPath = await _moveFile(
         source: _buildPath(dir, source.path),
         newPath: _buildPath(dir, 'image${format.format(index++)}.jpg'),
       );
@@ -155,45 +144,28 @@ class FileManagerImpl implements FileManager {
   }
 
   /// @return `null` when [source] can't be moved to the new path [newPath]
-  Future<String?> moveFile({
+  Future<String?> _moveFile({
     required String source,
     required String newPath,
   }) async {
-    try {
-      Logger.d('Move file from "$source" to "$newPath"');
-      final result = await compute(_moveFile, [source, newPath]);
-      Logger.d('Moved file from "$source" to "$newPath"');
-      return result;
-    } catch (ex, st) {
-      Logger.e('Failed to move file from "$source" to "$newPath"', ex, st);
-      rethrow;
-    }
-  }
-
-  /// Isolate
-  /// @see [moveFile]
-  ///
-  /// @return `null` when [source] can't be moved to the new path [newPath]
-  Future<String?> _moveFile(List<dynamic> args) async {
-    String source = args[0];
-    String newPath = args[1];
-
     if (source == newPath) return newPath;
 
-    final file = File(source);
-    try {
-      await file.rename(newPath);
-      return newPath;
-    } catch (_) {
+    return Isolate.run(() async {
+      final file = File(source);
       try {
-        // If rename fails, copy the source file and then delete it
-        await file.copy(newPath);
-        file.delete().ignore();
+        await file.rename(newPath);
         return newPath;
       } catch (_) {
-        return source;
+        try {
+          // If rename fails, copy the source file and then delete it
+          await file.copy(newPath);
+          file.delete().ignore();
+          return newPath;
+        } catch (_) {
+          return source;
+        }
       }
-    }
+    });
   }
 
   String _buildPath(Directory dir, String file) =>
