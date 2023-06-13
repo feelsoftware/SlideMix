@@ -159,6 +159,12 @@ abstract class AppLocalizations {
   /// **'wait'**
   String get leaveCancelAlertSecondary;
 
+  /// No description provided for @pickMediaDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose images from'**
+  String get pickMediaDialogTitle;
+
   /// No description provided for @mediaSourceCamera.
   ///
   /// In en, this message translates to:

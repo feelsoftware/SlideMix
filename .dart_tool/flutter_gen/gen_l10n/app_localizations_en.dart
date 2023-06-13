@@ -45,6 +45,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get leaveCancelAlertSecondary => 'wait';
 
   @override
+  String get pickMediaDialogTitle => 'Choose images from';
+
+  @override
   String get mediaSourceCamera => 'Camera';
 
   @override

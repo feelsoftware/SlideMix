@@ -1,15 +1,12 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:slidemix/colors.dart';
 import 'package:slidemix/creation/creation_bloc.dart';
+import 'package:slidemix/creation/dialog/pick_media_dialog.dart';
 import 'package:slidemix/creation/widget/creation_cancel_dialog.dart';
 import 'package:slidemix/creation/widget/creation_leave_dialog.dart';
-import 'package:slidemix/creation/widget/creation_source_dialog.dart';
 import 'package:slidemix/creation/widget/creation_list.dart';
 import 'package:slidemix/localizations.dart';
 import 'package:slidemix/logger.dart';
@@ -61,27 +58,9 @@ class _CreationScreenState extends State<CreationScreen> {
     });
   }
 
-  Future _pickMedia() async {
-    List<File> files = [];
-
-    switch (await PickMediaSourceDialog.show(context)) {
-      case CreationMediaSource.camera:
-        final image = await ImagePicker().pickImage(source: ImageSource.camera);
-        if (!mounted || image == null) return;
-        files.add(File(image.path));
-        break;
-
-      case CreationMediaSource.gallery:
-        final images = await ImagePicker().pickMultiImage();
-        if (!mounted || images.isEmpty) return;
-        files.addAll(images.map((image) => File(image.path)));
-        break;
-
-      default:
-        return;
-    }
-
-    if (!mounted) return;
+  void _pickMedia() async {
+    final files = await PickMediaDialog.show(context);
+    if (!mounted || files.isEmpty) return;
     BlocProvider.of<CreationBloc>(context).pickFiles(files);
   }
 

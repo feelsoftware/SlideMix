@@ -45,10 +45,13 @@ class AppLocalizationsUk extends AppLocalizations {
   String get leaveCancelAlertSecondary => 'зачекати';
 
   @override
-  String get mediaSourceCamera => 'Камера';
+  String get pickMediaDialogTitle => 'Виберіть зображення з';
 
   @override
-  String get mediaSourceGallery => 'Галерея';
+  String get mediaSourceCamera => 'Камери';
+
+  @override
+  String get mediaSourceGallery => 'Галереї';
 
   @override
   String get deleteMovieAlertTitle => 'Видалити відео?';

@@ -16,7 +16,7 @@ import 'package:slidemix/movies/data/movie_dao.dart';
 import 'package:slidemix/movies/movies.dart';
 import 'package:slidemix/welcome/welcome.dart';
 
-const int _minMediaCount = 3;
+const int _minMediaCount = 2;
 
 class CreationBloc extends Bloc<dynamic, CreationState> {
   final DraftMovieManager _draftMovieManager;
@@ -55,7 +55,7 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     ));
   }
 
-  Future<void> pickFiles(List<File> files) async {
+  Future<void> pickFiles(Iterable<File> files) async {
     emit(state.copyWith(isLoading: true));
     final project = await _project;
     final media = files.map((file) => Media(projectId: project.id, path: file.path));

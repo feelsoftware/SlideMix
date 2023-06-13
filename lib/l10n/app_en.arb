@@ -19,6 +19,7 @@
     "leaveCancelAlertTitle": "Movie is in progress, do you want to cancel?",
     "leaveCancelAlertPrimary": "cancel",
     "leaveCancelAlertSecondary": "wait",
+    "pickMediaDialogTitle": "Choose images from",
     "mediaSourceCamera": "Camera",
     "mediaSourceGallery": "Gallery",
     "deleteMovieAlertTitle": "Delete the video?",
