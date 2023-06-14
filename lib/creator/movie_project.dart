@@ -21,9 +21,12 @@ abstract class MovieProject {
 
   Future<List<Media>> deleteMedia(Media media);
 
+  SlideShowTransition? get transition;
+
+  Future<SlideShowTransition?> changeTransition(SlideShowTransition? transition);
+
   Future<Movie> createMovie({
     required Duration slideDuration,
-    required SlideShowTransition? transition,
     required Duration transitionDuration,
   });
 
@@ -59,6 +62,7 @@ class MovieProjectImpl extends MovieProject {
         await draftMovieManager.createDraft(projectId);
       } else {
         _media.addAll(draft.media);
+        _transition = draft.transition;
       }
     }
   }
@@ -89,10 +93,21 @@ class MovieProjectImpl extends MovieProject {
     return this.media;
   }
 
+  SlideShowTransition? _transition;
+
+  @override
+  SlideShowTransition? get transition => _transition;
+
+  @override
+  Future<SlideShowTransition?> changeTransition(SlideShowTransition? transition) async {
+    _transition = transition;
+    draftMovieManager.changeTransition(projectId, transition).ignore();
+    return transition;
+  }
+
   @override
   Future<Movie> createMovie({
     required Duration slideDuration,
-    required SlideShowTransition? transition,
     required Duration transitionDuration,
   }) async {
     Logger.d('createMovie $projectId');

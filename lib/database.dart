@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'package:floor/floor.dart';
 import 'package:path/path.dart';
+import 'package:slidemix/database_converters.dart';
 import 'package:slidemix/draft/data/dao.dart';
 import 'package:slidemix/draft/data/entity.dart';
 import 'package:slidemix/logger.dart';
@@ -12,8 +13,12 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 
 part 'database.g.dart';
 
+@TypeConverters([
+  DateTimeConverter,
+  SlideShowTransitionConverter,
+])
 @Database(
-  version: 3,
+  version: 4,
   entities: [
     DraftMovieEntity,
     DraftMovieMediaEntity,
@@ -29,6 +34,7 @@ abstract class AppDatabase extends FloorDatabase {
           [
             _MovieMimeMigration(startVersion: 1, endVersion: 2),
             _RelativeFilePathMigration(startVersion: 2, endVersion: 3),
+            _DraftMovieSlideShowTransitionMigration(startVersion: 3, endVersion: 4),
           ],
         )
         .addCallback(Callback(
@@ -88,6 +94,7 @@ class _MovieMimeMigration extends _BaseMigration {
         );
 }
 
+/// Use relative path to files instead of absolute to fix issue with dynamic dir path on iOS
 class _RelativeFilePathMigration extends _BaseMigration {
   _RelativeFilePathMigration({
     required int startVersion,
@@ -126,6 +133,23 @@ class _RelativeFilePathMigration extends _BaseMigration {
                 [thumb, video, id],
               );
             }
+          },
+        );
+}
+
+/// Add column transition to [DraftMovieEntity]
+class _DraftMovieSlideShowTransitionMigration extends _BaseMigration {
+  _DraftMovieSlideShowTransitionMigration({
+    required int startVersion,
+    required int endVersion,
+  }) : super(
+    _DraftMovieSlideShowTransitionMigration,
+          startVersion,
+          endVersion,
+          (database) async {
+            database.execute(
+              "ALTER TABLE ${DraftMovieEntity.tableName} ADD `transition` TEXT NULL DEFAULT NULL",
+            );
           },
         );
 }

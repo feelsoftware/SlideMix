@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:floor/floor.dart';
+import 'package:slidemix/creator/slideshow_creator.dart';
 
 @Entity(tableName: DraftMovieEntity.tableName)
 class DraftMovieEntity extends Equatable {
@@ -7,15 +8,17 @@ class DraftMovieEntity extends Equatable {
 
   @primaryKey
   final int projectId;
-  final int createdAt;
+  final SlideShowTransition? transition;
+  final DateTime createdAt;
 
   const DraftMovieEntity({
     required this.projectId,
+    required this.transition,
     required this.createdAt,
   });
 
   @override
-  List<Object?> get props => [projectId, createdAt];
+  List<Object?> get props => [projectId, transition, createdAt];
 }
 
 @Entity(tableName: DraftMovieMediaEntity.tableName)

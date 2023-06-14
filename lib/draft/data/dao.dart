@@ -13,6 +13,9 @@ abstract class DraftMovieDao {
   @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insert(DraftMovieEntity draft);
 
+  @Update(onConflict: OnConflictStrategy.replace)
+  Future<void> update(DraftMovieEntity draft);
+
   @Query("DELETE FROM ${DraftMovieEntity.tableName} WHERE projectId = :projectId")
   Future<void> deleteById(int projectId);
 }

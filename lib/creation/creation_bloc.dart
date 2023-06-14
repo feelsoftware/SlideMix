@@ -51,8 +51,10 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
 
   Future<void> openDraft(Movie draftMovie) async {
     __project = await _movieCreator.openDraft(draftMovie);
+    final project = await _project;
     emit(CreationState(
-      media: __project?.media ?? [],
+      media: project.media,
+      transition: project.transition,
     ));
   }
 
@@ -65,7 +67,7 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     final media = files.map((file) => Media(projectId: project.id, path: file.path));
     emit(state.copyWith(
       media: await project.attachMedia(media),
-      transition: state.transition,
+      transition: project.transition,
       isLoading: false,
     ));
   }
@@ -74,7 +76,7 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     final project = await _project;
     emit(state.copyWith(
       media: await project.deleteMedia(media),
-      transition: state.transition,
+      transition: project.transition,
     ));
   }
 
@@ -95,8 +97,9 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
   }
 
   Future<void> changeTransition(SlideShowTransition? transition) async {
+    final project = await _project;
     emit(state.copyWith(
-      transition: transition,
+      transition: await project.changeTransition(transition),
     ));
   }
 
@@ -111,7 +114,6 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     try {
       movie = await (await _project).createMovie(
         slideDuration: const Duration(seconds: 3),
-        transition: state.transition,
         transitionDuration: const Duration(seconds: 1),
       );
     } catch (ex, st) {
