@@ -54,6 +54,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mediaSourceGallery => 'Gallery';
 
   @override
+  String get pickTransitionDialogTitle => 'Choose transition';
+
+  @override
+  String get transitionNone => 'No transition';
+
+  @override
   String get deleteMovieAlertTitle => 'Delete the video?';
 
   @override

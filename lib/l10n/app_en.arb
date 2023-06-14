@@ -22,6 +22,8 @@
     "pickMediaDialogTitle": "Choose images from",
     "mediaSourceCamera": "Camera",
     "mediaSourceGallery": "Gallery",
+    "pickTransitionDialogTitle": "Choose transition",
+    "transitionNone": "No transition",
     "deleteMovieAlertTitle": "Delete the video?",
     "deleteMovieAlertPrimary": "delete",
     "deleteMovieAlertSecondary": "cancel",

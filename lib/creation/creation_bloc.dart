@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/creator/movie_creator.dart';
 import 'package:slidemix/creator/movie_project.dart';
+import 'package:slidemix/creator/slideshow_creator.dart';
 import 'package:slidemix/draft/draft_movie_manager.dart';
 import 'package:slidemix/logger.dart';
 import 'package:slidemix/movies/data/movie.dart';
@@ -30,7 +31,7 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
   })  : _draftMovieManager = draftMovieManager,
         _movieCreator = movieCreator,
         _movieDao = movieDao,
-        super(const CreationState(<Media>[]));
+        super(const CreationState(media: []));
 
   MovieProject? __project;
 
@@ -50,17 +51,21 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
 
   Future<void> openDraft(Movie draftMovie) async {
     __project = await _movieCreator.openDraft(draftMovie);
-    emit(state.copyWith(
-      media: __project?.media,
+    emit(CreationState(
+      media: __project?.media ?? [],
     ));
   }
 
   Future<void> pickFiles(Iterable<File> files) async {
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(
+      isLoading: true,
+      transition: state.transition,
+    ));
     final project = await _project;
     final media = files.map((file) => Media(projectId: project.id, path: file.path));
     emit(state.copyWith(
       media: await project.attachMedia(media),
+      transition: state.transition,
       isLoading: false,
     ));
   }
@@ -69,6 +74,7 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     final project = await _project;
     emit(state.copyWith(
       media: await project.deleteMedia(media),
+      transition: state.transition,
     ));
   }
 
@@ -76,7 +82,7 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     await (await _project).dispose(deleteDraft: deleteDraft);
     __project = null;
 
-    emit(const CreationState(<Media>[]));
+    emit(const CreationState(media: []));
 
     final movies = await _movieDao.getAll().first;
     final drafts = await _draftMovieManager.getAll().first;
@@ -88,16 +94,32 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     }
   }
 
+  Future<void> changeTransition(SlideShowTransition? transition) async {
+    emit(state.copyWith(
+      transition: transition,
+    ));
+  }
+
   Future<Movie> createMovie() async {
     Logger.d('createMovie ${state.media}');
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(
+      isLoading: true,
+      transition: state.transition,
+    ));
 
     Movie movie;
     try {
-      movie = await (await _project).createMovie();
+      movie = await (await _project).createMovie(
+        slideDuration: const Duration(seconds: 3),
+        transition: state.transition,
+        transitionDuration: const Duration(seconds: 1),
+      );
     } catch (ex, st) {
       Logger.e('Failed to create movie', ex, st);
-      emit(state.copyWith(isLoading: false));
+      emit(state.copyWith(
+        isLoading: false,
+        transition: state.transition,
+      ));
       throw Exception('Failed to create movie');
     }
 
@@ -108,10 +130,12 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
 
 class CreationState extends Equatable {
   final List<Media> media;
+  final SlideShowTransition? transition;
   final bool isLoading;
 
-  const CreationState(
-    this.media, {
+  const CreationState({
+    required this.media,
+    this.transition,
     this.isLoading = false,
   });
 
@@ -121,17 +145,19 @@ class CreationState extends Equatable {
 
   CreationState copyWith({
     List<Media>? media,
+    required SlideShowTransition? transition,
     bool? isCreationAllowed,
     bool? isLoading,
   }) {
     return CreationState(
-      List.unmodifiable(media ?? this.media),
+      media: List.unmodifiable(media ?? this.media),
+      transition: transition,
       isLoading: isLoading ?? this.isLoading,
     );
   }
 
   @override
-  List<Object?> get props => [media, isLoading];
+  List<Object?> get props => [media, transition, isLoading];
 
   @override
   bool? get stringify => true;

@@ -177,6 +177,18 @@ abstract class AppLocalizations {
   /// **'Gallery'**
   String get mediaSourceGallery;
 
+  /// No description provided for @pickTransitionDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose transition'**
+  String get pickTransitionDialogTitle;
+
+  /// No description provided for @transitionNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No transition'**
+  String get transitionNone;
+
   /// No description provided for @deleteMovieAlertTitle.
   ///
   /// In en, this message translates to:

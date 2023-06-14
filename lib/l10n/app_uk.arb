@@ -13,6 +13,8 @@
     "pickMediaDialogTitle": "Виберіть зображення з",
     "mediaSourceCamera": "Камери",
     "mediaSourceGallery": "Галереї",
+    "pickTransitionDialogTitle": "Виберіть перехід",
+    "transitionNone": "Без переходів",
     "deleteMovieAlertTitle": "Видалити відео?",
     "deleteMovieAlertPrimary": "видалити",
     "deleteMovieAlertSecondary": "відмінити",

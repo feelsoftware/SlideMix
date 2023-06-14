@@ -21,7 +21,11 @@ abstract class MovieProject {
 
   Future<List<Media>> deleteMedia(Media media);
 
-  Future<Movie> createMovie();
+  Future<Movie> createMovie({
+    required Duration slideDuration,
+    required SlideShowTransition? transition,
+    required Duration transitionDuration,
+  });
 
   Future<void> deleteProject();
 
@@ -86,7 +90,11 @@ class MovieProjectImpl extends MovieProject {
   }
 
   @override
-  Future<Movie> createMovie() async {
+  Future<Movie> createMovie({
+    required Duration slideDuration,
+    required SlideShowTransition? transition,
+    required Duration transitionDuration,
+  }) async {
     Logger.d('createMovie $projectId');
 
     final mediaWithUpdatedPath =
@@ -99,6 +107,9 @@ class MovieProjectImpl extends MovieProject {
     final slideShow = await slideShowCreator.create(
       images: fileManager.draftDir(projectId),
       destination: fileManager.projectDir(projectId),
+      slideDuration: slideDuration,
+      transition: transition,
+      transitionDuration: transitionDuration,
     );
 
     final movie = Movie(

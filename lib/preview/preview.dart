@@ -39,13 +39,13 @@ class _PreviewScreenState extends State<PreviewScreen> {
       child: Scaffold(
         backgroundColor: AppColors.playerBackground,
         appBar: Toolbar(
-          leftIcon: Image.asset(
-            "assets/images/ic_close.png",
+          leftIcon: const Icon(
+            Icons.close,
             color: AppColors.background,
           ),
           onLeftIconTapped: () => Navigator.of(context).maybePop(),
-          rightIcon: Image.asset(
-            "assets/images/ic_more.png",
+          rightIcon: const Icon(
+            Icons.view_headline,
             color: AppColors.background,
           ),
           onRightIconTapped: () async {

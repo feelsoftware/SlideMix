@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 
 class Toolbar extends StatelessWidget implements PreferredSizeWidget {
-  final Image? leftIcon;
-  final Image? rightIcon;
+  final Widget? leftIcon;
+  final Widget? rightIcon;
   final VoidCallback? onLeftIconTapped;
   final VoidCallback? onRightIconTapped;
 
-  const Toolbar({
+  Toolbar({
     super.key,
     this.leftIcon,
     this.rightIcon,
     this.onLeftIconTapped,
     this.onRightIconTapped,
-  });
+  }) {
+    if (leftIcon != null) assert(onLeftIconTapped != null);
+    if (rightIcon != null) assert(onRightIconTapped != null);
+  }
 
   @override
   Size get preferredSize => const Size.fromHeight(56);

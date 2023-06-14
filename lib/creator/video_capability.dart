@@ -79,6 +79,8 @@ class VideoCapability extends Equatable {
   final MediaFormat mediaFormat;
   final int width;
   final int height;
+  // TODO: get FPS from device
+  final int fps = 60;
 
   const VideoCapability({
     required this.mediaFormat,

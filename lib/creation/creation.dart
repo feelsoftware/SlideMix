@@ -1,10 +1,11 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/colors.dart';
 import 'package:slidemix/creation/creation_bloc.dart';
 import 'package:slidemix/creation/dialog/pick_media_dialog.dart';
+import 'package:slidemix/creation/dialog/pick_transition_dialog.dart';
 import 'package:slidemix/creation/widget/creation_cancel_dialog.dart';
 import 'package:slidemix/creation/widget/creation_leave_dialog.dart';
 import 'package:slidemix/creation/widget/creation_list.dart';
@@ -104,8 +105,15 @@ class _CreationScreenState extends State<CreationScreen> {
         builder: (context, state) {
           return Scaffold(
             appBar: Toolbar(
-              leftIcon: Image.asset("assets/images/ic_close.png"),
+              leftIcon: const Icon(Icons.close),
               onLeftIconTapped: () => Navigator.of(context).maybePop(),
+              rightIcon: const Icon(Icons.settings),
+              onRightIconTapped: () async {
+                final transition =
+                    await PickTransitionDialog.show(context, state.transition);
+                if (!context.mounted) return;
+                BlocProvider.of<CreationBloc>(context).changeTransition(transition);
+              },
             ),
             body: Stack(
               children: <Widget>[

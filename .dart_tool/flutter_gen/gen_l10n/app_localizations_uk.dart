@@ -54,6 +54,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get mediaSourceGallery => 'Галереї';
 
   @override
+  String get pickTransitionDialogTitle => 'Виберіть перехід';
+
+  @override
+  String get transitionNone => 'Без переходів';
+
+  @override
   String get deleteMovieAlertTitle => 'Видалити відео?';
 
   @override

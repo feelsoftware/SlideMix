@@ -40,9 +40,9 @@ class PreviewActionsDialog extends StatelessWidget {
             onTap: () {
               PreviewShareDialog.show(context, movie);
             },
-            leading: Image.asset(
-              "assets/images/ic_share.png",
-              width: 24,
+            leading: const Icon(
+              Icons.share_outlined,
+              size: 24,
               color: AppColors.secondary,
             ),
             title: Text(AppLocalizations.of(context).previewActionShare),
@@ -62,9 +62,9 @@ class PreviewActionsDialog extends StatelessWidget {
               if (!context.mounted) return;
               Navigator.of(context).pushAndRemoveUntil(route, (_) => false);
             },
-            leading: Image.asset(
-              "assets/images/ic_delete.png",
-              width: 24,
+            leading: const Icon(
+              Icons.delete_forever,
+              size: 24,
               color: AppColors.border,
             ),
             title: Text(AppLocalizations.of(context).previewActionDelete),
