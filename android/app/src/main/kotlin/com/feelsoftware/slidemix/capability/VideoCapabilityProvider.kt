@@ -7,6 +7,7 @@ import android.media.MediaCodecList
 import android.util.Range
 import androidx.annotation.WorkerThread
 import kotlinx.serialization.Serializable
+import kotlin.math.roundToInt
 
 class VideoCapabilityProvider {
 
@@ -26,7 +27,7 @@ class VideoCapabilityProvider {
 
         for (i in 0 until MediaCodecList.getCodecCount()) {
             val info = MediaCodecList.getCodecInfoAt(i)
-            if (!info.isEncoder) continue;
+            if (!info.isEncoder) continue
 
             val types = info.supportedTypes.toList()
             if (types.none { it.contains("video/") }) continue
@@ -62,7 +63,12 @@ class VideoCapabilityProvider {
             supportedHeights.contains(height) &&
             videoCapabilities.getSupportedWidthsFor(height).contains(width)
         ) {
-            VideoSize(width = width, height = height)
+            VideoSize(
+                width = width,
+                height = height,
+                fps = videoCapabilities.getSupportedFrameRatesFor(width, height).upper.roundToInt()
+                    .coerceAtMost(60),
+            )
         } else {
             null
         }
@@ -79,4 +85,5 @@ data class VideoCapability(
 data class VideoSize(
     val width: Int,
     val height: Int,
+    val fps: Int,
 )
