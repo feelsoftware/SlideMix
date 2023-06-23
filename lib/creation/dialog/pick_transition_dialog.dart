@@ -63,7 +63,6 @@ class PickTransitionDialog extends StatelessWidget {
                     return _TransitionItem(
                       transition: transition,
                       isSelected: transition == selectedTransition,
-                      onTap: () => Navigator.of(context).pop(transition),
                     );
                   },
                   itemCount: transitions.length + 1,
@@ -80,18 +79,16 @@ class PickTransitionDialog extends StatelessWidget {
 class _TransitionItem extends StatelessWidget {
   final SlideShowTransition? transition;
   final bool isSelected;
-  final VoidCallback onTap;
 
   const _TransitionItem({
     required this.transition,
     required this.isSelected,
-    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => Navigator.of(context).pop(transition),
       behavior: HitTestBehavior.opaque,
       child: Stack(
         alignment: Alignment.center,

@@ -25,6 +25,10 @@ abstract class MovieProject {
 
   Future<SlideShowTransition?> changeTransition(SlideShowTransition? transition);
 
+  SlideShowOrientation get orientation;
+
+  Future<SlideShowOrientation> changeOrientation(SlideShowOrientation orientation);
+
   Future<Movie> createMovie({
     required Duration slideDuration,
     required Duration transitionDuration,
@@ -63,6 +67,7 @@ class MovieProjectImpl extends MovieProject {
       } else {
         _media.addAll(draft.media);
         _transition = draft.transition;
+        _orientation = draft.orientation;
       }
     }
   }
@@ -105,6 +110,20 @@ class MovieProjectImpl extends MovieProject {
     return transition;
   }
 
+  SlideShowOrientation _orientation = SlideShowOrientation.landscape;
+
+  @override
+  SlideShowOrientation get orientation => _orientation;
+
+  @override
+  Future<SlideShowOrientation> changeOrientation(
+    SlideShowOrientation orientation,
+  ) async {
+    _orientation = orientation;
+    draftMovieManager.changeOrientation(projectId, orientation).ignore();
+    return orientation;
+  }
+
   @override
   Future<Movie> createMovie({
     required Duration slideDuration,
@@ -125,6 +144,7 @@ class MovieProjectImpl extends MovieProject {
       slideDuration: slideDuration,
       transition: transition,
       transitionDuration: transitionDuration,
+      orientation: orientation,
     );
 
     final movie = Movie(

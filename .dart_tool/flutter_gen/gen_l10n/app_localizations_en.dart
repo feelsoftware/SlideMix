@@ -54,10 +54,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mediaSourceGallery => 'Gallery';
 
   @override
+  String get changeCreationSettingsDialogTitle => 'Apply effects';
+
+  @override
+  String changeCreationSettingsTransition(String transition) {
+    return 'Transitions: $transition';
+  }
+
+  @override
+  String changeCreationSettingsOrientation(String orientation) {
+    return 'Orientation: $orientation';
+  }
+
+  @override
   String get pickTransitionDialogTitle => 'Choose transition';
 
   @override
   String get transitionNone => 'No transition';
+
+  @override
+  String get pickOrientationDialogTitle => 'Choose orientation';
+
+  @override
+  String orientationSelector(String orientation) {
+    String _temp0 = intl.Intl.selectLogic(
+      orientation,
+      {
+        'landscape': 'Landscape',
+        'portrait': 'Portrait',
+        'square': 'Square',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
 
   @override
   String get deleteMovieAlertTitle => 'Delete the video?';

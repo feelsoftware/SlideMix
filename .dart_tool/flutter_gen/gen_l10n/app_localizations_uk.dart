@@ -54,10 +54,40 @@ class AppLocalizationsUk extends AppLocalizations {
   String get mediaSourceGallery => 'Галереї';
 
   @override
+  String get changeCreationSettingsDialogTitle => 'Застосуйте ефекти';
+
+  @override
+  String changeCreationSettingsTransition(String transition) {
+    return 'Перехід: $transition';
+  }
+
+  @override
+  String changeCreationSettingsOrientation(String orientation) {
+    return 'Орієнтація: $orientation';
+  }
+
+  @override
   String get pickTransitionDialogTitle => 'Виберіть перехід';
 
   @override
   String get transitionNone => 'Без переходів';
+
+  @override
+  String get pickOrientationDialogTitle => 'Виберіть орієнтацію';
+
+  @override
+  String orientationSelector(String orientation) {
+    String _temp0 = intl.Intl.selectLogic(
+      orientation,
+      {
+        'landscape': 'Пейзажна',
+        'portrait': 'Портретна',
+        'square': 'Квадратна',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
 
   @override
   String get deleteMovieAlertTitle => 'Видалити відео?';

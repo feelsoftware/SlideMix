@@ -16,9 +16,10 @@ part 'database.g.dart';
 @TypeConverters([
   DateTimeConverter,
   SlideShowTransitionConverter,
+  SlideShowOrientationConverter,
 ])
 @Database(
-  version: 4,
+  version: 5,
   entities: [
     DraftMovieEntity,
     DraftMovieMediaEntity,
@@ -35,6 +36,7 @@ abstract class AppDatabase extends FloorDatabase {
             _MovieMimeMigration(startVersion: 1, endVersion: 2),
             _RelativeFilePathMigration(startVersion: 2, endVersion: 3),
             _DraftMovieSlideShowTransitionMigration(startVersion: 3, endVersion: 4),
+            _DraftMovieSlideShowOrientationMigration(startVersion: 4, endVersion: 5),
           ],
         )
         .addCallback(Callback(
@@ -143,12 +145,31 @@ class _DraftMovieSlideShowTransitionMigration extends _BaseMigration {
     required int startVersion,
     required int endVersion,
   }) : super(
-    _DraftMovieSlideShowTransitionMigration,
+          _DraftMovieSlideShowTransitionMigration,
           startVersion,
           endVersion,
           (database) async {
             database.execute(
               "ALTER TABLE ${DraftMovieEntity.tableName} ADD `transition` TEXT NULL DEFAULT NULL",
+            );
+          },
+        );
+}
+
+/// Add column orientation to [DraftMovieEntity]
+class _DraftMovieSlideShowOrientationMigration extends _BaseMigration {
+  _DraftMovieSlideShowOrientationMigration({
+    required int startVersion,
+    required int endVersion,
+  }) : super(
+          _DraftMovieSlideShowOrientationMigration,
+          startVersion,
+          endVersion,
+          (database) async {
+            final converter = SlideShowOrientationConverter();
+            final defaultValue = converter.encode(converter.decode(null));
+            database.execute(
+              "ALTER TABLE ${DraftMovieEntity.tableName} ADD `orientation` TEXT NOT NULL DEFAULT '$defaultValue'",
             );
           },
         );

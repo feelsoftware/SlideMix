@@ -26,3 +26,17 @@ class SlideShowTransitionConverter
     return value?.name ?? '';
   }
 }
+
+class SlideShowOrientationConverter
+    extends TypeConverter<SlideShowOrientation, String?> {
+  @override
+  SlideShowOrientation decode(String? databaseValue) {
+    return SlideShowOrientation.values.firstOrNull((e) => e.name == databaseValue) ??
+        SlideShowOrientation.landscape;
+  }
+
+  @override
+  String? encode(SlideShowOrientation value) {
+    return value.name;
+  }
+}

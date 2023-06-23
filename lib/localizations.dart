@@ -4,6 +4,8 @@ import 'package:slidemix/main.dart';
 
 // flutter gen-l10n
 class AppLocalizations {
+  AppLocalizations._();
+
   static intl.AppLocalizations of(BuildContext context) =>
       intl.AppLocalizations.of(context)!;
 

@@ -7,6 +7,7 @@ abstract class SlideShowCreator {
     required Duration slideDuration,
     required SlideShowTransition? transition,
     required Duration transitionDuration,
+    required SlideShowOrientation orientation,
   });
 
   Future<void> dispose();
@@ -24,6 +25,12 @@ class SlideShow {
     required this.mime,
     required this.videoDuration,
   });
+}
+
+enum SlideShowOrientation {
+  landscape,
+  portrait,
+  square,
 }
 
 enum SlideShowTransition {

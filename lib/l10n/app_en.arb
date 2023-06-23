@@ -22,8 +22,29 @@
     "pickMediaDialogTitle": "Choose images from",
     "mediaSourceCamera": "Camera",
     "mediaSourceGallery": "Gallery",
+    "changeCreationSettingsDialogTitle": "Apply effects",
+    "changeCreationSettingsTransition": "Transitions: {transition}",
+    "@changeCreationSettingsTransition": {
+        "placeholders": {
+            "transition": {
+                "type": "String",
+                "example": "fade"
+            }
+        }
+    },
+    "changeCreationSettingsOrientation": "Orientation: {orientation}",
+    "@changeCreationSettingsOrientation": {
+        "placeholders": {
+            "orientation": {
+                "type": "String",
+                "example": "landscape"
+            }
+        }
+    },
     "pickTransitionDialogTitle": "Choose transition",
     "transitionNone": "No transition",
+    "pickOrientationDialogTitle": "Choose orientation",
+    "orientationSelector": "{orientation,select, landscape{Landscape}portrait{Portrait}square{Square}other{}}",
     "deleteMovieAlertTitle": "Delete the video?",
     "deleteMovieAlertPrimary": "delete",
     "deleteMovieAlertSecondary": "cancel",

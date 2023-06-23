@@ -31,7 +31,7 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
   })  : _draftMovieManager = draftMovieManager,
         _movieCreator = movieCreator,
         _movieDao = movieDao,
-        super(const CreationState(media: []));
+        super(CreationState._empty());
 
   MovieProject? __project;
 
@@ -54,29 +54,29 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     final project = await _project;
     emit(CreationState(
       media: project.media,
-      transition: project.transition,
+      settings: CreationSettings(
+        transition: project.transition,
+        orientation: project.orientation,
+      ),
     ));
   }
 
   Future<void> pickFiles(Iterable<File> files) async {
-    emit(state.copyWith(
+    emit(state._copyWith(
       isLoading: true,
-      transition: state.transition,
     ));
     final project = await _project;
     final media = files.map((file) => Media(projectId: project.id, path: file.path));
-    emit(state.copyWith(
+    emit(state._copyWith(
       media: await project.attachMedia(media),
-      transition: project.transition,
       isLoading: false,
     ));
   }
 
   Future<void> deleteMedia(Media media) async {
     final project = await _project;
-    emit(state.copyWith(
+    emit(state._copyWith(
       media: await project.deleteMedia(media),
-      transition: project.transition,
     ));
   }
 
@@ -84,7 +84,7 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     await (await _project).dispose(deleteDraft: deleteDraft);
     __project = null;
 
-    emit(const CreationState(media: []));
+    emit(CreationState._empty());
 
     final movies = await _movieDao.getAll().first;
     final drafts = await _draftMovieManager.getAll().first;
@@ -98,16 +98,28 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
 
   Future<void> changeTransition(SlideShowTransition? transition) async {
     final project = await _project;
-    emit(state.copyWith(
-      transition: await project.changeTransition(transition),
+    emit(state._copyWith(
+      settings: state.settings._copyWith(
+        transition: await project.changeTransition(transition),
+      ),
+    ));
+  }
+
+  Future<void> changeOrientation(SlideShowOrientation orientation) async {
+    final project = await _project;
+
+    emit(state._copyWith(
+      settings: state.settings._copyWith(
+        transition: state.settings.transition,
+        orientation: await project.changeOrientation(orientation),
+      ),
     ));
   }
 
   Future<Movie> createMovie() async {
     Logger.d('createMovie ${state.media}');
-    emit(state.copyWith(
+    emit(state._copyWith(
       isLoading: true,
-      transition: state.transition,
     ));
 
     Movie movie;
@@ -118,9 +130,8 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
       );
     } catch (ex, st) {
       Logger.e('Failed to create movie', ex, st);
-      emit(state.copyWith(
+      emit(state._copyWith(
         isLoading: false,
-        transition: state.transition,
       ));
       throw Exception('Failed to create movie');
     }
@@ -132,12 +143,12 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
 
 class CreationState extends Equatable {
   final List<Media> media;
-  final SlideShowTransition? transition;
+  final CreationSettings settings;
   final bool isLoading;
 
   const CreationState({
     required this.media,
-    this.transition,
+    required this.settings,
     this.isLoading = false,
   });
 
@@ -145,21 +156,53 @@ class CreationState extends Equatable {
 
   bool get isCreationAllowed => media.length >= _minMediaCount;
 
-  CreationState copyWith({
+  factory CreationState._empty() => const CreationState(
+      settings: CreationSettings(
+        transition: null,
+        orientation: SlideShowOrientation.landscape,
+      ),
+      media: []);
+
+  CreationState _copyWith({
     List<Media>? media,
-    required SlideShowTransition? transition,
-    bool? isCreationAllowed,
+    CreationSettings? settings,
     bool? isLoading,
   }) {
     return CreationState(
       media: List.unmodifiable(media ?? this.media),
-      transition: transition,
+      settings: settings ?? this.settings,
       isLoading: isLoading ?? this.isLoading,
     );
   }
 
   @override
-  List<Object?> get props => [media, transition, isLoading];
+  List<Object?> get props => [media, settings, isLoading];
+
+  @override
+  bool? get stringify => true;
+}
+
+class CreationSettings extends Equatable {
+  final SlideShowTransition? transition;
+  final SlideShowOrientation orientation;
+
+  const CreationSettings({
+    required this.transition,
+    required this.orientation,
+  });
+
+  CreationSettings _copyWith({
+    required SlideShowTransition? transition,
+    SlideShowOrientation? orientation,
+  }) {
+    return CreationSettings(
+      transition: transition,
+      orientation: orientation ?? this.orientation,
+    );
+  }
+
+  @override
+  List<Object?> get props => [transition, orientation];
 
   @override
   bool? get stringify => true;

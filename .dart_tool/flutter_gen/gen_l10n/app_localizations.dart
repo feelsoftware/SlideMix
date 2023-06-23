@@ -177,6 +177,24 @@ abstract class AppLocalizations {
   /// **'Gallery'**
   String get mediaSourceGallery;
 
+  /// No description provided for @changeCreationSettingsDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply effects'**
+  String get changeCreationSettingsDialogTitle;
+
+  /// No description provided for @changeCreationSettingsTransition.
+  ///
+  /// In en, this message translates to:
+  /// **'Transitions: {transition}'**
+  String changeCreationSettingsTransition(String transition);
+
+  /// No description provided for @changeCreationSettingsOrientation.
+  ///
+  /// In en, this message translates to:
+  /// **'Orientation: {orientation}'**
+  String changeCreationSettingsOrientation(String orientation);
+
   /// No description provided for @pickTransitionDialogTitle.
   ///
   /// In en, this message translates to:
@@ -188,6 +206,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No transition'**
   String get transitionNone;
+
+  /// No description provided for @pickOrientationDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose orientation'**
+  String get pickOrientationDialogTitle;
+
+  /// No description provided for @orientationSelector.
+  ///
+  /// In en, this message translates to:
+  /// **'{orientation,select, landscape{Landscape}portrait{Portrait}square{Square}other{}}'**
+  String orientationSelector(String orientation);
 
   /// No description provided for @deleteMovieAlertTitle.
   ///

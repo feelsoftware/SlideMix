@@ -9,16 +9,18 @@ class DraftMovieEntity extends Equatable {
   @primaryKey
   final int projectId;
   final SlideShowTransition? transition;
+  final SlideShowOrientation orientation;
   final DateTime createdAt;
 
   const DraftMovieEntity({
     required this.projectId,
     required this.transition,
+    required this.orientation,
     required this.createdAt,
   });
 
   @override
-  List<Object?> get props => [projectId, transition, createdAt];
+  List<Object?> get props => [projectId, transition, orientation, createdAt];
 }
 
 @Entity(tableName: DraftMovieMediaEntity.tableName)

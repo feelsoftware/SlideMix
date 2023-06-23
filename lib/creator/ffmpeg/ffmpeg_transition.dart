@@ -1,4 +1,3 @@
-// https://trac.ffmpeg.org/wiki/Xfade
 import 'dart:io';
 
 import 'package:path/path.dart';
@@ -8,14 +7,15 @@ import 'package:slidemix/file_manager.dart';
 
 /// https://trac.ffmpeg.org/wiki/Xfade
 class FFMpegTransitionProvider {
-  List<String> transitionCommand({
+  Future<List<String>> transitionCommand({
     required Directory imagesDir,
     required Directory destinationDir,
     required VideoCapability videoCapability,
     required Duration slideDuration,
     required SlideShowTransition? transition,
     required Duration transitionDuration,
-  }) {
+    required SlideShowOrientation orientation,
+  }) async {
     final videoCommand = <String>[];
 
     if (transition == null) {
@@ -31,9 +31,9 @@ class FFMpegTransitionProvider {
       ];
     }
 
-    // Transitioning between images
     final images = imagesDir.listSync().whereType<File>().toList(growable: false)
       ..sort((a, b) => basename(a.path).compareTo(b.path));
+
     for (final image in images) {
       // Input each image using the arguments
       // `-loop 1 -t [slideDuration.inSeconds] -framerate [fps] -i image.jpg`
@@ -50,20 +50,16 @@ class FFMpegTransitionProvider {
         buildPath(imagesDir, image.path),
       ]);
     }
-    // Using images with different resolutions
-    String transitionCommand = '';
-    for (var i = 0; i < images.length; i++) {
-      // TODO: find min size based on input images
-      // "-vf",
-      // "scale='if(gt(iw,ih),-2,min(${videoCapability.width},iw))':'if(gt(iw,ih),min(${videoCapability.height},iw),-2)'",
-      final width = videoCapability.width;
-      final height = videoCapability.height;
 
-      // Resize and contain
-      // https://creatomate.com/blog/how-to-change-the-resolution-of-a-video-using-ffmpeg
-      transitionCommand +=
-          '[$i]scale=$width:$height:force_original_aspect_ratio=decrease,pad=$width:$height:-1:-1:color=black[s$i];';
-    }
+    String transitionCommand = '';
+
+    transitionCommand += _applyOrientation(
+      imagesDir: imagesDir,
+      images: images,
+      videoCapability: videoCapability,
+      orientation: orientation,
+    );
+
     // https://trac.ffmpeg.org/wiki/Xfade
     // Multiple xfade filters are cascaded together. A crossfade is applied to the
     // first and second images using the circleopen transition starting at the
@@ -97,5 +93,41 @@ class FFMpegTransitionProvider {
       transitionCommand,
     ]);
     return videoCommand;
+  }
+
+  String _applyOrientation({
+    required Directory imagesDir,
+    required List<File> images,
+    required VideoCapability videoCapability,
+    required SlideShowOrientation orientation,
+  }) {
+    // Using images with different resolutions
+    int width;
+    int height;
+    switch (orientation) {
+      case SlideShowOrientation.landscape:
+        width = videoCapability.width;
+        height = videoCapability.height;
+        break;
+
+      case SlideShowOrientation.portrait:
+        width = videoCapability.height;
+        height = videoCapability.width;
+        break;
+
+      case SlideShowOrientation.square:
+        width = videoCapability.height;
+        height = videoCapability.height;
+        break;
+    }
+
+    // Resize and contain
+    // https://creatomate.com/blog/how-to-change-the-resolution-of-a-video-using-ffmpeg
+    String transitionCommand = '';
+    for (var i = 0; i < images.length; i++) {
+      transitionCommand +=
+          '[$i]scale=$width:$height:force_original_aspect_ratio=decrease,pad=$width:$height:-1:-1:color=black[s$i];';
+    }
+    return transitionCommand;
   }
 }

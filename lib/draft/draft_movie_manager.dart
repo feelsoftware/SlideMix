@@ -19,6 +19,8 @@ abstract class DraftMovieManager {
 
   Future<void> changeTransition(int projectId, SlideShowTransition? transition);
 
+  Future<void> changeOrientation(int projectId, SlideShowOrientation? orientation);
+
   Future<void> deleteDraft(int projectId);
 }
 
@@ -48,6 +50,7 @@ class DraftMovieManagerImpl extends DraftMovieManager {
             projectId: draft.projectId,
             media: media,
             transition: draft.transition,
+            orientation: draft.orientation,
             createdAt: draft.createdAt,
           ),
         );
@@ -78,6 +81,7 @@ class DraftMovieManagerImpl extends DraftMovieManager {
       projectId: projectId,
       media: media,
       transition: entity.transition,
+      orientation: entity.orientation,
       createdAt: entity.createdAt,
     );
   }
@@ -88,6 +92,7 @@ class DraftMovieManagerImpl extends DraftMovieManager {
     await draftMovieDao.insert(DraftMovieEntity(
       projectId: projectId,
       transition: null,
+      orientation: SlideShowOrientation.landscape,
       createdAt: DateTime.now(),
     ));
   }
@@ -121,6 +126,15 @@ class DraftMovieManagerImpl extends DraftMovieManager {
   }
 
   @override
+  Future<void> changeOrientation(
+    int projectId,
+    SlideShowOrientation? orientation,
+  ) async {
+    Logger.d('changeOrientation $projectId $orientation');
+    await _update(projectId, updateTransition: false, orientation: orientation);
+  }
+
+  @override
   Future<void> deleteDraft(int projectId) async {
     Logger.d('deleteDraft $projectId');
 
@@ -134,6 +148,7 @@ class DraftMovieManagerImpl extends DraftMovieManager {
     int projectId, {
     SlideShowTransition? transition,
     required bool updateTransition,
+    SlideShowOrientation? orientation,
   }) async {
     final entity = await draftMovieDao.getById(projectId);
     if (entity == null) return;
@@ -141,6 +156,7 @@ class DraftMovieManagerImpl extends DraftMovieManager {
     await draftMovieDao.update(DraftMovieEntity(
       projectId: projectId,
       transition: updateTransition ? transition : entity.transition,
+      orientation: orientation ?? entity.orientation,
       createdAt: DateTime.now(),
     ));
   }

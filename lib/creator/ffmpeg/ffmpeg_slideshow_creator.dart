@@ -27,6 +27,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
     required Duration slideDuration,
     required SlideShowTransition? transition,
     required Duration transitionDuration,
+    required SlideShowOrientation orientation,
   }) async {
     await destination.create();
 
@@ -36,6 +37,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
       slideDuration: slideDuration,
       transition: transition,
       transitionDuration: transitionDuration,
+      orientation: orientation,
     );
 
     final thumbnail = await _createThumb(
@@ -64,6 +66,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
     required Duration slideDuration,
     required SlideShowTransition? transition,
     required Duration transitionDuration,
+    required SlideShowOrientation orientation,
   }) async {
     final videoCapability = await videoCapabilityProvider.getVideoCapability();
     Logger.d('videoCapability $videoCapability');
@@ -72,13 +75,14 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
         '${destinationDir.path}/video.${videoCapability.mediaFormat.fileExtension}';
     final videoCommand = <String>[
       // Transitioning between images
-      ...transitionProvider.transitionCommand(
+      ...await transitionProvider.transitionCommand(
         imagesDir: imagesDir,
         destinationDir: destinationDir,
         videoCapability: videoCapability,
         slideDuration: slideDuration,
         transition: transition,
         transitionDuration: transitionDuration,
+        orientation: orientation,
       ),
 
       // Encoding params based on device

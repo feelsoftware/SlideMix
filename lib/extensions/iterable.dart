@@ -12,10 +12,6 @@ extension IterableExtention<E> on Iterable<E> {
       yield convert(element, index++);
     }
   }
-
-  E max(num Function(E element) predicate) {
-    return reduce((curr, next) => predicate(curr) > predicate(next) ? curr : next);
-  }
 }
 
 extension IterableNullableExtention<E> on Iterable<E?> {
