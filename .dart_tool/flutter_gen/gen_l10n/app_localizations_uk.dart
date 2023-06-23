@@ -60,8 +60,23 @@ class AppLocalizationsUk extends AppLocalizations {
   String get changeCreationSettingsDialogTitle => 'Застосуйте ефекти';
 
   @override
+  String durationInSecondsSelector(double seconds) {
+    return '$seconds с';
+  }
+
+  @override
+  String slideDurationSelector(String duration) {
+    return 'Тривалість слайду: $duration';
+  }
+
+  @override
   String changeCreationSettingsTransition(String transition) {
     return 'Перехід: $transition';
+  }
+
+  @override
+  String transitionDurationSelector(String duration) {
+    return 'Тривалість переходу: $duration';
   }
 
   @override

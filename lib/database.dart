@@ -15,11 +15,12 @@ part 'database.g.dart';
 
 @TypeConverters([
   DateTimeConverter,
+  DurationConverter,
   SlideShowTransitionConverter,
   SlideShowOrientationConverter,
 ])
 @Database(
-  version: 5,
+  version: 6,
   entities: [
     DraftMovieEntity,
     DraftMovieMediaEntity,
@@ -37,6 +38,7 @@ abstract class AppDatabase extends FloorDatabase {
             _RelativeFilePathMigration(startVersion: 2, endVersion: 3),
             _DraftMovieSlideShowTransitionMigration(startVersion: 3, endVersion: 4),
             _DraftMovieSlideShowOrientationMigration(startVersion: 4, endVersion: 5),
+            _DraftMovieDurationMigration(startVersion: 5, endVersion: 6),
           ],
         )
         .addCallback(Callback(
@@ -170,6 +172,29 @@ class _DraftMovieSlideShowOrientationMigration extends _BaseMigration {
             final defaultValue = converter.encode(converter.decode(null));
             database.execute(
               "ALTER TABLE ${DraftMovieEntity.tableName} ADD `orientation` TEXT NOT NULL DEFAULT '$defaultValue'",
+            );
+          },
+        );
+}
+
+/// Add column slideDuration to [DraftMovieEntity]
+/// Add column transitionDuration to [DraftMovieEntity]
+class _DraftMovieDurationMigration extends _BaseMigration {
+  _DraftMovieDurationMigration({
+    required int startVersion,
+    required int endVersion,
+  }) : super(
+          _DraftMovieDurationMigration,
+          startVersion,
+          endVersion,
+          (database) async {
+            final converter = DurationConverter();
+            final defaultValue = converter.encode(const Duration(seconds: 1));
+            database.execute(
+              "ALTER TABLE ${DraftMovieEntity.tableName} ADD `slideDuration` INTEGER NOT NULL DEFAULT $defaultValue",
+            );
+            database.execute(
+              "ALTER TABLE ${DraftMovieEntity.tableName} ADD `transitionDuration` INTEGER NOT NULL DEFAULT $defaultValue",
             );
           },
         );

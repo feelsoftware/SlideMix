@@ -24,12 +24,39 @@
     "mediaSourceCamera": "Camera",
     "mediaSourceGallery": "Gallery",
     "changeCreationSettingsDialogTitle": "Apply effects",
-    "changeCreationSettingsTransition": "Transitions: {transition}",
+    "durationInSecondsSelector": "{seconds} s",
+    "@durationInSecondsSelector": {
+        "placeholders": {
+            "seconds": {
+                "type": "double",
+                "example": "0.5"
+            }
+        }
+    },
+    "slideDurationSelector": "Slide duration: {duration}",
+    "@slideDurationSelector": {
+        "placeholders": {
+            "duration": {
+                "type": "String",
+                "example": "10 seconds"
+            }
+        }
+    },
+    "changeCreationSettingsTransition": "Transition: {transition}",
     "@changeCreationSettingsTransition": {
         "placeholders": {
             "transition": {
                 "type": "String",
                 "example": "fade"
+            }
+        }
+    },
+    "transitionDurationSelector": "Transition duration: {duration}",
+    "@transitionDurationSelector": {
+        "placeholders": {
+            "duration": {
+                "type": "String",
+                "example": "10 seconds"
             }
         }
     },

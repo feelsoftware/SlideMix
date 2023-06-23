@@ -23,17 +23,23 @@ abstract class MovieProject {
 
   Future<List<Media>> deleteMedia(Media media);
 
+  Duration get slideDuration;
+
+  Future<Duration> changeSlideDuration(Duration duration);
+
   SlideShowTransition? get transition;
 
   Future<SlideShowTransition?> changeTransition(SlideShowTransition? transition);
+
+  Duration get transitionDuration;
+
+  Future<Duration> changeTransitionDuration(Duration duration);
 
   SlideShowOrientation get orientation;
 
   Future<SlideShowOrientation> changeOrientation(SlideShowOrientation orientation);
 
   Future<Movie> createMovie({
-    required Duration slideDuration,
-    required Duration transitionDuration,
     required Function(double progress) onProgress,
   });
 
@@ -69,8 +75,10 @@ class MovieProjectImpl extends MovieProject {
         await draftMovieManager.createDraft(projectId);
       } else {
         _media.addAll(draft.media);
-        _transition = draft.transition;
-        _orientation = draft.orientation;
+        slideDuration = draft.slideDuration;
+        transition = draft.transition;
+        transitionDuration = draft.transitionDuration;
+        orientation = draft.orientation;
       }
     }
   }
@@ -101,36 +109,50 @@ class MovieProjectImpl extends MovieProject {
     return this.media;
   }
 
-  SlideShowTransition? _transition;
+  @override
+  Duration slideDuration = const Duration(seconds: 1);
 
   @override
-  SlideShowTransition? get transition => _transition;
+  Future<Duration> changeSlideDuration(Duration duration) async {
+    slideDuration = duration;
+    draftMovieManager.changeSlideDuration(projectId, duration).ignore();
+    return duration;
+  }
+
+  @override
+  SlideShowTransition? transition;
 
   @override
   Future<SlideShowTransition?> changeTransition(SlideShowTransition? transition) async {
-    _transition = transition;
+    this.transition = transition;
     draftMovieManager.changeTransition(projectId, transition).ignore();
     return transition;
   }
 
-  SlideShowOrientation _orientation = SlideShowOrientation.landscape;
+  @override
+  Duration transitionDuration = const Duration(seconds: 1);
 
   @override
-  SlideShowOrientation get orientation => _orientation;
+  Future<Duration> changeTransitionDuration(Duration duration) async {
+    slideDuration = duration;
+    draftMovieManager.changeTransitionDuration(projectId, duration).ignore();
+    return duration;
+  }
+
+  @override
+  SlideShowOrientation orientation = SlideShowOrientation.landscape;
 
   @override
   Future<SlideShowOrientation> changeOrientation(
     SlideShowOrientation orientation,
   ) async {
-    _orientation = orientation;
+    this.orientation = orientation;
     draftMovieManager.changeOrientation(projectId, orientation).ignore();
     return orientation;
   }
 
   @override
   Future<Movie> createMovie({
-    required Duration slideDuration,
-    required Duration transitionDuration,
     required Function(double progress) onProgress,
   }) async {
     Logger.d('createMovie $projectId');

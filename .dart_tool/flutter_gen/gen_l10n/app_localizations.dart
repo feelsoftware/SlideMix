@@ -189,11 +189,29 @@ abstract class AppLocalizations {
   /// **'Apply effects'**
   String get changeCreationSettingsDialogTitle;
 
+  /// No description provided for @durationInSecondsSelector.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds} s'**
+  String durationInSecondsSelector(double seconds);
+
+  /// No description provided for @slideDurationSelector.
+  ///
+  /// In en, this message translates to:
+  /// **'Slide duration: {duration}'**
+  String slideDurationSelector(String duration);
+
   /// No description provided for @changeCreationSettingsTransition.
   ///
   /// In en, this message translates to:
-  /// **'Transitions: {transition}'**
+  /// **'Transition: {transition}'**
   String changeCreationSettingsTransition(String transition);
+
+  /// No description provided for @transitionDurationSelector.
+  ///
+  /// In en, this message translates to:
+  /// **'Transition duration: {duration}'**
+  String transitionDurationSelector(String duration);
 
   /// No description provided for @changeCreationSettingsOrientation.
   ///

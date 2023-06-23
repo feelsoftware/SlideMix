@@ -15,6 +15,18 @@ class DateTimeConverter extends TypeConverter<DateTime, int> {
   }
 }
 
+class DurationConverter extends TypeConverter<Duration, int> {
+  @override
+  Duration decode(int databaseValue) {
+    return Duration(milliseconds: databaseValue);
+  }
+
+  @override
+  int encode(Duration value) {
+    return value.inMilliseconds;
+  }
+}
+
 class SlideShowTransitionConverter
     extends TypeConverter<SlideShowTransition?, String?> {
   @override

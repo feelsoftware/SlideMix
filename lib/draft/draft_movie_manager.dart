@@ -18,7 +18,11 @@ abstract class DraftMovieManager {
 
   Future<void> replaceMedia(int projectId, List<Media> media);
 
+  Future<void> changeSlideDuration(int projectId, Duration duration);
+
   Future<void> changeTransition(int projectId, SlideShowTransition? transition);
+
+  Future<void> changeTransitionDuration(int projectId, Duration duration);
 
   Future<void> changeOrientation(int projectId, SlideShowOrientation? orientation);
 
@@ -50,7 +54,9 @@ class DraftMovieManagerImpl extends DraftMovieManager {
           DraftMovie(
             projectId: draft.projectId,
             media: media,
+            slideDuration: draft.slideDuration,
             transition: draft.transition,
+            transitionDuration: draft.transitionDuration,
             orientation: draft.orientation,
             createdAt: draft.createdAt,
           ),
@@ -81,7 +87,9 @@ class DraftMovieManagerImpl extends DraftMovieManager {
     return DraftMovie(
       projectId: projectId,
       media: media,
+      slideDuration: entity.slideDuration,
       transition: entity.transition,
+      transitionDuration: entity.transitionDuration,
       orientation: entity.orientation,
       createdAt: entity.createdAt,
     );
@@ -92,7 +100,9 @@ class DraftMovieManagerImpl extends DraftMovieManager {
     Logger.d('createDraft $projectId');
     await draftMovieDao.insert(DraftMovieEntity(
       projectId: projectId,
+      slideDuration: const Duration(seconds: 1),
       transition: null,
+      transitionDuration: const Duration(seconds: 1),
       orientation: SlideShowOrientation.landscape,
       createdAt: DateTime.now(),
     ));
@@ -121,9 +131,21 @@ class DraftMovieManagerImpl extends DraftMovieManager {
   }
 
   @override
+  Future<void> changeSlideDuration(int projectId, Duration duration) async {
+    Logger.d('changeSlideDuration $projectId $duration');
+    await _update(projectId, slideDuration: duration, updateTransition: true);
+  }
+
+  @override
   Future<void> changeTransition(int projectId, SlideShowTransition? transition) async {
     Logger.d('changeTransition $projectId $transition');
     await _update(projectId, transition: transition, updateTransition: true);
+  }
+
+  @override
+  Future<void> changeTransitionDuration(int projectId, Duration duration) async {
+    Logger.d('changeTransitionDuration $projectId $duration');
+    await _update(projectId, transitionDuration: duration, updateTransition: true);
   }
 
   @override
@@ -147,7 +169,9 @@ class DraftMovieManagerImpl extends DraftMovieManager {
 
   Future<void> _update(
     int projectId, {
+    Duration? slideDuration,
     SlideShowTransition? transition,
+    Duration? transitionDuration,
     required bool updateTransition,
     SlideShowOrientation? orientation,
   }) async {
@@ -156,7 +180,9 @@ class DraftMovieManagerImpl extends DraftMovieManager {
 
     await draftMovieDao.update(DraftMovieEntity(
       projectId: projectId,
+      slideDuration: slideDuration ?? entity.slideDuration,
       transition: updateTransition ? transition : entity.transition,
+      transitionDuration: transitionDuration ?? entity.transitionDuration,
       orientation: orientation ?? entity.orientation,
       createdAt: DateTime.now(),
     ));

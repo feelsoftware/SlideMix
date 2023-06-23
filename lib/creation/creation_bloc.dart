@@ -56,7 +56,9 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     emit(CreationState(
       media: project.media,
       settings: CreationSettings(
+        slideDuration: project.slideDuration,
         transition: project.transition,
+        transitionDuration: project.transitionDuration,
         orientation: project.orientation,
       ),
     ));
@@ -97,11 +99,31 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     }
   }
 
+  Future<void> changeSlideDuration(Duration duration) async {
+    final project = await _project;
+    emit(state._copyWith(
+      settings: state.settings._copyWith(
+        transition: state.settings.transition,
+        slideDuration: await project.changeSlideDuration(duration),
+      ),
+    ));
+  }
+
   Future<void> changeTransition(SlideShowTransition? transition) async {
     final project = await _project;
     emit(state._copyWith(
       settings: state.settings._copyWith(
         transition: await project.changeTransition(transition),
+      ),
+    ));
+  }
+
+  Future<void> changeTransitionDuration(Duration duration) async {
+    final project = await _project;
+    emit(state._copyWith(
+      settings: state.settings._copyWith(
+        transition: state.settings.transition,
+        transitionDuration: await project.changeTransitionDuration(duration),
       ),
     ));
   }
@@ -126,8 +148,6 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     Movie movie;
     try {
       movie = await (await _project).createMovie(
-        slideDuration: const Duration(seconds: 3),
-        transitionDuration: const Duration(seconds: 1),
         onProgress: (progress) {
           emit(state._copyWith(
             loadingProgress: (progress * 100).round(),
@@ -169,12 +189,10 @@ class CreationState extends Equatable {
 
   bool get isInfiniteLoading => loadingProgress == _loadingProgressInfinite;
 
-  factory CreationState._empty() => const CreationState(
-      settings: CreationSettings(
-        transition: null,
-        orientation: SlideShowOrientation.landscape,
-      ),
-      media: []);
+  factory CreationState._empty() => CreationState(
+        settings: CreationSettings._empty(),
+        media: const [],
+      );
 
   CreationState _copyWith({
     List<Media>? media,
@@ -196,26 +214,42 @@ class CreationState extends Equatable {
 }
 
 class CreationSettings extends Equatable {
+  final Duration slideDuration;
   final SlideShowTransition? transition;
+  final Duration transitionDuration;
   final SlideShowOrientation orientation;
 
   const CreationSettings({
+    required this.slideDuration,
     required this.transition,
+    required this.transitionDuration,
     required this.orientation,
   });
 
+  factory CreationSettings._empty() => const CreationSettings(
+        slideDuration: Duration(seconds: 1),
+        transition: null,
+        transitionDuration: Duration(seconds: 1),
+        orientation: SlideShowOrientation.landscape,
+      );
+
   CreationSettings _copyWith({
+    Duration? slideDuration,
     required SlideShowTransition? transition,
+    Duration? transitionDuration,
     SlideShowOrientation? orientation,
   }) {
     return CreationSettings(
+      slideDuration: slideDuration ?? this.slideDuration,
       transition: transition,
+      transitionDuration: transitionDuration ?? this.transitionDuration,
       orientation: orientation ?? this.orientation,
     );
   }
 
   @override
-  List<Object?> get props => [transition, orientation];
+  List<Object?> get props =>
+      [slideDuration, transition, transitionDuration, orientation];
 
   @override
   bool? get stringify => true;

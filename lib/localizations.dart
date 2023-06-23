@@ -22,3 +22,8 @@ class AppLocalizations {
 
   static List<Locale> get supportedLocales => intl.AppLocalizations.supportedLocales;
 }
+
+extension AppLocalizationsX on intl.AppLocalizations {
+  String formatDuration(Duration duration) =>
+      durationInSecondsSelector(duration.inMilliseconds / 1000);
+}
