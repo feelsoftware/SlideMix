@@ -32,6 +32,7 @@ abstract class MovieProject {
   Future<Movie> createMovie({
     required Duration slideDuration,
     required Duration transitionDuration,
+    required Function(double progress) onProgress,
   });
 
   Future<void> deleteProject();
@@ -128,6 +129,7 @@ class MovieProjectImpl extends MovieProject {
   Future<Movie> createMovie({
     required Duration slideDuration,
     required Duration transitionDuration,
+    required Function(double progress) onProgress,
   }) async {
     Logger.d('createMovie $projectId');
 
@@ -145,6 +147,7 @@ class MovieProjectImpl extends MovieProject {
       transition: transition,
       transitionDuration: transitionDuration,
       orientation: orientation,
+      onProgress: onProgress,
     );
 
     final movie = Movie(

@@ -63,13 +63,13 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
 
   Future<void> pickFiles(Iterable<File> files) async {
     emit(state._copyWith(
-      isLoading: true,
+      loadingProgress: _loadingProgressInfinite,
     ));
     final project = await _project;
     final media = files.map((file) => Media(projectId: project.id, path: file.path));
     emit(state._copyWith(
       media: await project.attachMedia(media),
-      isLoading: false,
+      loadingProgress: _loadingProgressHide,
     ));
   }
 
@@ -119,7 +119,7 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
   Future<Movie> createMovie() async {
     Logger.d('createMovie ${state.media}');
     emit(state._copyWith(
-      isLoading: true,
+      loadingProgress: _loadingProgressInfinite,
     ));
 
     Movie movie;
@@ -127,11 +127,16 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
       movie = await (await _project).createMovie(
         slideDuration: const Duration(seconds: 3),
         transitionDuration: const Duration(seconds: 1),
+        onProgress: (progress) {
+          emit(state._copyWith(
+            loadingProgress: (progress * 100).round(),
+          ));
+        },
       );
     } catch (ex, st) {
       Logger.e('Failed to create movie', ex, st);
       emit(state._copyWith(
-        isLoading: false,
+        loadingProgress: _loadingProgressHide,
       ));
       throw Exception('Failed to create movie');
     }
@@ -141,20 +146,27 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
   }
 }
 
+const _loadingProgressHide = -1;
+const _loadingProgressInfinite = 0;
+
 class CreationState extends Equatable {
   final List<Media> media;
   final CreationSettings settings;
-  final bool isLoading;
+  final int loadingProgress;
 
   const CreationState({
     required this.media,
     required this.settings,
-    this.isLoading = false,
+    this.loadingProgress = _loadingProgressHide,
   });
 
   int get minMediaCountToProceed => _minMediaCount - media.length;
 
   bool get isCreationAllowed => media.length >= _minMediaCount;
+
+  bool get isLoading => loadingProgress != _loadingProgressHide;
+
+  bool get isInfiniteLoading => loadingProgress == _loadingProgressInfinite;
 
   factory CreationState._empty() => const CreationState(
       settings: CreationSettings(
@@ -166,17 +178,17 @@ class CreationState extends Equatable {
   CreationState _copyWith({
     List<Media>? media,
     CreationSettings? settings,
-    bool? isLoading,
+    int? loadingProgress,
   }) {
     return CreationState(
       media: List.unmodifiable(media ?? this.media),
       settings: settings ?? this.settings,
-      isLoading: isLoading ?? this.isLoading,
+      loadingProgress: loadingProgress ?? this.loadingProgress,
     );
   }
 
   @override
-  List<Object?> get props => [media, settings, isLoading];
+  List<Object?> get props => [media, settings, loadingProgress];
 
   @override
   bool? get stringify => true;

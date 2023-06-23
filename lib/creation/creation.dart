@@ -9,6 +9,7 @@ import 'package:slidemix/creation/dialog/pick_media_dialog.dart';
 import 'package:slidemix/creation/widget/creation_cancel_dialog.dart';
 import 'package:slidemix/creation/widget/creation_leave_dialog.dart';
 import 'package:slidemix/creation/widget/creation_list.dart';
+import 'package:slidemix/creation/widget/creation_loading.dart';
 import 'package:slidemix/localizations.dart';
 import 'package:slidemix/logger.dart';
 import 'package:slidemix/movies/data/movie.dart';
@@ -164,11 +165,9 @@ class _CreationScreenState extends State<CreationScreen> {
                   ),
                 ),
                 if (state.isLoading)
-                  Container(
-                    color: AppColors.overlay,
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                  CreationLoading(
+                    loadingProgress: state.loadingProgress,
+                    isInfiniteLoading: state.isInfiniteLoading,
                   ),
               ],
             ),

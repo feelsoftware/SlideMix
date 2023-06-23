@@ -3,6 +3,7 @@
     "tapToStart": "почати",
     "createMovie": "створити",
     "newMovie": "створити",
+    "createMovieProgress": "Творимо магію, зачекайте трішки...",
     "notEnoughMediaToCreateMovie": "Додайте {minMediaCountToProceed} чи більше файлів, щоб створити відео",
     "leaveCreationAlertTitle": "Вийти і відмінити створення відео?",
     "leaveCreationAlertPrimary": "зберегти як чернетку",

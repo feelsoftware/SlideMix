@@ -8,6 +8,7 @@ abstract class SlideShowCreator {
     required SlideShowTransition? transition,
     required Duration transitionDuration,
     required SlideShowOrientation orientation,
+    required Function(double progress) onProgress,
   });
 
   Future<void> dispose();

@@ -19,6 +19,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get newMovie => 'створити';
 
   @override
+  String get createMovieProgress => 'Творимо магію, зачекайте трішки...';
+
+  @override
   String notEnoughMediaToCreateMovie(int minMediaCountToProceed) {
     final intl.NumberFormat minMediaCountToProceedNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String minMediaCountToProceedString = minMediaCountToProceedNumberFormat.format(minMediaCountToProceed);

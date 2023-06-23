@@ -28,6 +28,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
     required SlideShowTransition? transition,
     required Duration transitionDuration,
     required SlideShowOrientation orientation,
+    required Function(double progress) onProgress,
   }) async {
     await destination.create();
 
@@ -38,6 +39,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
       transition: transition,
       transitionDuration: transitionDuration,
       orientation: orientation,
+      onProgress: onProgress,
     );
 
     final thumbnail = await _createThumb(
@@ -67,6 +69,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
     required SlideShowTransition? transition,
     required Duration transitionDuration,
     required SlideShowOrientation orientation,
+    required Function(double progress) onProgress,
   }) async {
     final videoCapability = await videoCapabilityProvider.getVideoCapability();
     Logger.d('videoCapability $videoCapability');
@@ -104,8 +107,10 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
       null,
       null,
       (statistic) {
-        // TODO: emit callback into Stream to show on UI
-        Logger.d('Progress ${statistic.getTime() / totalDuration}');
+        var progress = statistic.getTime() / totalDuration;
+        if(progress < 0) progress = 0;
+        if(progress > 1) progress = 1;
+        onProgress(progress);
       },
     );
     try {

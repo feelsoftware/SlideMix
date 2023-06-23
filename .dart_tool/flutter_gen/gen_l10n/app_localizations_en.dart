@@ -19,6 +19,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newMovie => 'new';
 
   @override
+  String get createMovieProgress => 'Making the magic, please wait a bit...';
+
+  @override
   String notEnoughMediaToCreateMovie(int minMediaCountToProceed) {
     final intl.NumberFormat minMediaCountToProceedNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String minMediaCountToProceedString = minMediaCountToProceedNumberFormat.format(minMediaCountToProceed);

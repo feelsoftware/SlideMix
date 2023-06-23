@@ -3,6 +3,7 @@
     "tapToStart": "tap to start",
     "createMovie": "create",
     "newMovie": "new",
+    "createMovieProgress": "Making the magic, please wait a bit...",
     "notEnoughMediaToCreateMovie": "Add {minMediaCountToProceed} or more media to create your movie",
     "@notEnoughMediaToCreateMovie": {
         "placeholders": {

@@ -117,6 +117,12 @@ abstract class AppLocalizations {
   /// **'new'**
   String get newMovie;
 
+  /// No description provided for @createMovieProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Making the magic, please wait a bit...'**
+  String get createMovieProgress;
+
   /// No description provided for @notEnoughMediaToCreateMovie.
   ///
   /// In en, this message translates to:
