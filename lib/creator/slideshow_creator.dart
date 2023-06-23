@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_resize.dart';
 import 'package:slidemix/creator/slideshow_transition.dart';
 
 abstract class SlideShowCreator {
@@ -11,6 +12,7 @@ abstract class SlideShowCreator {
     required SlideShowTransition? transition,
     required Duration transitionDuration,
     required SlideShowOrientation orientation,
+    required SlideShowResize resize,
     required Function(double progress) onProgress,
   });
 

@@ -1,5 +1,6 @@
 import 'package:floor/floor.dart';
 import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_resize.dart';
 import 'package:slidemix/creator/slideshow_transition.dart';
 import 'package:slidemix/extensions/iterable.dart';
 
@@ -50,6 +51,19 @@ class SlideShowOrientationConverter
 
   @override
   String? encode(SlideShowOrientation value) {
+    return value.name;
+  }
+}
+
+class SlideShowResizeConverter extends TypeConverter<SlideShowResize, String?> {
+  @override
+  SlideShowResize decode(String? databaseValue) {
+    return SlideShowResize.values.firstOrNull((e) => e.name == databaseValue) ??
+        SlideShowResize.contain;
+  }
+
+  @override
+  String? encode(SlideShowResize value) {
     return value.name;
   }
 }

@@ -69,10 +69,21 @@
             }
         }
     },
+    "changeCreationSettingsResize": "Scale rules: {resize}",
+    "@changeCreationSettingsResize": {
+        "placeholders": {
+            "resize": {
+                "type": "String",
+                "example": "contain"
+            }
+        }
+    },
     "pickTransitionDialogTitle": "Choose transition",
     "transitionNone": "No transition",
     "pickOrientationDialogTitle": "Choose orientation",
     "orientationSelector": "{orientation,select, landscape{Landscape}portrait{Portrait}square{Square}other{}}",
+    "pickResizeDialogTitle": "Choose scale rules",
+    "resizeSelector": "{resize,select, contain{Contain all content}cover{Resize and crop}other{}}",
     "deleteMovieAlertTitle": "Delete the video?",
     "deleteMovieAlertPrimary": "delete",
     "deleteMovieAlertSecondary": "cancel",

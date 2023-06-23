@@ -1,3 +1,4 @@
+/// https://trac.ffmpeg.org/wiki/Xfade
 enum SlideShowTransition {
   fade,
   fadeblack,

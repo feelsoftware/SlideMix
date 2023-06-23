@@ -18,9 +18,10 @@ part 'database.g.dart';
   DurationConverter,
   SlideShowTransitionConverter,
   SlideShowOrientationConverter,
+  SlideShowResizeConverter,
 ])
 @Database(
-  version: 6,
+  version: 7,
   entities: [
     DraftMovieEntity,
     DraftMovieMediaEntity,
@@ -36,9 +37,10 @@ abstract class AppDatabase extends FloorDatabase {
           [
             _MovieMimeMigration(startVersion: 1, endVersion: 2),
             _RelativeFilePathMigration(startVersion: 2, endVersion: 3),
-            _DraftMovieSlideShowTransitionMigration(startVersion: 3, endVersion: 4),
-            _DraftMovieSlideShowOrientationMigration(startVersion: 4, endVersion: 5),
+            _DraftMovieTransitionMigration(startVersion: 3, endVersion: 4),
+            _DraftMovieOrientationMigration(startVersion: 4, endVersion: 5),
             _DraftMovieDurationMigration(startVersion: 5, endVersion: 6),
+            _DraftMovieResizeMigration(startVersion: 6, endVersion: 7),
           ],
         )
         .addCallback(Callback(
@@ -142,12 +144,12 @@ class _RelativeFilePathMigration extends _BaseMigration {
 }
 
 /// Add column transition to [DraftMovieEntity]
-class _DraftMovieSlideShowTransitionMigration extends _BaseMigration {
-  _DraftMovieSlideShowTransitionMigration({
+class _DraftMovieTransitionMigration extends _BaseMigration {
+  _DraftMovieTransitionMigration({
     required int startVersion,
     required int endVersion,
   }) : super(
-          _DraftMovieSlideShowTransitionMigration,
+          _DraftMovieTransitionMigration,
           startVersion,
           endVersion,
           (database) async {
@@ -159,12 +161,12 @@ class _DraftMovieSlideShowTransitionMigration extends _BaseMigration {
 }
 
 /// Add column orientation to [DraftMovieEntity]
-class _DraftMovieSlideShowOrientationMigration extends _BaseMigration {
-  _DraftMovieSlideShowOrientationMigration({
+class _DraftMovieOrientationMigration extends _BaseMigration {
+  _DraftMovieOrientationMigration({
     required int startVersion,
     required int endVersion,
   }) : super(
-          _DraftMovieSlideShowOrientationMigration,
+          _DraftMovieOrientationMigration,
           startVersion,
           endVersion,
           (database) async {
@@ -195,6 +197,25 @@ class _DraftMovieDurationMigration extends _BaseMigration {
             );
             database.execute(
               "ALTER TABLE ${DraftMovieEntity.tableName} ADD `transitionDuration` INTEGER NOT NULL DEFAULT $defaultValue",
+            );
+          },
+        );
+}
+
+/// Add column resize to [DraftMovieEntity]
+class _DraftMovieResizeMigration extends _BaseMigration {
+  _DraftMovieResizeMigration({
+    required int startVersion,
+    required int endVersion,
+  }) : super(
+          _DraftMovieResizeMigration,
+          startVersion,
+          endVersion,
+          (database) async {
+            final converter = SlideShowResizeConverter();
+            final defaultValue = converter.encode(converter.decode(null));
+            database.execute(
+              "ALTER TABLE ${DraftMovieEntity.tableName} ADD `resize` TEXT NOT NULL DEFAULT '$defaultValue'",
             );
           },
         );

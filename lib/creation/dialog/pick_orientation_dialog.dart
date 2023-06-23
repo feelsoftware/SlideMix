@@ -65,7 +65,7 @@ class _OrientationItem extends StatelessWidget {
       onTap: () => Navigator.pop(context, orientation),
       leading: Icon(
         orientation.icon,
-        color: Theme.of(context).primaryColor,
+        color: isSelected ? Theme.of(context).primaryColor : null,
       ),
       title: Text(AppLocalizations.of(context).orientationSelector(orientation.name)),
     );

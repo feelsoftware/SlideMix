@@ -5,6 +5,7 @@ import 'package:path/path.dart';
 import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/creator/slideshow_creator.dart';
 import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_resize.dart';
 import 'package:slidemix/creator/slideshow_transition.dart';
 import 'package:slidemix/draft/draft_movie_manager.dart';
 import 'package:slidemix/file_manager.dart';
@@ -38,6 +39,10 @@ abstract class MovieProject {
   SlideShowOrientation get orientation;
 
   Future<SlideShowOrientation> changeOrientation(SlideShowOrientation orientation);
+
+  SlideShowResize get resize;
+
+  Future<SlideShowResize> changeResize(SlideShowResize resize);
 
   Future<Movie> createMovie({
     required Function(double progress) onProgress,
@@ -152,6 +157,16 @@ class MovieProjectImpl extends MovieProject {
   }
 
   @override
+  SlideShowResize resize = SlideShowResize.contain;
+
+  @override
+  Future<SlideShowResize> changeResize(SlideShowResize resize) async {
+    this.resize = resize;
+    draftMovieManager.changeResize(projectId, resize).ignore();
+    return resize;
+  }
+
+  @override
   Future<Movie> createMovie({
     required Function(double progress) onProgress,
   }) async {
@@ -171,6 +186,7 @@ class MovieProjectImpl extends MovieProject {
       transition: transition,
       transitionDuration: transitionDuration,
       orientation: orientation,
+      resize: resize,
       onProgress: onProgress,
     );
 

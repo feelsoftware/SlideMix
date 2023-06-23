@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_resize.dart';
 import 'package:slidemix/creator/slideshow_transition.dart';
 import 'package:slidemix/creator/video_capability.dart';
 import 'package:slidemix/file_manager.dart';
@@ -16,6 +17,7 @@ class FFMpegTransitionProvider {
     required SlideShowTransition? transition,
     required Duration transitionDuration,
     required SlideShowOrientation orientation,
+    required SlideShowResize resize,
   }) async {
     final videoCommand = <String>[];
 
@@ -29,6 +31,7 @@ class FFMpegTransitionProvider {
         _applyOrientationNoneTransition(
           videoCapability: videoCapability,
           orientation: orientation,
+          resize: resize,
         ),
       ];
     }
@@ -60,6 +63,7 @@ class FFMpegTransitionProvider {
       images: images,
       videoCapability: videoCapability,
       orientation: orientation,
+      resize: resize,
     );
 
     // https://trac.ffmpeg.org/wiki/Xfade
@@ -100,6 +104,7 @@ class FFMpegTransitionProvider {
   String _applyOrientationNoneTransition({
     required VideoCapability videoCapability,
     required SlideShowOrientation orientation,
+    required SlideShowResize resize,
   }) {
     // Using images with different resolutions
     int width;
@@ -121,9 +126,7 @@ class FFMpegTransitionProvider {
         break;
     }
 
-    // Resize and contain
-    // https://creatomate.com/blog/how-to-change-the-resolution-of-a-video-using-ffmpeg
-    return 'scale=$width:$height:force_original_aspect_ratio=decrease,pad=$width:$height:-1:-1:color=black';
+    return _scaleResizeCommand(resize: resize, width: width, height: height);
   }
 
   String _applyOrientationForTransition({
@@ -131,6 +134,7 @@ class FFMpegTransitionProvider {
     required List<File> images,
     required VideoCapability videoCapability,
     required SlideShowOrientation orientation,
+    required SlideShowResize resize,
   }) {
     // Using images with different resolutions
     int width;
@@ -152,13 +156,28 @@ class FFMpegTransitionProvider {
         break;
     }
 
-    // Resize and contain
-    // https://creatomate.com/blog/how-to-change-the-resolution-of-a-video-using-ffmpeg
     String transitionCommand = '';
     for (var i = 0; i < images.length; i++) {
-      transitionCommand +=
-          '[$i]scale=$width:$height:force_original_aspect_ratio=decrease,pad=$width:$height:-1:-1:color=black[s$i];';
+      final resizeCommand =
+          _scaleResizeCommand(resize: resize, width: width, height: height);
+
+      transitionCommand += '[$i]$resizeCommand[s$i];';
     }
     return transitionCommand;
+  }
+
+  // Resize to contain or cover
+  // https://creatomate.com/blog/how-to-change-the-resolution-of-a-video-using-ffmpeg
+  String _scaleResizeCommand({
+    required SlideShowResize resize,
+    required int width,
+    required int height,
+  }) {
+    final scaleCommand = 'scale=$width:$height:force_original_aspect_ratio=';
+    final resizeCommand = switch (resize) {
+      SlideShowResize.contain => 'decrease,pad=$width:$height:-1:-1:color=black',
+      SlideShowResize.cover => 'increase,crop=$width:$height',
+    };
+    return scaleCommand + resizeCommand;
   }
 }

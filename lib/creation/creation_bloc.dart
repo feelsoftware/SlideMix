@@ -10,6 +10,7 @@ import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/creator/movie_creator.dart';
 import 'package:slidemix/creator/movie_project.dart';
 import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_resize.dart';
 import 'package:slidemix/creator/slideshow_transition.dart';
 import 'package:slidemix/draft/draft_movie_manager.dart';
 import 'package:slidemix/logger.dart';
@@ -60,6 +61,7 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
         transition: project.transition,
         transitionDuration: project.transitionDuration,
         orientation: project.orientation,
+        resize: project.resize,
       ),
     ));
   }
@@ -135,6 +137,17 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
       settings: state.settings._copyWith(
         transition: state.settings.transition,
         orientation: await project.changeOrientation(orientation),
+      ),
+    ));
+  }
+
+  Future<void> changeResize(SlideShowResize resize) async {
+    final project = await _project;
+
+    emit(state._copyWith(
+      settings: state.settings._copyWith(
+        transition: state.settings.transition,
+        resize: await project.changeResize(resize),
       ),
     ));
   }
@@ -218,12 +231,14 @@ class CreationSettings extends Equatable {
   final SlideShowTransition? transition;
   final Duration transitionDuration;
   final SlideShowOrientation orientation;
+  final SlideShowResize resize;
 
   const CreationSettings({
     required this.slideDuration,
     required this.transition,
     required this.transitionDuration,
     required this.orientation,
+    required this.resize,
   });
 
   factory CreationSettings._empty() => const CreationSettings(
@@ -231,6 +246,7 @@ class CreationSettings extends Equatable {
         transition: null,
         transitionDuration: Duration(seconds: 1),
         orientation: SlideShowOrientation.landscape,
+        resize: SlideShowResize.contain,
       );
 
   CreationSettings _copyWith({
@@ -238,18 +254,25 @@ class CreationSettings extends Equatable {
     required SlideShowTransition? transition,
     Duration? transitionDuration,
     SlideShowOrientation? orientation,
+    SlideShowResize? resize,
   }) {
     return CreationSettings(
       slideDuration: slideDuration ?? this.slideDuration,
       transition: transition,
       transitionDuration: transitionDuration ?? this.transitionDuration,
       orientation: orientation ?? this.orientation,
+      resize: resize ?? this.resize,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [slideDuration, transition, transitionDuration, orientation];
+  List<Object?> get props => [
+        slideDuration,
+        transition,
+        transitionDuration,
+        orientation,
+        resize,
+      ];
 
   @override
   bool? get stringify => true;

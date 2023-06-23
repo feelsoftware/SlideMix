@@ -219,6 +219,12 @@ abstract class AppLocalizations {
   /// **'Orientation: {orientation}'**
   String changeCreationSettingsOrientation(String orientation);
 
+  /// No description provided for @changeCreationSettingsResize.
+  ///
+  /// In en, this message translates to:
+  /// **'Scale rules: {resize}'**
+  String changeCreationSettingsResize(String resize);
+
   /// No description provided for @pickTransitionDialogTitle.
   ///
   /// In en, this message translates to:
@@ -242,6 +248,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{orientation,select, landscape{Landscape}portrait{Portrait}square{Square}other{}}'**
   String orientationSelector(String orientation);
+
+  /// No description provided for @pickResizeDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose scale rules'**
+  String get pickResizeDialogTitle;
+
+  /// No description provided for @resizeSelector.
+  ///
+  /// In en, this message translates to:
+  /// **'{resize,select, contain{Contain all content}cover{Resize and crop}other{}}'**
+  String resizeSelector(String resize);
 
   /// No description provided for @deleteMovieAlertTitle.
   ///

@@ -73,7 +73,7 @@ class _$AppDatabase extends AppDatabase {
     Callback? callback,
   ]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 6,
+      version: 7,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
         await callback?.onConfigure?.call(database);
@@ -89,7 +89,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `draft_movies` (`projectId` INTEGER NOT NULL, `slideDuration` INTEGER NOT NULL, `transition` TEXT, `transitionDuration` INTEGER NOT NULL, `orientation` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, PRIMARY KEY (`projectId`))');
+            'CREATE TABLE IF NOT EXISTS `draft_movies` (`projectId` INTEGER NOT NULL, `slideDuration` INTEGER NOT NULL, `transition` TEXT, `transitionDuration` INTEGER NOT NULL, `orientation` TEXT NOT NULL, `resize` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, PRIMARY KEY (`projectId`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `draft_movies_media` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `projectId` INTEGER NOT NULL, `path` TEXT NOT NULL)');
         await database.execute(
@@ -136,6 +136,7 @@ class _$DraftMovieDao extends DraftMovieDao {
                       _durationConverter.encode(item.transitionDuration),
                   'orientation':
                       _slideShowOrientationConverter.encode(item.orientation),
+                  'resize': _slideShowResizeConverter.encode(item.resize),
                   'createdAt': _dateTimeConverter.encode(item.createdAt)
                 },
             changeListener),
@@ -153,6 +154,7 @@ class _$DraftMovieDao extends DraftMovieDao {
                       _durationConverter.encode(item.transitionDuration),
                   'orientation':
                       _slideShowOrientationConverter.encode(item.orientation),
+                  'resize': _slideShowResizeConverter.encode(item.resize),
                   'createdAt': _dateTimeConverter.encode(item.createdAt)
                 },
             changeListener);
@@ -181,6 +183,7 @@ class _$DraftMovieDao extends DraftMovieDao {
                 _durationConverter.decode(row['transitionDuration'] as int),
             orientation: _slideShowOrientationConverter
                 .decode(row['orientation'] as String?),
+            resize: _slideShowResizeConverter.decode(row['resize'] as String?),
             createdAt: _dateTimeConverter.decode(row['createdAt'] as int)),
         queryableName: 'draft_movies',
         isView: false);
@@ -200,6 +203,7 @@ class _$DraftMovieDao extends DraftMovieDao {
                 _durationConverter.decode(row['transitionDuration'] as int),
             orientation: _slideShowOrientationConverter
                 .decode(row['orientation'] as String?),
+            resize: _slideShowResizeConverter.decode(row['resize'] as String?),
             createdAt: _dateTimeConverter.decode(row['createdAt'] as int)),
         arguments: [projectId]);
   }
@@ -418,3 +422,4 @@ final _dateTimeConverter = DateTimeConverter();
 final _durationConverter = DurationConverter();
 final _slideShowTransitionConverter = SlideShowTransitionConverter();
 final _slideShowOrientationConverter = SlideShowOrientationConverter();
+final _slideShowResizeConverter = SlideShowResizeConverter();

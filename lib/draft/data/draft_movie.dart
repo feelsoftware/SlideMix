@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_resize.dart';
 import 'package:slidemix/creator/slideshow_transition.dart';
 
 class DraftMovie extends Equatable {
@@ -10,6 +11,7 @@ class DraftMovie extends Equatable {
   final SlideShowTransition? transition;
   final Duration transitionDuration;
   final SlideShowOrientation orientation;
+  final SlideShowResize resize;
   final DateTime createdAt;
 
   const DraftMovie({
@@ -19,6 +21,7 @@ class DraftMovie extends Equatable {
     required this.transition,
     required this.transitionDuration,
     required this.orientation,
+    required this.resize,
     required this.createdAt,
   });
 
@@ -29,11 +32,12 @@ class DraftMovie extends Equatable {
         transition,
         transitionDuration,
         orientation,
+        resize,
         createdAt
       ];
 
   @override
   String toString() {
-    return 'DraftMovie{projectId: $projectId, media: $media, slideDuration: $slideDuration, transition: $transition, transitionDuration: $transitionDuration, orientation: $orientation, createdAt: $createdAt}';
+    return 'DraftMovie{projectId: $projectId, media: $media, slideDuration: $slideDuration, transition: $transition, transitionDuration: $transitionDuration, orientation: $orientation, resize: $resize, createdAt: $createdAt}';
   }
 }

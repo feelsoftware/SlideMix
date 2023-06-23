@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:floor/floor.dart';
 import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_resize.dart';
 import 'package:slidemix/creator/slideshow_transition.dart';
 
 @Entity(tableName: DraftMovieEntity.tableName)
@@ -13,6 +14,7 @@ class DraftMovieEntity extends Equatable {
   final SlideShowTransition? transition;
   final Duration transitionDuration;
   final SlideShowOrientation orientation;
+  final SlideShowResize resize;
   final DateTime createdAt;
 
   const DraftMovieEntity({
@@ -21,6 +23,7 @@ class DraftMovieEntity extends Equatable {
     required this.transition,
     required this.transitionDuration,
     required this.orientation,
+    required this.resize,
     required this.createdAt,
   });
 
@@ -31,6 +34,7 @@ class DraftMovieEntity extends Equatable {
         transition,
         transitionDuration,
         orientation,
+        resize,
         createdAt
       ];
 }

@@ -85,6 +85,11 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
+  String changeCreationSettingsResize(String resize) {
+    return 'Правила масштабування: $resize';
+  }
+
+  @override
   String get pickTransitionDialogTitle => 'Виберіть перехід';
 
   @override
@@ -101,6 +106,22 @@ class AppLocalizationsUk extends AppLocalizations {
         'landscape': 'Пейзажна',
         'portrait': 'Портретна',
         'square': 'Квадратна',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pickResizeDialogTitle => 'Виберіть правила масштабування';
+
+  @override
+  String resizeSelector(String resize) {
+    String _temp0 = intl.Intl.selectLogic(
+      resize,
+      {
+        'contain': 'Показувати весь контент',
+        'cover': 'Вирізати під розмір',
         'other': '',
       },
     );

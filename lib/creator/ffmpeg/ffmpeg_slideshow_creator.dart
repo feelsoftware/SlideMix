@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import 'package:slidemix/creator/ffmpeg/ffmpeg_transition.dart';
 import 'package:slidemix/creator/slideshow_creator.dart';
 import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_resize.dart';
 import 'package:slidemix/creator/slideshow_transition.dart';
 import 'package:slidemix/creator/video_capability.dart';
 import 'package:slidemix/logger.dart';
@@ -30,6 +31,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
     required SlideShowTransition? transition,
     required Duration transitionDuration,
     required SlideShowOrientation orientation,
+    required SlideShowResize resize,
     required Function(double progress) onProgress,
   }) async {
     await destination.create();
@@ -41,6 +43,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
       transition: transition,
       transitionDuration: transitionDuration,
       orientation: orientation,
+      resize: resize,
       onProgress: onProgress,
     );
 
@@ -71,6 +74,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
     required SlideShowTransition? transition,
     required Duration transitionDuration,
     required SlideShowOrientation orientation,
+    required SlideShowResize resize,
     required Function(double progress) onProgress,
   }) async {
     final videoCapability = await videoCapabilityProvider.getVideoCapability();
@@ -88,6 +92,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
         transition: transition,
         transitionDuration: transitionDuration,
         orientation: orientation,
+        resize: resize,
       ),
 
       // Encoding params based on device

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_resize.dart';
 import 'package:slidemix/creator/slideshow_transition.dart';
 import 'package:slidemix/draft/data/dao.dart';
 import 'package:slidemix/draft/data/draft_movie.dart';
@@ -24,7 +25,9 @@ abstract class DraftMovieManager {
 
   Future<void> changeTransitionDuration(int projectId, Duration duration);
 
-  Future<void> changeOrientation(int projectId, SlideShowOrientation? orientation);
+  Future<void> changeOrientation(int projectId, SlideShowOrientation orientation);
+
+  Future<void> changeResize(int projectId, SlideShowResize resize);
 
   Future<void> deleteDraft(int projectId);
 }
@@ -58,6 +61,7 @@ class DraftMovieManagerImpl extends DraftMovieManager {
             transition: draft.transition,
             transitionDuration: draft.transitionDuration,
             orientation: draft.orientation,
+            resize: draft.resize,
             createdAt: draft.createdAt,
           ),
         );
@@ -91,6 +95,7 @@ class DraftMovieManagerImpl extends DraftMovieManager {
       transition: entity.transition,
       transitionDuration: entity.transitionDuration,
       orientation: entity.orientation,
+      resize: entity.resize,
       createdAt: entity.createdAt,
     );
   }
@@ -104,6 +109,7 @@ class DraftMovieManagerImpl extends DraftMovieManager {
       transition: null,
       transitionDuration: const Duration(seconds: 1),
       orientation: SlideShowOrientation.landscape,
+      resize: SlideShowResize.contain,
       createdAt: DateTime.now(),
     ));
   }
@@ -151,10 +157,16 @@ class DraftMovieManagerImpl extends DraftMovieManager {
   @override
   Future<void> changeOrientation(
     int projectId,
-    SlideShowOrientation? orientation,
+    SlideShowOrientation orientation,
   ) async {
     Logger.d('changeOrientation $projectId $orientation');
     await _update(projectId, updateTransition: false, orientation: orientation);
+  }
+
+  @override
+  Future<void> changeResize(int projectId, SlideShowResize resize) async {
+    Logger.d('changeResize $projectId $resize');
+    await _update(projectId, updateTransition: false, resize: resize);
   }
 
   @override
@@ -174,6 +186,7 @@ class DraftMovieManagerImpl extends DraftMovieManager {
     Duration? transitionDuration,
     required bool updateTransition,
     SlideShowOrientation? orientation,
+    SlideShowResize? resize,
   }) async {
     final entity = await draftMovieDao.getById(projectId);
     if (entity == null) return;
@@ -184,6 +197,7 @@ class DraftMovieManagerImpl extends DraftMovieManager {
       transition: updateTransition ? transition : entity.transition,
       transitionDuration: transitionDuration ?? entity.transitionDuration,
       orientation: orientation ?? entity.orientation,
+      resize: resize ?? entity.resize,
       createdAt: DateTime.now(),
     ));
   }

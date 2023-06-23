@@ -85,6 +85,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String changeCreationSettingsResize(String resize) {
+    return 'Scale rules: $resize';
+  }
+
+  @override
   String get pickTransitionDialogTitle => 'Choose transition';
 
   @override
@@ -101,6 +106,22 @@ class AppLocalizationsEn extends AppLocalizations {
         'landscape': 'Landscape',
         'portrait': 'Portrait',
         'square': 'Square',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pickResizeDialogTitle => 'Choose scale rules';
+
+  @override
+  String resizeSelector(String resize) {
+    String _temp0 = intl.Intl.selectLogic(
+      resize,
+      {
+        'contain': 'Contain all content',
+        'cover': 'Resize and crop',
         'other': '',
       },
     );

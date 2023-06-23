@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/creation/creation_bloc.dart';
 import 'package:slidemix/creation/dialog/pick_orientation_dialog.dart';
+import 'package:slidemix/creation/dialog/pick_resize_dialog.dart';
 import 'package:slidemix/creation/dialog/pick_transition_dialog.dart';
 import 'package:slidemix/creation/dialog/set_duration_dialog.dart';
 import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_resize.dart';
 import 'package:slidemix/creator/slideshow_transition.dart';
 import 'package:slidemix/localizations.dart';
 
@@ -51,6 +53,7 @@ class CreationSettingsDialog extends StatelessWidget {
               if (settings.transition != null)
                 _TransitionDurationItem(settings.transitionDuration),
               _OrientationItem(settings.orientation),
+              _ResizeItem(settings.resize),
             ],
           ),
         );
@@ -154,6 +157,27 @@ class _OrientationItem extends StatelessWidget {
       title: Text(
         AppLocalizations.of(context).changeCreationSettingsOrientation(
             AppLocalizations.of(context).orientationSelector(orientation.name)),
+      ),
+    );
+  }
+}
+
+class _ResizeItem extends StatelessWidget {
+  final SlideShowResize resize;
+
+  const _ResizeItem(this.resize);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: () async {
+        final newResize = await PickResizeDialog.show(context, resize);
+        if (!context.mounted || newResize == null) return;
+        BlocProvider.of<CreationBloc>(context).changeResize(newResize);
+      },
+      title: Text(
+        AppLocalizations.of(context).changeCreationSettingsResize(
+            AppLocalizations.of(context).resizeSelector(resize.name)),
       ),
     );
   }
