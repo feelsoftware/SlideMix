@@ -24,10 +24,11 @@ class FFMpegTransitionProvider {
         (1 / slideDuration.inSeconds).toString(),
         "-i",
         "${imagesDir.path}/image%03d.jpg",
-        "-r",
-        "30",
         "-vf",
-        "scale='if(gt(iw,ih),-2,min(${videoCapability.width},iw))':'if(gt(iw,ih),min(${videoCapability.height},iw),-2)'",
+        _applyOrientationNoneTransition(
+          videoCapability: videoCapability,
+          orientation: orientation,
+        ),
       ];
     }
 
@@ -53,7 +54,7 @@ class FFMpegTransitionProvider {
 
     String transitionCommand = '';
 
-    transitionCommand += _applyOrientation(
+    transitionCommand += _applyOrientationForTransition(
       imagesDir: imagesDir,
       images: images,
       videoCapability: videoCapability,
@@ -95,7 +96,36 @@ class FFMpegTransitionProvider {
     return videoCommand;
   }
 
-  String _applyOrientation({
+  String _applyOrientationNoneTransition({
+    required VideoCapability videoCapability,
+    required SlideShowOrientation orientation,
+  }) {
+    // Using images with different resolutions
+    int width;
+    int height;
+    switch (orientation) {
+      case SlideShowOrientation.landscape:
+        width = videoCapability.width;
+        height = videoCapability.height;
+        break;
+
+      case SlideShowOrientation.portrait:
+        width = videoCapability.height;
+        height = videoCapability.width;
+        break;
+
+      case SlideShowOrientation.square:
+        width = videoCapability.height;
+        height = videoCapability.height;
+        break;
+    }
+
+    // Resize and contain
+    // https://creatomate.com/blog/how-to-change-the-resolution-of-a-video-using-ffmpeg
+    return 'scale=$width:$height:force_original_aspect_ratio=decrease,pad=$width:$height:-1:-1:color=black';
+  }
+
+  String _applyOrientationForTransition({
     required Directory imagesDir,
     required List<File> images,
     required VideoCapability videoCapability,
