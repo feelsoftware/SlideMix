@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:floor/floor.dart';
-import 'package:slidemix/creator/slideshow_creator.dart';
+import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_transition.dart';
 
 @Entity(tableName: DraftMovieEntity.tableName)
 class DraftMovieEntity extends Equatable {

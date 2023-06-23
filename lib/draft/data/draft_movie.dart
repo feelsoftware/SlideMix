@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:slidemix/creation/data/media.dart';
-import 'package:slidemix/creator/slideshow_creator.dart';
+import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_transition.dart';
 
 class DraftMovie extends Equatable {
   final int projectId;

@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:slidemix/creator/slideshow_creator.dart';
+import 'package:slidemix/creator/slideshow_orientation.dart';
 import 'package:slidemix/localizations.dart';
 
 class PickOrientationDialog extends StatelessWidget {

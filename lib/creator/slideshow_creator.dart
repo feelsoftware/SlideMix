@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_transition.dart';
+
 abstract class SlideShowCreator {
   Future<SlideShow> create({
     required Directory images,
@@ -26,57 +29,4 @@ class SlideShow {
     required this.mime,
     required this.videoDuration,
   });
-}
-
-enum SlideShowOrientation {
-  landscape,
-  portrait,
-  square,
-}
-
-enum SlideShowTransition {
-  fade,
-  fadeblack,
-  fadewhite,
-  distance,
-  wipeleft,
-  wiperight,
-  wipeup,
-  wipedown,
-  slideleft,
-  slideright,
-  slideup,
-  slidedown,
-  smoothleft,
-  smoothright,
-  smoothup,
-  smoothdown,
-  circlecrop,
-  rectcrop,
-  circleclose,
-  circleopen,
-  horzclose,
-  horzopen,
-  vertclose,
-  vertopen,
-  diagbl,
-  diagbr,
-  diagtl,
-  diagtr,
-  hlslice,
-  hrslice,
-  vuslice,
-  vdslice,
-  dissolve,
-  pixelize,
-  radial,
-  hblur,
-  wipetl,
-  wipetr,
-  wipebl,
-  wipebr,
-  fadegrays,
-  squeezev,
-  squeezeh,
-  zoomin,
 }

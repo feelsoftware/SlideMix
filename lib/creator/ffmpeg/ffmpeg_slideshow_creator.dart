@@ -9,6 +9,8 @@ import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
 import 'package:path/path.dart';
 import 'package:slidemix/creator/ffmpeg/ffmpeg_transition.dart';
 import 'package:slidemix/creator/slideshow_creator.dart';
+import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_transition.dart';
 import 'package:slidemix/creator/video_capability.dart';
 import 'package:slidemix/logger.dart';
 

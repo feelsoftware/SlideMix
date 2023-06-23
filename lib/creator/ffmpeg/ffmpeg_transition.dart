@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:path/path.dart';
-import 'package:slidemix/creator/slideshow_creator.dart';
+import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_transition.dart';
 import 'package:slidemix/creator/video_capability.dart';
 import 'package:slidemix/file_manager.dart';
 

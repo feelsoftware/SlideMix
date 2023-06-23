@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:path/path.dart';
 import 'package:slidemix/creation/data/media.dart';
-import 'package:slidemix/creator/slideshow_creator.dart';
+import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_transition.dart';
 import 'package:slidemix/draft/data/dao.dart';
 import 'package:slidemix/draft/data/draft_movie.dart';
 import 'package:slidemix/draft/data/entity.dart';

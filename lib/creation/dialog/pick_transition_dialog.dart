@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:slidemix/colors.dart';
-import 'package:slidemix/creator/slideshow_creator.dart';
+import 'package:slidemix/creator/slideshow_transition.dart';
 import 'package:slidemix/extensions/device.dart';
 import 'package:slidemix/localizations.dart';
 

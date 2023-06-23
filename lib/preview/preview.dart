@@ -3,7 +3,7 @@ import 'package:slidemix/colors.dart';
 import 'package:slidemix/movies/data/movie.dart';
 import 'package:slidemix/movies/movies.dart';
 import 'package:slidemix/navigation.dart';
-import 'package:slidemix/preview/widget/preview_actions_dialog.dart';
+import 'package:slidemix/preview/dialog/preview_actions_dialog.dart';
 import 'package:slidemix/preview/widget/preview_player.dart';
 import 'package:slidemix/widget/toolbar.dart';
 
