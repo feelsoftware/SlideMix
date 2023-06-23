@@ -42,16 +42,17 @@ class CreationScreen extends StatefulWidget {
 }
 
 class _CreationScreenState extends State<CreationScreen> {
-  bool _openPickerAtStartup = true;
+  bool _openFilesPicker = true;
+  bool _openSettingsAfterMedia = true;
 
   @override
   void initState() {
     super.initState();
 
-    _openPickerAtStartup = widget.draftMovie == null;
+    _openFilesPicker = widget.draftMovie == null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_openPickerAtStartup) {
-        setState(() => _openPickerAtStartup = false);
+      if (_openFilesPicker) {
+        _openFilesPicker = false;
         _pickMedia();
       }
       if (widget.draftMovie != null) {
@@ -64,6 +65,15 @@ class _CreationScreenState extends State<CreationScreen> {
     final files = await PickMediaDialog.show(context);
     if (!mounted || files.isEmpty) return;
     BlocProvider.of<CreationBloc>(context).pickFiles(files);
+
+    if (_openSettingsAfterMedia) {
+      _openSettingsAfterMedia = false;
+      _openSettings();
+    }
+  }
+
+  void _openSettings() {
+    CreationSettingsDialog.show(context);
   }
 
   @override
@@ -109,7 +119,7 @@ class _CreationScreenState extends State<CreationScreen> {
               leftIcon: const Icon(Icons.close),
               onLeftIconTapped: () => Navigator.of(context).maybePop(),
               rightIcon: const Icon(Icons.settings),
-              onRightIconTapped: () => CreationSettingsDialog.show(context),
+              onRightIconTapped: () => _openSettings(),
             ),
             body: Stack(
               children: <Widget>[
