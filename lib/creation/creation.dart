@@ -10,6 +10,7 @@ import 'package:slidemix/creation/dialog/creation_cancel_dialog.dart';
 import 'package:slidemix/creation/dialog/creation_leave_dialog.dart';
 import 'package:slidemix/creation/widget/creation_list.dart';
 import 'package:slidemix/creation/widget/creation_loading.dart';
+import 'package:slidemix/creator/slideshow_creator.dart';
 import 'package:slidemix/localizations.dart';
 import 'package:slidemix/logger.dart';
 import 'package:slidemix/movies/data/movie.dart';
@@ -80,19 +81,26 @@ class _CreationScreenState extends State<CreationScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        LeaveCreationResult? leaveCreationResult;
-
         if (BlocProvider.of<CreationBloc>(context).state.isLoading) {
-          if (await CancelCreationDialog.show(context) != CancelCreationResult.cancel) {
-            return false;
-          } else {
-            leaveCreationResult = LeaveCreationResult.leave;
+          final cancelCreationResult = await CancelCreationDialog.show(context);
+          if (!mounted) return false;
+
+          switch (cancelCreationResult) {
+            case CancelCreationResult.dismiss:
+              // Keep current screen
+              return false;
+
+            case CancelCreationResult.cancel:
+              await BlocProvider.of<CreationBloc>(context).cancelCreation();
+              // Keep current screen
+              return false;
           }
         }
+
         if (!mounted) return false;
 
-        if (leaveCreationResult == null &&
-            BlocProvider.of<CreationBloc>(context).state.media.isNotEmpty) {
+        LeaveCreationResult? leaveCreationResult;
+        if (BlocProvider.of<CreationBloc>(context).state.media.isNotEmpty) {
           // Ask if user wants to leave
           final result = await LeaveCreationDialog.show(context);
           if (result == null) {
@@ -143,6 +151,8 @@ class _CreationScreenState extends State<CreationScreen> {
                           try {
                             movie = await BlocProvider.of<CreationBloc>(context)
                                 .createMovie();
+                          } on CancellationException {
+                            return;
                           } catch (ex) {
                             if (!mounted) return;
                             final snackBar = SnackBar(

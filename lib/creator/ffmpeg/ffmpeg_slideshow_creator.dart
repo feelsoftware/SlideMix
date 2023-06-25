@@ -109,8 +109,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
 
     final images = imagesDir.listSync().whereType<File>().toList(growable: false)
       ..sort((a, b) => basename(a.path).compareTo(b.path));
-    final totalDuration = images.length * slideDuration.inMilliseconds -
-        ((images.length - 1) * transitionDuration.inMilliseconds / 2);
+    final totalDuration = images.length * slideDuration.inMilliseconds;
 
     final videoSession = await FFmpegSession.create(
       videoCommand,
@@ -136,7 +135,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
     Duration videoDuration;
     if (ReturnCode.isCancel(await videoSession.getReturnCode())) {
       Logger.d('Canceled video creation $videoPath');
-      throw Exception('Video creation cancelled');
+      throw CancellationException('Video creation cancelled');
     }
     if (ReturnCode.isSuccess(await videoSession.getReturnCode())) {
       Logger.d('Video is created $videoPath');

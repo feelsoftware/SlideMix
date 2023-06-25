@@ -220,6 +220,7 @@ class MovieProjectImpl extends MovieProject {
 
   @override
   Future<void> dispose({required bool deleteDraft}) async {
+    slideShowCreator.dispose();
     if (!deleteDraft) return;
     _media.clear();
     fileManager.deleteDraft(projectId).ignore();

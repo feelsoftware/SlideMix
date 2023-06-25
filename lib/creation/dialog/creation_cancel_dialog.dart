@@ -14,13 +14,14 @@ class CancelCreationDialog extends StatelessWidget {
     screenClass: CancelCreationDialog,
   );
 
-  static Future<CancelCreationResult?> show(BuildContext context) async {
+  static Future<CancelCreationResult> show(BuildContext context) async {
     return await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      routeSettings: _routeSettings,
-      builder: (_) => const CancelCreationDialog._(),
-    );
+          context: context,
+          isScrollControlled: true,
+          routeSettings: _routeSettings,
+          builder: (_) => const CancelCreationDialog._(),
+        ) ??
+        CancelCreationResult.dismiss;
   }
 
   static void dismiss(BuildContext context) {

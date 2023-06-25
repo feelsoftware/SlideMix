@@ -19,6 +19,18 @@ abstract class SlideShowCreator {
   Future<void> dispose();
 }
 
+class CancellationException implements Exception {
+  final dynamic message;
+
+  CancellationException([this.message]);
+
+  @override
+  String toString() {
+    if (message == null) return "CancellationException";
+    return "CancellationException: $message";
+  }
+}
+
 class SlideShow {
   final String videoPath;
   final String thumbPath;

@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/creator/movie_creator.dart';
 import 'package:slidemix/creator/movie_project.dart';
+import 'package:slidemix/creator/slideshow_creator.dart';
 import 'package:slidemix/creator/slideshow_orientation.dart';
 import 'package:slidemix/creator/slideshow_resize.dart';
 import 'package:slidemix/creator/slideshow_transition.dart';
@@ -83,6 +84,10 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
     emit(state._copyWith(
       media: await project.deleteMedia(media),
     ));
+  }
+
+  Future<void> cancelCreation() async {
+    await (await _project).dispose(deleteDraft: false);
   }
 
   Future<Route<void>> reset({required bool deleteDraft}) async {
@@ -167,6 +172,12 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
           ));
         },
       );
+    } on CancellationException {
+      Logger.d('Cancelled movie creation');
+      emit(state._copyWith(
+        loadingProgress: _loadingProgressHide,
+      ));
+      rethrow;
     } catch (ex, st) {
       Logger.e('Failed to create movie', ex, st);
       emit(state._copyWith(
@@ -181,7 +192,7 @@ class CreationBloc extends Bloc<dynamic, CreationState> {
 }
 
 const _loadingProgressHide = -1;
-const _loadingProgressInfinite = 0;
+const _loadingProgressInfinite = 100;
 
 class CreationState extends Equatable {
   final List<Media> media;
