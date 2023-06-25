@@ -24,7 +24,7 @@ class FFMpegTransitionProvider {
     if (transition == null) {
       return <String>[
         "-framerate",
-        (1 / slideDuration.inSeconds).toString(),
+        (1 / slideDuration.inMilliseconds / 1000).toString(),
         "-i",
         "${imagesDir.path}/image%03d.jpg",
         "-vf",
@@ -39,20 +39,23 @@ class FFMpegTransitionProvider {
     final images = imagesDir.listSync().whereType<File>().toList(growable: false)
       ..sort((a, b) => basename(a.path).compareTo(b.path));
 
-    for (final image in images) {
+    for (var i = 0; i < images.length; i++) {
       // Input each image using the arguments
-      // `-loop 1 -t [slideDuration.inSeconds] -framerate [fps] -i image.jpg`
-      // ensuring that each image is displayed for [slideDuration] at a [fps] frame rate
-      // for smooth transitions.
+      // `-loop 1 -t [slideDuration] -i image.jpg`
+      // ensuring that each image is displayed for [slideDuration]
+      Duration duration = slideDuration;
+      if (i < images.length - 1) {
+        // add [transitionDuration] to display each image (except of last image)
+        // while transitioning
+        duration += transitionDuration;
+      }
       videoCommand.addAll([
         "-loop",
         "1",
         "-t",
-        slideDuration.inSeconds.toString(),
-        "-framerate",
-        videoCapability.fps.toString(),
+        (duration.inMilliseconds / 1000).toString(),
         "-i",
-        buildPath(imagesDir, image.path),
+        buildPath(imagesDir, images[i].path),
       ]);
     }
 
@@ -79,11 +82,13 @@ class FFMpegTransitionProvider {
       transitionCommand += 'xfade=transition=${transition.name}';
 
       // Set duration
-      transitionCommand += ':duration=${transitionDuration.inSeconds}';
+      transitionCommand += ':duration=${transitionDuration.inMilliseconds / 1000}';
 
       // Set offset
-      final transitionOffset =
-          (slideDuration.inSeconds - transitionDuration.inSeconds / 2) * i;
+      // Offset(N) = SlideDuration + SlideDuration * N - TransitionDuration / 2
+      final transitionOffset = slideDuration.inMilliseconds / 1000 +
+          slideDuration.inMilliseconds / 1000 * (i - 1) -
+          transitionDuration.inMilliseconds / 1000 / 2;
       transitionCommand += ':offset=$transitionOffset';
 
       if (i < images.length - 1) {
@@ -97,6 +102,8 @@ class FFMpegTransitionProvider {
     videoCommand.addAll([
       "-filter_complex",
       transitionCommand,
+      "-r",
+      videoCapability.fps.toString(),
     ]);
     return videoCommand;
   }

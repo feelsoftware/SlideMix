@@ -102,7 +102,10 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
       '-y',
       videoPath,
     ];
-    Logger.d('Create video ${videoCommand.join(' ')}');
+    Logger.d(
+      'Create video ${videoCommand.join(' ').replaceAll(imagesDir.path, 'imagesDir'
+          '').replaceAll(destinationDir.path, '{destinationDir}')}',
+    );
 
     final images = imagesDir.listSync().whereType<File>().toList(growable: false)
       ..sort((a, b) => basename(a.path).compareTo(b.path));
@@ -115,8 +118,8 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
       null,
       (statistic) {
         var progress = statistic.getTime() / totalDuration;
-        if(progress < 0) progress = 0;
-        if(progress > 1) progress = 1;
+        if (progress < 0) progress = 0;
+        if (progress > 1) progress = 1;
         onProgress(progress);
       },
     );

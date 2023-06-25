@@ -139,7 +139,7 @@ class MovieProjectImpl extends MovieProject {
 
   @override
   Future<Duration> changeTransitionDuration(Duration duration) async {
-    slideDuration = duration;
+    transitionDuration = duration;
     draftMovieManager.changeTransitionDuration(projectId, duration).ignore();
     return duration;
   }
