@@ -56,9 +56,9 @@ class CancelCreationDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SecondaryButton(
-                    AppLocalizations.of(context).leaveCancelAlertSecondary,
+                    AppLocalizations.of(context).leaveCancelAlertPrimary,
                     onPressed: () {
-                      Navigator.of(context).pop(CancelCreationResult.dismiss);
+                      Navigator.of(context).pop(CancelCreationResult.cancel);
                     },
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -66,9 +66,9 @@ class CancelCreationDialog extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   PrimaryButton(
-                    AppLocalizations.of(context).leaveCancelAlertPrimary,
+                    AppLocalizations.of(context).leaveCancelAlertSecondary,
                     onPressed: () {
-                      Navigator.of(context).pop(CancelCreationResult.cancel);
+                      Navigator.of(context).pop(CancelCreationResult.dismiss);
                     },
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
