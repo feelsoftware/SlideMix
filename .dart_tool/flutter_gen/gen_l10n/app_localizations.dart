@@ -117,6 +117,12 @@ abstract class AppLocalizations {
   /// **'new'**
   String get newMovie;
 
+  /// No description provided for @createMovieProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Making the magic, please wait a bit...'**
+  String get createMovieProgress;
+
   /// No description provided for @notEnoughMediaToCreateMovie.
   ///
   /// In en, this message translates to:
@@ -176,6 +182,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Gallery'**
   String get mediaSourceGallery;
+
+  /// No description provided for @changeCreationSettingsDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply effects'**
+  String get changeCreationSettingsDialogTitle;
+
+  /// No description provided for @durationInSecondsSelector.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds} s'**
+  String durationInSecondsSelector(double seconds);
+
+  /// No description provided for @slideDurationSelector.
+  ///
+  /// In en, this message translates to:
+  /// **'Slide duration: {duration}'**
+  String slideDurationSelector(String duration);
+
+  /// No description provided for @changeCreationSettingsTransition.
+  ///
+  /// In en, this message translates to:
+  /// **'Transition: {transition}'**
+  String changeCreationSettingsTransition(String transition);
+
+  /// No description provided for @transitionDurationSelector.
+  ///
+  /// In en, this message translates to:
+  /// **'Transition duration: {duration}'**
+  String transitionDurationSelector(String duration);
+
+  /// No description provided for @changeCreationSettingsOrientation.
+  ///
+  /// In en, this message translates to:
+  /// **'Orientation: {orientation}'**
+  String changeCreationSettingsOrientation(String orientation);
+
+  /// No description provided for @changeCreationSettingsResize.
+  ///
+  /// In en, this message translates to:
+  /// **'Scale rules: {resize}'**
+  String changeCreationSettingsResize(String resize);
+
+  /// No description provided for @pickTransitionDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose transition'**
+  String get pickTransitionDialogTitle;
+
+  /// No description provided for @transitionNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No transition'**
+  String get transitionNone;
+
+  /// No description provided for @pickOrientationDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose orientation'**
+  String get pickOrientationDialogTitle;
+
+  /// No description provided for @orientationSelector.
+  ///
+  /// In en, this message translates to:
+  /// **'{orientation,select, landscape{Landscape}portrait{Portrait}square{Square}other{}}'**
+  String orientationSelector(String orientation);
+
+  /// No description provided for @pickResizeDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose scale rules'**
+  String get pickResizeDialogTitle;
+
+  /// No description provided for @resizeSelector.
+  ///
+  /// In en, this message translates to:
+  /// **'{resize,select, contain{Contain all content}cover{Resize and crop}other{}}'**
+  String resizeSelector(String resize);
 
   /// No description provided for @deleteMovieAlertTitle.
   ///

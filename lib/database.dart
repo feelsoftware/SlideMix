@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'package:floor/floor.dart';
 import 'package:path/path.dart';
+import 'package:slidemix/database_converters.dart';
 import 'package:slidemix/draft/data/dao.dart';
 import 'package:slidemix/draft/data/entity.dart';
 import 'package:slidemix/logger.dart';
@@ -12,8 +13,15 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 
 part 'database.g.dart';
 
+@TypeConverters([
+  DateTimeConverter,
+  DurationConverter,
+  SlideShowTransitionConverter,
+  SlideShowOrientationConverter,
+  SlideShowResizeConverter,
+])
 @Database(
-  version: 3,
+  version: 7,
   entities: [
     DraftMovieEntity,
     DraftMovieMediaEntity,
@@ -29,6 +37,10 @@ abstract class AppDatabase extends FloorDatabase {
           [
             _MovieMimeMigration(startVersion: 1, endVersion: 2),
             _RelativeFilePathMigration(startVersion: 2, endVersion: 3),
+            _DraftMovieTransitionMigration(startVersion: 3, endVersion: 4),
+            _DraftMovieOrientationMigration(startVersion: 4, endVersion: 5),
+            _DraftMovieDurationMigration(startVersion: 5, endVersion: 6),
+            _DraftMovieResizeMigration(startVersion: 6, endVersion: 7),
           ],
         )
         .addCallback(Callback(
@@ -88,6 +100,7 @@ class _MovieMimeMigration extends _BaseMigration {
         );
 }
 
+/// Use relative path to files instead of absolute to fix issue with dynamic dir path on iOS
 class _RelativeFilePathMigration extends _BaseMigration {
   _RelativeFilePathMigration({
     required int startVersion,
@@ -126,6 +139,84 @@ class _RelativeFilePathMigration extends _BaseMigration {
                 [thumb, video, id],
               );
             }
+          },
+        );
+}
+
+/// Add column transition to [DraftMovieEntity]
+class _DraftMovieTransitionMigration extends _BaseMigration {
+  _DraftMovieTransitionMigration({
+    required int startVersion,
+    required int endVersion,
+  }) : super(
+          _DraftMovieTransitionMigration,
+          startVersion,
+          endVersion,
+          (database) async {
+            database.execute(
+              "ALTER TABLE ${DraftMovieEntity.tableName} ADD `transition` TEXT NULL DEFAULT NULL",
+            );
+          },
+        );
+}
+
+/// Add column orientation to [DraftMovieEntity]
+class _DraftMovieOrientationMigration extends _BaseMigration {
+  _DraftMovieOrientationMigration({
+    required int startVersion,
+    required int endVersion,
+  }) : super(
+          _DraftMovieOrientationMigration,
+          startVersion,
+          endVersion,
+          (database) async {
+            final converter = SlideShowOrientationConverter();
+            final defaultValue = converter.encode(converter.decode(null));
+            database.execute(
+              "ALTER TABLE ${DraftMovieEntity.tableName} ADD `orientation` TEXT NOT NULL DEFAULT '$defaultValue'",
+            );
+          },
+        );
+}
+
+/// Add column slideDuration to [DraftMovieEntity]
+/// Add column transitionDuration to [DraftMovieEntity]
+class _DraftMovieDurationMigration extends _BaseMigration {
+  _DraftMovieDurationMigration({
+    required int startVersion,
+    required int endVersion,
+  }) : super(
+          _DraftMovieDurationMigration,
+          startVersion,
+          endVersion,
+          (database) async {
+            final converter = DurationConverter();
+            final defaultValue = converter.encode(const Duration(seconds: 1));
+            database.execute(
+              "ALTER TABLE ${DraftMovieEntity.tableName} ADD `slideDuration` INTEGER NOT NULL DEFAULT $defaultValue",
+            );
+            database.execute(
+              "ALTER TABLE ${DraftMovieEntity.tableName} ADD `transitionDuration` INTEGER NOT NULL DEFAULT $defaultValue",
+            );
+          },
+        );
+}
+
+/// Add column resize to [DraftMovieEntity]
+class _DraftMovieResizeMigration extends _BaseMigration {
+  _DraftMovieResizeMigration({
+    required int startVersion,
+    required int endVersion,
+  }) : super(
+          _DraftMovieResizeMigration,
+          startVersion,
+          endVersion,
+          (database) async {
+            final converter = SlideShowResizeConverter();
+            final defaultValue = converter.encode(converter.decode(null));
+            database.execute(
+              "ALTER TABLE ${DraftMovieEntity.tableName} ADD `resize` TEXT NOT NULL DEFAULT '$defaultValue'",
+            );
           },
         );
 }

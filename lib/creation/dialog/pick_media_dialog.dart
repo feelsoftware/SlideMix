@@ -59,6 +59,8 @@ class PickMediaDialog extends StatefulWidget {
 class _PickMediaDialogState extends State<PickMediaDialog> {
   @override
   Widget build(BuildContext context) {
+    final imagePicker = ImagePicker();
+
     return SafeArea(
       child: Wrap(
         children: <Widget>[
@@ -68,26 +70,28 @@ class _PickMediaDialogState extends State<PickMediaDialog> {
               child: Text(AppLocalizations.of(context).pickMediaDialogTitle),
             ),
           ),
-          ListTile(
-            onTap: () {
-              Navigator.pop(context, _MediaSource.camera);
-            },
-            leading: Icon(
-              Icons.camera_alt,
-              color: Theme.of(context).primaryColor,
+          if (imagePicker.supportsImageSource(ImageSource.camera))
+            ListTile(
+              onTap: () {
+                Navigator.pop(context, _MediaSource.camera);
+              },
+              leading: Icon(
+                Icons.camera_alt,
+                color: Theme.of(context).primaryColor,
+              ),
+              title: Text(AppLocalizations.of(context).mediaSourceCamera),
             ),
-            title: Text(AppLocalizations.of(context).mediaSourceCamera),
-          ),
-          ListTile(
-            onTap: () {
-              Navigator.pop(context, _MediaSource.gallery);
-            },
-            leading: Icon(
-              Icons.image,
-              color: Theme.of(context).primaryColor,
+          if (imagePicker.supportsImageSource(ImageSource.gallery))
+            ListTile(
+              onTap: () {
+                Navigator.pop(context, _MediaSource.gallery);
+              },
+              leading: Icon(
+                Icons.image,
+                color: Theme.of(context).primaryColor,
+              ),
+              title: Text(AppLocalizations.of(context).mediaSourceGallery),
             ),
-            title: Text(AppLocalizations.of(context).mediaSourceGallery),
-          ),
         ],
       ),
     );

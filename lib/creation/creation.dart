@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:slidemix/colors.dart';
 import 'package:slidemix/creation/creation_bloc.dart';
+import 'package:slidemix/creation/dialog/creation_settings_dialog.dart';
 import 'package:slidemix/creation/dialog/pick_media_dialog.dart';
-import 'package:slidemix/creation/widget/creation_cancel_dialog.dart';
-import 'package:slidemix/creation/widget/creation_leave_dialog.dart';
+import 'package:slidemix/creation/dialog/creation_cancel_dialog.dart';
+import 'package:slidemix/creation/dialog/creation_leave_dialog.dart';
 import 'package:slidemix/creation/widget/creation_list.dart';
+import 'package:slidemix/creation/widget/creation_loading.dart';
+import 'package:slidemix/creator/slideshow_creator.dart';
 import 'package:slidemix/localizations.dart';
 import 'package:slidemix/logger.dart';
 import 'package:slidemix/movies/data/movie.dart';
@@ -40,16 +43,17 @@ class CreationScreen extends StatefulWidget {
 }
 
 class _CreationScreenState extends State<CreationScreen> {
-  bool _openPickerAtStartup = true;
+  bool _openFilesPicker = true;
+  bool _openSettingsAfterMedia = true;
 
   @override
   void initState() {
     super.initState();
 
-    _openPickerAtStartup = widget.draftMovie == null;
+    _openFilesPicker = widget.draftMovie == null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_openPickerAtStartup) {
-        setState(() => _openPickerAtStartup = false);
+      if (_openFilesPicker) {
+        _openFilesPicker = false;
         _pickMedia();
       }
       if (widget.draftMovie != null) {
@@ -62,25 +66,41 @@ class _CreationScreenState extends State<CreationScreen> {
     final files = await PickMediaDialog.show(context);
     if (!mounted || files.isEmpty) return;
     BlocProvider.of<CreationBloc>(context).pickFiles(files);
+
+    if (_openSettingsAfterMedia) {
+      _openSettingsAfterMedia = false;
+      _openSettings();
+    }
+  }
+
+  void _openSettings() {
+    CreationSettingsDialog.show(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        LeaveCreationResult? leaveCreationResult;
-
         if (BlocProvider.of<CreationBloc>(context).state.isLoading) {
-          if (await CancelCreationDialog.show(context) != CancelCreationResult.cancel) {
-            return false;
-          } else {
-            leaveCreationResult = LeaveCreationResult.leave;
+          final cancelCreationResult = await CancelCreationDialog.show(context);
+          if (!mounted) return false;
+
+          switch (cancelCreationResult) {
+            case CancelCreationResult.dismiss:
+              // Keep current screen
+              return false;
+
+            case CancelCreationResult.cancel:
+              await BlocProvider.of<CreationBloc>(context).cancelCreation();
+              // Keep current screen
+              return false;
           }
         }
+
         if (!mounted) return false;
 
-        if (leaveCreationResult == null &&
-            BlocProvider.of<CreationBloc>(context).state.media.isNotEmpty) {
+        LeaveCreationResult? leaveCreationResult;
+        if (BlocProvider.of<CreationBloc>(context).state.media.isNotEmpty) {
           // Ask if user wants to leave
           final result = await LeaveCreationDialog.show(context);
           if (result == null) {
@@ -104,8 +124,10 @@ class _CreationScreenState extends State<CreationScreen> {
         builder: (context, state) {
           return Scaffold(
             appBar: Toolbar(
-              leftIcon: Image.asset("assets/images/ic_close.png"),
+              leftIcon: const Icon(Icons.close),
               onLeftIconTapped: () => Navigator.of(context).maybePop(),
+              rightIcon: const Icon(Icons.settings),
+              onRightIconTapped: () => _openSettings(),
             ),
             body: Stack(
               children: <Widget>[
@@ -129,6 +151,8 @@ class _CreationScreenState extends State<CreationScreen> {
                           try {
                             movie = await BlocProvider.of<CreationBloc>(context)
                                 .createMovie();
+                          } on CancellationException {
+                            return;
                           } catch (ex) {
                             if (!mounted) return;
                             final snackBar = SnackBar(
@@ -161,11 +185,9 @@ class _CreationScreenState extends State<CreationScreen> {
                   ),
                 ),
                 if (state.isLoading)
-                  Container(
-                    color: AppColors.overlay,
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                  CreationLoading(
+                    loadingProgress: state.loadingProgress,
+                    isInfiniteLoading: state.isInfiniteLoading,
                   ),
               ],
             ),

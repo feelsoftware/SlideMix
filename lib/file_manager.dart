@@ -49,12 +49,12 @@ class FileManagerImpl implements FileManager {
 
   @override
   Directory draftDir(int projectId) {
-    return Directory(_buildPath(_dir, 'project${projectId}_temp'));
+    return Directory(buildPath(_dir, 'project${projectId}_temp'));
   }
 
   @override
   Directory projectDir(int projectId) {
-    return Directory(_buildPath(_dir, 'project$projectId'));
+    return Directory(buildPath(_dir, 'project$projectId'));
   }
 
   @override
@@ -63,12 +63,12 @@ class FileManagerImpl implements FileManager {
       return File(movie.thumb);
     }
 
-    return File(_buildPath(projectDir(movie.id), movie.thumb));
+    return File(buildPath(projectDir(movie.id), movie.thumb));
   }
 
   @override
   File getVideo(Movie movie) {
-    return File(_buildPath(projectDir(movie.id), movie.video));
+    return File(buildPath(projectDir(movie.id), movie.video));
   }
 
   @override
@@ -78,7 +78,7 @@ class FileManagerImpl implements FileManager {
 
   @override
   File getThumbFromDraftMedia(Media media) {
-    return File(_buildPath(draftDir(media.projectId), media.path));
+    return File(buildPath(draftDir(media.projectId), media.path));
   }
 
   @override
@@ -93,7 +93,7 @@ class FileManagerImpl implements FileManager {
       for (final source in paths) {
         final newPath = await _moveFile(
           source: source,
-          newPath: _buildPath(dir, source),
+          newPath: buildPath(dir, source),
         );
         if (newPath == null) continue;
 
@@ -119,8 +119,8 @@ class FileManagerImpl implements FileManager {
     final dir = draftDir(projectId);
     for (final source in media) {
       final newPath = await _moveFile(
-        source: _buildPath(dir, source.path),
-        newPath: _buildPath(dir, 'image${format.format(index++)}.jpg'),
+        source: buildPath(dir, source.path),
+        newPath: buildPath(dir, 'image${format.format(index++)}.jpg'),
       );
       if (newPath == null) continue;
       result.add(Media(
@@ -167,7 +167,7 @@ class FileManagerImpl implements FileManager {
       }
     });
   }
-
-  String _buildPath(Directory dir, String file) =>
-      "${dir.path}${Platform.pathSeparator}${basename(file)}";
 }
+
+String buildPath(Directory dir, String file) =>
+    "${dir.path}${Platform.pathSeparator}${basename(file)}";

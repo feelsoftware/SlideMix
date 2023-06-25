@@ -39,6 +39,7 @@ class VideoCapabilityProvider {
           supportedFormats.firstWhere((format) => videoCapability.mime == format.mime),
       width: size.width,
       height: size.height,
+      fps: size.fps,
     );
   }
 
@@ -48,11 +49,11 @@ class VideoCapabilityProvider {
         _VideoCapability(
           mime: MediaFormat.AVC.mime,
           sizes: const [
-            _VideoSize(width: 640, height: 480),
-            _VideoSize(width: 1280, height: 720),
-            _VideoSize(width: 1920, height: 1080),
+            _VideoSize(width: 640, height: 480, fps: 60),
+            _VideoSize(width: 1280, height: 720, fps: 60),
+            _VideoSize(width: 1920, height: 1080, fps: 60),
             // Disabled due to high memory usage
-            // _VideoSize(width: 2560, height: 1440),
+            // _VideoSize(width: 2560, height: 1440, fps: 60),
           ],
         ),
       ];
@@ -79,15 +80,17 @@ class VideoCapability extends Equatable {
   final MediaFormat mediaFormat;
   final int width;
   final int height;
+  final int fps;
 
   const VideoCapability({
     required this.mediaFormat,
     required this.width,
     required this.height,
+    required this.fps,
   });
 
   @override
-  List<Object?> get props => [mediaFormat, width, height];
+  List<Object?> get props => [mediaFormat, width, height, fps];
 
   @override
   bool? get stringify => true;
@@ -118,18 +121,21 @@ class _VideoCapability extends Equatable {
 class _VideoSize extends Equatable {
   final int width;
   final int height;
+  final int fps;
 
   const _VideoSize({
     required this.width,
     required this.height,
+    required this.fps,
   });
 
   _VideoSize.fromJson(Map<String, dynamic> json)
       : width = json['width'],
-        height = json['height'];
+        height = json['height'],
+        fps = json['fps'];
 
   @override
-  List<Object?> get props => [width, height];
+  List<Object?> get props => [width, height, fps];
 
   @override
   bool? get stringify => true;

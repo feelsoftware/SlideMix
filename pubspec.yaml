@@ -45,13 +45,13 @@ dependencies:
   ffmpeg_kit_flutter_full_gpl: 5.1.0
 
   # https://pub.dev/packages/firebase_analytics
-  firebase_analytics: 10.4.2
+  firebase_analytics: 10.4.3
 
   # https://pub.dev/packages/firebase_core
-  firebase_core: 2.13.1
+  firebase_core: 2.14.0
 
   # https://pub.dev/packages/firebase_crashlytics
-  firebase_crashlytics: 3.3.2
+  firebase_crashlytics: 3.3.3
 
   # https://pub.dev/packages/flutter_bloc
   flutter_bloc: 8.1.3
@@ -63,10 +63,10 @@ dependencies:
   floor: 1.4.2
 
   # https://pub.dev/packages/google_fonts
-  google_fonts: 4.0.4
+  google_fonts: 5.1.0
 
   # https://pub.dev/packages/image_picker
-  image_picker: 0.8.8
+  image_picker: 0.8.9
 
   # https://pub.dev/packages/intl
   intl: 0.18.0
@@ -126,6 +126,7 @@ flutter:
   assets:
     - assets/images/
     - assets/google_fonts/
+    - assets/transitions/
 
 flutter_native_splash:
   # This package generates native code to customize Flutter's default white native splash screen

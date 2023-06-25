@@ -72,11 +72,11 @@ class MediaCreationCard extends StatelessWidget {
           alignment: Alignment.topRight,
           child: GestureDetector(
             onTap: () => onDeleteTap(media),
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Image.asset(
-                "assets/images/ic_delete.png",
-                width: 16,
+            child: const Padding(
+              padding: EdgeInsets.all(8),
+              child: Icon(
+                Icons.delete_forever,
+                size: 16,
                 color: AppColors.background,
               ),
             ),

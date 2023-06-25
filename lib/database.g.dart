@@ -73,7 +73,7 @@ class _$AppDatabase extends AppDatabase {
     Callback? callback,
   ]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 3,
+      version: 7,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
         await callback?.onConfigure?.call(database);
@@ -89,7 +89,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `draft_movies` (`projectId` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, PRIMARY KEY (`projectId`))');
+            'CREATE TABLE IF NOT EXISTS `draft_movies` (`projectId` INTEGER NOT NULL, `slideDuration` INTEGER NOT NULL, `transition` TEXT, `transitionDuration` INTEGER NOT NULL, `orientation` TEXT NOT NULL, `resize` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, PRIMARY KEY (`projectId`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `draft_movies_media` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `projectId` INTEGER NOT NULL, `path` TEXT NOT NULL)');
         await database.execute(
@@ -128,7 +128,34 @@ class _$DraftMovieDao extends DraftMovieDao {
             'draft_movies',
             (DraftMovieEntity item) => <String, Object?>{
                   'projectId': item.projectId,
-                  'createdAt': item.createdAt
+                  'slideDuration':
+                      _durationConverter.encode(item.slideDuration),
+                  'transition':
+                      _slideShowTransitionConverter.encode(item.transition),
+                  'transitionDuration':
+                      _durationConverter.encode(item.transitionDuration),
+                  'orientation':
+                      _slideShowOrientationConverter.encode(item.orientation),
+                  'resize': _slideShowResizeConverter.encode(item.resize),
+                  'createdAt': _dateTimeConverter.encode(item.createdAt)
+                },
+            changeListener),
+        _draftMovieEntityUpdateAdapter = UpdateAdapter(
+            database,
+            'draft_movies',
+            ['projectId'],
+            (DraftMovieEntity item) => <String, Object?>{
+                  'projectId': item.projectId,
+                  'slideDuration':
+                      _durationConverter.encode(item.slideDuration),
+                  'transition':
+                      _slideShowTransitionConverter.encode(item.transition),
+                  'transitionDuration':
+                      _durationConverter.encode(item.transitionDuration),
+                  'orientation':
+                      _slideShowOrientationConverter.encode(item.orientation),
+                  'resize': _slideShowResizeConverter.encode(item.resize),
+                  'createdAt': _dateTimeConverter.encode(item.createdAt)
                 },
             changeListener);
 
@@ -140,13 +167,24 @@ class _$DraftMovieDao extends DraftMovieDao {
 
   final InsertionAdapter<DraftMovieEntity> _draftMovieEntityInsertionAdapter;
 
+  final UpdateAdapter<DraftMovieEntity> _draftMovieEntityUpdateAdapter;
+
   @override
   Stream<List<DraftMovieEntity>> getAll() {
     return _queryAdapter.queryListStream(
         'SELECT * FROM draft_movies ORDER BY createdAt DESC',
         mapper: (Map<String, Object?> row) => DraftMovieEntity(
             projectId: row['projectId'] as int,
-            createdAt: row['createdAt'] as int),
+            slideDuration:
+                _durationConverter.decode(row['slideDuration'] as int),
+            transition: _slideShowTransitionConverter
+                .decode(row['transition'] as String?),
+            transitionDuration:
+                _durationConverter.decode(row['transitionDuration'] as int),
+            orientation: _slideShowOrientationConverter
+                .decode(row['orientation'] as String?),
+            resize: _slideShowResizeConverter.decode(row['resize'] as String?),
+            createdAt: _dateTimeConverter.decode(row['createdAt'] as int)),
         queryableName: 'draft_movies',
         isView: false);
   }
@@ -157,7 +195,16 @@ class _$DraftMovieDao extends DraftMovieDao {
         'SELECT * FROM draft_movies WHERE projectId = ?1',
         mapper: (Map<String, Object?> row) => DraftMovieEntity(
             projectId: row['projectId'] as int,
-            createdAt: row['createdAt'] as int),
+            slideDuration:
+                _durationConverter.decode(row['slideDuration'] as int),
+            transition: _slideShowTransitionConverter
+                .decode(row['transition'] as String?),
+            transitionDuration:
+                _durationConverter.decode(row['transitionDuration'] as int),
+            orientation: _slideShowOrientationConverter
+                .decode(row['orientation'] as String?),
+            resize: _slideShowResizeConverter.decode(row['resize'] as String?),
+            createdAt: _dateTimeConverter.decode(row['createdAt'] as int)),
         arguments: [projectId]);
   }
 
@@ -171,6 +218,12 @@ class _$DraftMovieDao extends DraftMovieDao {
   @override
   Future<void> insert(DraftMovieEntity draft) async {
     await _draftMovieEntityInsertionAdapter.insert(
+        draft, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> update(DraftMovieEntity draft) async {
+    await _draftMovieEntityUpdateAdapter.update(
         draft, OnConflictStrategy.replace);
   }
 }
@@ -363,3 +416,10 @@ class _$MovieDao extends MovieDao {
     await _movieEntityDeletionAdapter.delete(movie);
   }
 }
+
+// ignore_for_file: unused_element
+final _dateTimeConverter = DateTimeConverter();
+final _durationConverter = DurationConverter();
+final _slideShowTransitionConverter = SlideShowTransitionConverter();
+final _slideShowOrientationConverter = SlideShowOrientationConverter();
+final _slideShowResizeConverter = SlideShowResizeConverter();

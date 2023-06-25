@@ -19,6 +19,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newMovie => 'new';
 
   @override
+  String get createMovieProgress => 'Making the magic, please wait a bit...';
+
+  @override
   String notEnoughMediaToCreateMovie(int minMediaCountToProceed) {
     final intl.NumberFormat minMediaCountToProceedNumberFormat = intl.NumberFormat.decimalPattern(localeName);
     final String minMediaCountToProceedString = minMediaCountToProceedNumberFormat.format(minMediaCountToProceed);
@@ -52,6 +55,78 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mediaSourceGallery => 'Gallery';
+
+  @override
+  String get changeCreationSettingsDialogTitle => 'Apply effects';
+
+  @override
+  String durationInSecondsSelector(double seconds) {
+    return '$seconds s';
+  }
+
+  @override
+  String slideDurationSelector(String duration) {
+    return 'Slide duration: $duration';
+  }
+
+  @override
+  String changeCreationSettingsTransition(String transition) {
+    return 'Transition: $transition';
+  }
+
+  @override
+  String transitionDurationSelector(String duration) {
+    return 'Transition duration: $duration';
+  }
+
+  @override
+  String changeCreationSettingsOrientation(String orientation) {
+    return 'Orientation: $orientation';
+  }
+
+  @override
+  String changeCreationSettingsResize(String resize) {
+    return 'Scale rules: $resize';
+  }
+
+  @override
+  String get pickTransitionDialogTitle => 'Choose transition';
+
+  @override
+  String get transitionNone => 'No transition';
+
+  @override
+  String get pickOrientationDialogTitle => 'Choose orientation';
+
+  @override
+  String orientationSelector(String orientation) {
+    String _temp0 = intl.Intl.selectLogic(
+      orientation,
+      {
+        'landscape': 'Landscape',
+        'portrait': 'Portrait',
+        'square': 'Square',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pickResizeDialogTitle => 'Choose scale rules';
+
+  @override
+  String resizeSelector(String resize) {
+    String _temp0 = intl.Intl.selectLogic(
+      resize,
+      {
+        'contain': 'Contain all content',
+        'cover': 'Resize and crop',
+        'other': '',
+      },
+    );
+    return '$_temp0';
+  }
 
   @override
   String get deleteMovieAlertTitle => 'Delete the video?';

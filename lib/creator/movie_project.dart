@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:slidemix/creation/data/media.dart';
 import 'package:slidemix/creator/slideshow_creator.dart';
+import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_resize.dart';
+import 'package:slidemix/creator/slideshow_transition.dart';
 import 'package:slidemix/draft/draft_movie_manager.dart';
 import 'package:slidemix/file_manager.dart';
 import 'package:slidemix/localizations.dart';
@@ -21,7 +24,29 @@ abstract class MovieProject {
 
   Future<List<Media>> deleteMedia(Media media);
 
-  Future<Movie> createMovie();
+  Duration get slideDuration;
+
+  Future<Duration> changeSlideDuration(Duration duration);
+
+  SlideShowTransition? get transition;
+
+  Future<SlideShowTransition?> changeTransition(SlideShowTransition? transition);
+
+  Duration get transitionDuration;
+
+  Future<Duration> changeTransitionDuration(Duration duration);
+
+  SlideShowOrientation get orientation;
+
+  Future<SlideShowOrientation> changeOrientation(SlideShowOrientation orientation);
+
+  SlideShowResize get resize;
+
+  Future<SlideShowResize> changeResize(SlideShowResize resize);
+
+  Future<Movie> createMovie({
+    required Function(double progress) onProgress,
+  });
 
   Future<void> deleteProject();
 
@@ -55,6 +80,10 @@ class MovieProjectImpl extends MovieProject {
         await draftMovieManager.createDraft(projectId);
       } else {
         _media.addAll(draft.media);
+        slideDuration = draft.slideDuration;
+        transition = draft.transition;
+        transitionDuration = draft.transitionDuration;
+        orientation = draft.orientation;
       }
     }
   }
@@ -86,7 +115,61 @@ class MovieProjectImpl extends MovieProject {
   }
 
   @override
-  Future<Movie> createMovie() async {
+  Duration slideDuration = const Duration(seconds: 1);
+
+  @override
+  Future<Duration> changeSlideDuration(Duration duration) async {
+    slideDuration = duration;
+    draftMovieManager.changeSlideDuration(projectId, duration).ignore();
+    return duration;
+  }
+
+  @override
+  SlideShowTransition? transition;
+
+  @override
+  Future<SlideShowTransition?> changeTransition(SlideShowTransition? transition) async {
+    this.transition = transition;
+    draftMovieManager.changeTransition(projectId, transition).ignore();
+    return transition;
+  }
+
+  @override
+  Duration transitionDuration = const Duration(seconds: 1);
+
+  @override
+  Future<Duration> changeTransitionDuration(Duration duration) async {
+    transitionDuration = duration;
+    draftMovieManager.changeTransitionDuration(projectId, duration).ignore();
+    return duration;
+  }
+
+  @override
+  SlideShowOrientation orientation = SlideShowOrientation.landscape;
+
+  @override
+  Future<SlideShowOrientation> changeOrientation(
+    SlideShowOrientation orientation,
+  ) async {
+    this.orientation = orientation;
+    draftMovieManager.changeOrientation(projectId, orientation).ignore();
+    return orientation;
+  }
+
+  @override
+  SlideShowResize resize = SlideShowResize.contain;
+
+  @override
+  Future<SlideShowResize> changeResize(SlideShowResize resize) async {
+    this.resize = resize;
+    draftMovieManager.changeResize(projectId, resize).ignore();
+    return resize;
+  }
+
+  @override
+  Future<Movie> createMovie({
+    required Function(double progress) onProgress,
+  }) async {
     Logger.d('createMovie $projectId');
 
     final mediaWithUpdatedPath =
@@ -99,6 +182,12 @@ class MovieProjectImpl extends MovieProject {
     final slideShow = await slideShowCreator.create(
       images: fileManager.draftDir(projectId),
       destination: fileManager.projectDir(projectId),
+      slideDuration: slideDuration,
+      transition: transition,
+      transitionDuration: transitionDuration,
+      orientation: orientation,
+      resize: resize,
+      onProgress: onProgress,
     );
 
     final movie = Movie(
@@ -131,6 +220,7 @@ class MovieProjectImpl extends MovieProject {
 
   @override
   Future<void> dispose({required bool deleteDraft}) async {
+    slideShowCreator.dispose();
     if (!deleteDraft) return;
     _media.clear();
     fileManager.deleteDraft(projectId).ignore();

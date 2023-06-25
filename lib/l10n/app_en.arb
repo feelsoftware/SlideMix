@@ -3,6 +3,7 @@
     "tapToStart": "tap to start",
     "createMovie": "create",
     "newMovie": "new",
+    "createMovieProgress": "Making the magic, please wait a bit...",
     "notEnoughMediaToCreateMovie": "Add {minMediaCountToProceed} or more media to create your movie",
     "@notEnoughMediaToCreateMovie": {
         "placeholders": {
@@ -22,6 +23,67 @@
     "pickMediaDialogTitle": "Choose images from",
     "mediaSourceCamera": "Camera",
     "mediaSourceGallery": "Gallery",
+    "changeCreationSettingsDialogTitle": "Apply effects",
+    "durationInSecondsSelector": "{seconds} s",
+    "@durationInSecondsSelector": {
+        "placeholders": {
+            "seconds": {
+                "type": "double",
+                "example": "0.5"
+            }
+        }
+    },
+    "slideDurationSelector": "Slide duration: {duration}",
+    "@slideDurationSelector": {
+        "placeholders": {
+            "duration": {
+                "type": "String",
+                "example": "10 seconds"
+            }
+        }
+    },
+    "changeCreationSettingsTransition": "Transition: {transition}",
+    "@changeCreationSettingsTransition": {
+        "placeholders": {
+            "transition": {
+                "type": "String",
+                "example": "fade"
+            }
+        }
+    },
+    "transitionDurationSelector": "Transition duration: {duration}",
+    "@transitionDurationSelector": {
+        "placeholders": {
+            "duration": {
+                "type": "String",
+                "example": "10 seconds"
+            }
+        }
+    },
+    "changeCreationSettingsOrientation": "Orientation: {orientation}",
+    "@changeCreationSettingsOrientation": {
+        "placeholders": {
+            "orientation": {
+                "type": "String",
+                "example": "landscape"
+            }
+        }
+    },
+    "changeCreationSettingsResize": "Scale rules: {resize}",
+    "@changeCreationSettingsResize": {
+        "placeholders": {
+            "resize": {
+                "type": "String",
+                "example": "contain"
+            }
+        }
+    },
+    "pickTransitionDialogTitle": "Choose transition",
+    "transitionNone": "No transition",
+    "pickOrientationDialogTitle": "Choose orientation",
+    "orientationSelector": "{orientation,select, landscape{Landscape}portrait{Portrait}square{Square}other{}}",
+    "pickResizeDialogTitle": "Choose scale rules",
+    "resizeSelector": "{resize,select, contain{Contain all content}cover{Resize and crop}other{}}",
     "deleteMovieAlertTitle": "Delete the video?",
     "deleteMovieAlertPrimary": "delete",
     "deleteMovieAlertSecondary": "cancel",

@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:path/path.dart';
 import 'package:slidemix/creation/data/media.dart';
+import 'package:slidemix/creator/slideshow_orientation.dart';
+import 'package:slidemix/creator/slideshow_resize.dart';
+import 'package:slidemix/creator/slideshow_transition.dart';
 import 'package:slidemix/draft/data/dao.dart';
 import 'package:slidemix/draft/data/draft_movie.dart';
 import 'package:slidemix/draft/data/entity.dart';
@@ -15,6 +18,16 @@ abstract class DraftMovieManager {
   Future<void> createDraft(int projectId);
 
   Future<void> replaceMedia(int projectId, List<Media> media);
+
+  Future<void> changeSlideDuration(int projectId, Duration duration);
+
+  Future<void> changeTransition(int projectId, SlideShowTransition? transition);
+
+  Future<void> changeTransitionDuration(int projectId, Duration duration);
+
+  Future<void> changeOrientation(int projectId, SlideShowOrientation orientation);
+
+  Future<void> changeResize(int projectId, SlideShowResize resize);
 
   Future<void> deleteDraft(int projectId);
 }
@@ -44,7 +57,12 @@ class DraftMovieManagerImpl extends DraftMovieManager {
           DraftMovie(
             projectId: draft.projectId,
             media: media,
-            createdAt: DateTime.fromMillisecondsSinceEpoch(draft.createdAt),
+            slideDuration: draft.slideDuration,
+            transition: draft.transition,
+            transitionDuration: draft.transitionDuration,
+            orientation: draft.orientation,
+            resize: draft.resize,
+            createdAt: draft.createdAt,
           ),
         );
       }
@@ -73,7 +91,12 @@ class DraftMovieManagerImpl extends DraftMovieManager {
     return DraftMovie(
       projectId: projectId,
       media: media,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(entity.createdAt),
+      slideDuration: entity.slideDuration,
+      transition: entity.transition,
+      transitionDuration: entity.transitionDuration,
+      orientation: entity.orientation,
+      resize: entity.resize,
+      createdAt: entity.createdAt,
     );
   }
 
@@ -82,7 +105,12 @@ class DraftMovieManagerImpl extends DraftMovieManager {
     Logger.d('createDraft $projectId');
     await draftMovieDao.insert(DraftMovieEntity(
       projectId: projectId,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
+      slideDuration: const Duration(seconds: 1),
+      transition: null,
+      transitionDuration: const Duration(seconds: 1),
+      orientation: SlideShowOrientation.landscape,
+      resize: SlideShowResize.contain,
+      createdAt: DateTime.now(),
     ));
   }
 
@@ -104,6 +132,41 @@ class DraftMovieManagerImpl extends DraftMovieManager {
               ))
           .toList(growable: false),
     );
+
+    await _update(projectId, updateTransition: false);
+  }
+
+  @override
+  Future<void> changeSlideDuration(int projectId, Duration duration) async {
+    Logger.d('changeSlideDuration $projectId $duration');
+    await _update(projectId, slideDuration: duration, updateTransition: true);
+  }
+
+  @override
+  Future<void> changeTransition(int projectId, SlideShowTransition? transition) async {
+    Logger.d('changeTransition $projectId $transition');
+    await _update(projectId, transition: transition, updateTransition: true);
+  }
+
+  @override
+  Future<void> changeTransitionDuration(int projectId, Duration duration) async {
+    Logger.d('changeTransitionDuration $projectId $duration');
+    await _update(projectId, transitionDuration: duration, updateTransition: true);
+  }
+
+  @override
+  Future<void> changeOrientation(
+    int projectId,
+    SlideShowOrientation orientation,
+  ) async {
+    Logger.d('changeOrientation $projectId $orientation');
+    await _update(projectId, updateTransition: false, orientation: orientation);
+  }
+
+  @override
+  Future<void> changeResize(int projectId, SlideShowResize resize) async {
+    Logger.d('changeResize $projectId $resize');
+    await _update(projectId, updateTransition: false, resize: resize);
   }
 
   @override
@@ -114,5 +177,28 @@ class DraftMovieManagerImpl extends DraftMovieManager {
     await draftMovieMediaDao.deleteAll(
       await draftMovieMediaDao.getAllByProject(projectId).first,
     );
+  }
+
+  Future<void> _update(
+    int projectId, {
+    Duration? slideDuration,
+    SlideShowTransition? transition,
+    Duration? transitionDuration,
+    required bool updateTransition,
+    SlideShowOrientation? orientation,
+    SlideShowResize? resize,
+  }) async {
+    final entity = await draftMovieDao.getById(projectId);
+    if (entity == null) return;
+
+    await draftMovieDao.update(DraftMovieEntity(
+      projectId: projectId,
+      slideDuration: slideDuration ?? entity.slideDuration,
+      transition: updateTransition ? transition : entity.transition,
+      transitionDuration: transitionDuration ?? entity.transitionDuration,
+      orientation: orientation ?? entity.orientation,
+      resize: resize ?? entity.resize,
+      createdAt: DateTime.now(),
+    ));
   }
 }
