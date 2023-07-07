@@ -17,7 +17,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 2.0.0+20000
+version: 2.0.1+20001
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -66,7 +66,7 @@ dependencies:
   google_fonts: 5.1.0
 
   # https://pub.dev/packages/image_picker
-  image_picker: 0.8.9
+  image_picker: 1.0.0
 
   # https://pub.dev/packages/intl
   intl: 0.18.0
@@ -84,7 +84,7 @@ dependencies:
   share_plus: 7.0.2
 
   # https://pub.dev/packages/shared_preferences
-  shared_preferences: 2.1.2
+  shared_preferences: 2.2.0
 
   # https://pub.dev/packages/sizer
   sizer: 2.0.15
@@ -93,10 +93,10 @@ dependencies:
   sqflite: 2.2.8+4
 
   # https://pub.dev/packages/timeago
-  timeago: 3.4.0
+  timeago: 3.5.0
 
   # https://pub.dev/packages/video_player
-  video_player: 2.6.1
+  video_player: 2.7.0
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to

@@ -5,6 +5,7 @@ import 'package:slidemix/creator/slideshow_orientation.dart';
 import 'package:slidemix/creator/slideshow_resize.dart';
 import 'package:slidemix/creator/slideshow_transition.dart';
 import 'package:slidemix/creator/video_capability.dart';
+import 'package:slidemix/extensions/number.dart';
 import 'package:slidemix/file_manager.dart';
 
 /// https://trac.ffmpeg.org/wiki/Xfade
@@ -23,8 +24,8 @@ class FFMpegTransitionProvider {
 
     if (transition == null) {
       return <String>[
-        "-framerate",
-        (1 / slideDuration.inMilliseconds / 1000).toString(),
+        "-r",
+        (1 / (slideDuration.inMilliseconds / 1000)).toPrecision(digits: 2).toString(),
         "-i",
         "${imagesDir.path}/image%03d.jpg",
         "-vf",
