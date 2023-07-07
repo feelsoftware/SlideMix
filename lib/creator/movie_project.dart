@@ -79,6 +79,7 @@ class MovieProjectImpl extends MovieProject {
       if (draft == null) {
         await draftMovieManager.createDraft(projectId);
       } else {
+        _media.clear();
         _media.addAll(draft.media);
         slideDuration = draft.slideDuration;
         transition = draft.transition;
