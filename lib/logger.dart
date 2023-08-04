@@ -22,7 +22,8 @@ class Logger {
       return true;
     };
 
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
     await FirebaseCrashlytics.instance
         .setCrashlyticsCollectionEnabled(_crashlyticsEnabled);
   }
@@ -38,9 +39,10 @@ class Logger {
   static void e(String message, [dynamic error, StackTrace? stackTrace]) {
     if (_crashlyticsEnabled) {
       FirebaseCrashlytics.instance.log(message);
-      FirebaseCrashlytics.instance.recordError(error, stackTrace, reason: message);
+      FirebaseCrashlytics.instance
+          .recordError(error, stackTrace, reason: message);
     } else {
-      _loggerImpl.e(message, error, stackTrace);
+      _loggerImpl.e(message, error: error, stackTrace: stackTrace);
     }
   }
 
@@ -48,10 +50,10 @@ class Logger {
     if (_crashlyticsEnabled) {
       FirebaseCrashlytics.instance.recordFlutterFatalError(flutterErrorDetails);
     } else {
-      _loggerImpl.wtf(
+      _loggerImpl.f(
         flutterErrorDetails.exception,
-        flutterErrorDetails.exception,
-        flutterErrorDetails.stack,
+        error: flutterErrorDetails.exception,
+        stackTrace: flutterErrorDetails.stack,
       );
     }
   }
@@ -66,25 +68,29 @@ class Logger {
 class _NavigationLogger extends RouteObserver<Route<dynamic>> {
   @override
   void didPush(Route route, Route? previousRoute) {
-    Logger.d('didPush ${_routeToLog(route)}, previous=${_routeToLog(previousRoute)}');
+    Logger.d(
+        'didPush ${_routeToLog(route)}, previous=${_routeToLog(previousRoute)}');
     _onScreenShown(route);
   }
 
   @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
-    Logger.d('didReplace ${_routeToLog(newRoute)}, oldRoute=${_routeToLog(oldRoute)}');
+    Logger.d(
+        'didReplace ${_routeToLog(newRoute)}, oldRoute=${_routeToLog(oldRoute)}');
     if (newRoute != null) _onScreenShown(newRoute);
   }
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    Logger.d('didPop ${_routeToLog(route)}, previous=${_routeToLog(previousRoute)}');
+    Logger.d(
+        'didPop ${_routeToLog(route)}, previous=${_routeToLog(previousRoute)}');
     if (previousRoute != null) _onScreenShown(previousRoute);
   }
 
   @override
   void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
-    Logger.d('didRemove ${_routeToLog(route)}, previous=${_routeToLog(previousRoute)}');
+    Logger.d(
+        'didRemove ${_routeToLog(route)}, previous=${_routeToLog(previousRoute)}');
     if (previousRoute != null) _onScreenShown(previousRoute);
   }
 
