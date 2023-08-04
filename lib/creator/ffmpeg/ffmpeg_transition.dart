@@ -37,6 +37,11 @@ class FFMpegTransitionProvider {
       ];
     }
 
+    // FIXME: allow cases when slideDuration < transitionDuration
+    if (transitionDuration > slideDuration) {
+      transitionDuration = slideDuration;
+    }
+
     final images = imagesDir.listSync().whereType<File>().toList(growable: false)
       ..sort((a, b) => basename(a.path).compareTo(b.path));
 
