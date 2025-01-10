@@ -3,11 +3,11 @@ import 'package:sizer/sizer.dart';
 import 'package:sizer/sizer.dart' as sizer;
 
 extension BuildContextX on BuildContext {
-  DeviceType get deviceType => SizerUtil.deviceType == sizer.DeviceType.mobile
+  DeviceType get deviceType => Device.screenType == sizer.ScreenType.mobile
       ? DeviceType.mobile
       : DeviceType.tablet;
 
-  Orientation get deviceOrientation => SizerUtil.orientation;
+  Orientation get deviceOrientation => sizer.Device.orientation;
 }
 
 extension DeviceTypeX on DeviceType {
@@ -31,9 +31,9 @@ class DeviceTypeContainer extends StatelessWidget {
   final Widget child;
 
   const DeviceTypeContainer({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

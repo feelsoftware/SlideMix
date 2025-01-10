@@ -34,3 +34,4 @@ Runner/GoogleService-Info.plist
 !default.pbxuser
 !default.perspectivev3
 /build/.last_build_id
+/Podfile.lock

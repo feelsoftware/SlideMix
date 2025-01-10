@@ -75,3 +75,4 @@
 /android/sharedcode/sharedcode.podspec
 /.flutter-plugins-dependencies
 /ios/Flutter/Flutter.podspec
+/pubspec.lock
