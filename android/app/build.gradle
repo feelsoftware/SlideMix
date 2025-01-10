@@ -74,4 +74,10 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0"
+
+    implementation files('libs/ffmpeg-kit-full-gpl-6.0-2.aar')
+
+    // To fix: ClassNotFoundException: Didn't find class "com.arthenica.smartexception.java.Exceptions" on path
+    implementation files('libs/smart-exception-common-0.2.1.jar')
+    implementation files('libs/smart-exception-java-0.2.1.jar')
 }

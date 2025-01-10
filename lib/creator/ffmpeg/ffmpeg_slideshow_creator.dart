@@ -1,12 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-
-import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit_config.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_session.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/ffprobe_kit.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/return_code.dart';
 import 'package:path/path.dart';
+import 'package:slidemix/creator/ffmpeg/ffmpeg.dart';
 import 'package:slidemix/creator/ffmpeg/ffmpeg_transition.dart';
 import 'package:slidemix/creator/slideshow_creator.dart';
 import 'package:slidemix/creator/slideshow_orientation.dart';
@@ -62,9 +57,7 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
 
   @override
   Future<void> dispose() async {
-    // Reset callback
-    FFmpegKitConfig.enableStatisticsCallback();
-    FFmpegKit.cancel();
+    FFmpeg.dispose();
   }
 
   Future<_Video> _createVideo({
@@ -111,59 +104,43 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
       ..sort((a, b) => basename(a.path).compareTo(b.path));
     final totalDuration = images.length * slideDuration.inMilliseconds;
 
-    final videoSession = await FFmpegSession.create(
-      videoCommand,
-      null,
-      null,
-      (statistic) {
-        var progress = statistic.getTime() / totalDuration;
-        if (progress < 0) progress = 0;
-        if (progress > 1) progress = 1;
-        onProgress(progress);
-      },
-    );
+    final FFmpegReturnCode returnCode;
     try {
-      await FFmpegKitConfig.ffmpegExecute(videoSession);
+      returnCode = await FFmpeg.execute(
+        videoCommand,
+        duration: totalDuration,
+        onProgressChanged: onProgress,
+      );
     } catch (ex, st) {
       Logger.e('Failed to execute FFmpeg', ex, st);
       rethrow;
-    } finally {
-      // Reset callback
-      FFmpegKitConfig.enableStatisticsCallback();
     }
 
-    Duration videoDuration;
-    if (ReturnCode.isCancel(await videoSession.getReturnCode())) {
+    if (returnCode is FFmpegReturnCodeCancel) {
       Logger.d('Canceled video creation $videoPath');
       throw CancellationException('Video creation cancelled');
     }
-    if (ReturnCode.isSuccess(await videoSession.getReturnCode())) {
-      Logger.d('Video is created $videoPath');
 
-      try {
-        final mediaInformation =
-            (await FFprobeKit.getMediaInformation(videoPath)).getMediaInformation();
-        final duration = double.parse(mediaInformation?.getDuration() ?? '0.0').toInt();
-        videoDuration = Duration(seconds: duration);
-      } catch (ex, st) {
-        Logger.e('Failed to get media information $videoPath', ex, st);
-        videoDuration = Duration(milliseconds: totalDuration.round());
-      }
-
-      return _Video(
-        path: videoPath,
-        mime: videoCapability.mediaFormat.mime,
-        duration: videoDuration,
-      );
-    } else {
-      Logger.e(
-        'Failed to create video',
-        Exception(
-          (await videoSession.getLogs()).reversed.map((log) => log.getMessage()),
-        ),
-      );
+    if (returnCode is FFmpegReturnCodeError) {
+      Logger.e('Failed to create video', returnCode.error);
       throw Exception('Failed to create video');
     }
+
+    Logger.d('Video is created $videoPath');
+
+    Duration videoDuration;
+    try {
+      videoDuration = await FFmpeg.duration(videoPath);
+    } catch (ex, st) {
+      Logger.e('Failed to get duration $videoPath', ex, st);
+      videoDuration = Duration(milliseconds: totalDuration.round());
+    }
+
+    return _Video(
+      path: videoPath,
+      mime: videoCapability.mediaFormat.mime,
+      duration: videoDuration,
+    );
   }
 
   Future<_Thumbnail> _createThumb({
@@ -184,24 +161,31 @@ class FFmpegSlideShowCreator extends SlideShowCreator {
       thumbPath,
     ];
     Logger.d('Generate thumbnail ${thumbCommand.join(' ')}');
-    await FFmpegKit.executeWithArguments(thumbCommand);
-    final thumbSession = (await FFmpegKit.listSessions()).last;
-    if (ReturnCode.isCancel(await thumbSession.getReturnCode())) {
-      Logger.d('Canceled thumbnail generation $thumbPath');
-      throw Exception('Video creation cancelled');
-    }
-    if (ReturnCode.isSuccess(await thumbSession.getReturnCode())) {
-      Logger.d('Thumbnail is created $thumbPath');
-      return _Thumbnail(path: thumbPath);
-    } else {
-      Logger.e(
-        'Failed to create thumbnail',
-        Exception(
-          (await thumbSession.getLogs()).reversed.map((log) => log.getMessage()),
-        ),
+
+    final FFmpegReturnCode returnCode;
+    try {
+      returnCode = await FFmpeg.execute(
+        thumbCommand,
+        duration: video.duration.inMilliseconds,
+        onProgressChanged: (_) {},
       );
+    } catch (ex, st) {
+      Logger.e('Failed to generate thumbnail', ex, st);
+      rethrow;
+    }
+
+    if (returnCode is FFmpegReturnCodeCancel) {
+      Logger.d('Canceled thumbnail generation $thumbPath');
+      throw Exception('Thumbnail generation cancelled');
+    }
+
+    if (returnCode is FFmpegReturnCodeError) {
+      Logger.e('Failed to create thumbnail', returnCode.error);
       throw Exception('Failed to create thumbnail');
     }
+
+    Logger.d('Thumbnail is created $thumbPath');
+    return _Thumbnail(path: thumbPath);
   }
 
   String _formatDurationForThumbnail(Duration duration) {

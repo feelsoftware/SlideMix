@@ -41,9 +41,6 @@ dependencies:
   # https://pub.dev/packages/equatable
   equatable: 2.0.7
 
-  # https://github.com/arthenica/ffmpeg-kit/tree/main/flutter/flutter
-  ffmpeg_kit_flutter_full_gpl: 6.0.2
-
   # https://pub.dev/packages/firebase_analytics
   firebase_analytics: 11.4.0
 
