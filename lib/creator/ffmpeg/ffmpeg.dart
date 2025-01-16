@@ -36,7 +36,7 @@ class FFmpeg {
   }
 
   static Future<Duration> duration(String path) async {
-    final double duration = await _channel.invokeMethod('get', path);
+    final double duration = await _channel.invokeMethod('duration', path);
     return Duration(seconds: duration.toInt());
   }
 
