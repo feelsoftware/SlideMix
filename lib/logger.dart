@@ -23,7 +23,9 @@ class Logger {
     };
 
     await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform);
+      name: 'SlideMix',
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     await FirebaseCrashlytics.instance
         .setCrashlyticsCollectionEnabled(_crashlyticsEnabled);
   }
@@ -116,9 +118,9 @@ class _NavigationLogger extends RouteObserver<Route<dynamic>> {
 
     if (Logger._crashlyticsEnabled) {
       FirebaseAnalytics.instance
-          .setCurrentScreen(
+          .logScreenView(
             screenName: route.settings.name,
-            screenClassOverride: screenClass,
+            screenClass: screenClass,
           )
           .ignore();
     } else {
