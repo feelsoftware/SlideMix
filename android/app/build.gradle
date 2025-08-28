@@ -27,8 +27,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.feelsoftware.slidemix"
-    compileSdk 35
-    buildToolsVersion = '35.0.0'
+    compileSdk 36
+    buildToolsVersion = '36.0.0'
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -46,7 +46,7 @@ android {
 
     defaultConfig {
         minSdkVersion 24
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         resourceConfigurations += ['en', 'uk']
@@ -73,9 +73,9 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"
 
-    implementation files('libs/ffmpeg-kit-full-gpl-6.0-2.aar')
+    implementation files('libs/ffmpeg-kit-gpl-6.0.aar')
 
     // To fix: ClassNotFoundException: Didn't find class "com.arthenica.smartexception.java.Exceptions" on path
     implementation files('libs/smart-exception-common-0.2.1.jar')
